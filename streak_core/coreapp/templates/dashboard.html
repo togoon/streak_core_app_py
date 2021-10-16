@@ -1,0 +1,450 @@
+{% extends 'base.html' %}
+{% load name_to_avatar %}
+{% load name_to_one_avatar %}
+{% load mod7 %}
+{% block page_title %} | Strategies {% endblock %}
+{% block meta_keywords %} 
+    <meta name="keywords" content="Streak, Streak Tech, Streak AI, Trading algos, trading algorithms, deploy trading algos, Streak.ai, Streak, Zerodha, strategies, trading strategies, strategy">
+{% endblock %}
+{% block meta_desc %} 
+    <meta name="description" content="Manage trading strategies on multiple scrips. View, edit and deploy trading algos live in the markets. Backtest trading strategies and compare performance of strategies on multiple scrips.">
+{% endblock %}
+{% block page_css1 %} <link href="/static/css/dashboard.css?v=2.6" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/dashboard.js?v=2.6"></script> {% endblock %}
+{% block page_js2 %} <script src="/static/js/jquery-ui.min.js"></script> {% endblock %}
+{% block page_js3 %}<script src="/static/js/product_tour_algos.js?v=2.1"></script>{% endblock %}
+{% load space_to_hyphen %}
+{% load el_pagination_tags %}
+{% block body %}
+    {% csrf_token %}
+<!-- <div class="block sec_main card"> -->
+    {% if algo|length > 0 %}
+    <div class="dashboard_body">
+        {% paginate algo %}
+        <div class="algos_header">
+        <div class="pagination">
+          {% show_pages %}
+        </div>
+        <div class="search_container">
+            <input type="text" name="search_algos" id="algos_search_input" placeholder="Search strategies">
+        </div>
+        </div>
+        {% for a in algo %}
+            <div class="dashboard_row" id="{{ a.algo_uuid }}">
+                <div class="dashboard_algo_section">
+                    <div class="algo_header">
+                        <div class="algo_avatar algo_avatar{{ forloop.counter0|mod7 }}"><p>{{ a.algo_name|name_to_one_avatar|upper }}</p></div>
+                        <div class="algo_title">
+                        <p class="algo_name" id="algo_name">{{ a.algo_name }}</p>
+                        <p class="algo_modified">{{ a.updated_at|date:"d-M-Y H:i"}}</p>
+                        </div>
+                    </div>
+                    <div class="algo_summary">
+                        <p class="entry_heading"><img src="/static/imgs/new/entry.svg"><span>Entry</span></p>
+                        <p class="dashboard_condition_summary">
+                        {% if a.position_type == 1 %}Buy{% else %}Sell{% endif %}
+                         {{a.quantity}} shares when {{a.entry_logic}} at 
+                        {% if a.time_frame == 'min' %}
+                            1 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '3min' %}
+                            3 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '5min' %}
+                            5 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '10min' %}
+                            10 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '15min' %}
+                            15 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '30min' %}
+                            30 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == 'hour' %}
+                            1 hour interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == 'day' %}
+                            1 day interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% endif %}</br>Enter trade between {{a.trading_start_time|default:"00:00"}} to {{a.trading_stop_time|default:"23:59"}}
+                        </p>
+                    </div>
+                    <div class="algo_summary">
+                        <p class="exit_heading"><img src="/static/imgs/new/exit.svg"><span>Exit</span></p>
+                        <p class="dashboard_condition_summary">
+                        {% if a.exit_logic != '' %}
+                          {% if a.position_type == 1 %}Sell{% else %}Buy{% endif%}
+                           {{a.quantity}} shares when {{a.exit_logic}} or at a Stop loss of {{a.stop_loss}}% or Take profit of {{a.take_profit}}%
+                        {% else %}
+                          {% if a.position_type == 1 %}Sell{% else %}Buy{% endif%}
+                           {{a.quantity}} shares at a Stop loss of {{a.stop_loss}}% or Take profit of {{a.take_profit}}%
+                        {% endif %}
+                         at 
+                        {% if a.time_frame == 'min' %}
+                            1 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '3min' %}
+                            3 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '5min' %}
+                            5 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '10min' %}
+                            10 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '15min' %}
+                            15 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == '30min' %}
+                            30 minute interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == 'hour' %}
+                            1 hour interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% elif a.time_frame == 'day' %}
+                            1 day interval using {{a.chart_type|default:"candlestick"}} chart.
+                        {% endif %}
+                        </p>
+                        <!-- <p class="interval_heading">Candle interval</p>
+                        {% if a.time_frame == 'min' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">1 Minute, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == '3min' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">3 Minute, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == '5min' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">5 Minute, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == '10min' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">10 Minute, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == '15min' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">15 Minute, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == '30min' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">30 Minute, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == 'hour' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">1 Hour, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p>
+                        {% elif a.time_frame == 'day' %}
+                          <p class="dashboard_condition_summary" style="padding-bottom: 0px;">1 Day, {{a.chart_type|default:"candlestick"|title}} chart</br>Enter trade between : {{a.trading_start_time|default:"09:15"}} - {{a.trading_stop_time|default:"15:30"}}</p> 
+                        {% endif %}  -->
+                    </div>
+                    <div class="action_section">
+                        <div class="action_options">
+                            <div class="menu_dots"><p><img src="/static/imgs/new/menu_dots.svg"></p>
+                            <div class="action_buttons">
+                            {% if a.algo_deployed %}
+                            <div><button data-tooltip-top="Cannot edit deployed algo" backtests" id="icon-edit" class="icon-edit action_buttons_disabled"><img src="/static/imgs/new/create_disabled.svg"">Edit</button></div>
+                            <div><button class="icon-create-similar" onclick="algo_clone(event,'{{a.algo_uuid}}')"><img src="/static/imgs/new/copy.svg">Copy</button></div>
+                            <div><button class="icon-dashboard-scan"><img onclick="power_scan('{{a.algo_uuid}}')" src="/static/imgs/new/scan.svg">Scan</button></div>
+                            <div><button data-tooltip-top="Cannot delete deployed algo" class="icon-delete action_buttons_disabled" onclick="show_snackbar(null,'Cannot delete deployed algo')"><img src="/static/imgs/new/delete_disabled.svg">Delete</button></div>
+                            <div><button class="icon-dashboard-backtest" id="icon-dashboard-backtest" onclick="algo_backtests(event,'{{a.algo_uuid}}')"><img src="/static/imgs/new/b.svg">Backtests</button></div>
+                            {% else %}
+                            <div><button class="icon-edit" id="icon-edit" onclick="edit_algo(event,'{{a.algo_uuid}}')"><img src="/static/imgs/new/create.svg">Edit</button></div>
+                            <div><button class="icon-create-similar" onclick="algo_clone(event,'{{a.algo_uuid}}')"><img src="/static/imgs/new/copy.svg">Copy</button></div>
+                            <div><button class="icon-dashboard-scan"><img onclick="power_scan('{{.algo_uuid}}')" src="/static/imgs/new/scan.svg">Scan</button></div>
+                            <div><button class="icon-delete" onclick="delete_button(event,'{{a.algo_uuid}}')"><img src="/static/imgs/new/delete.svg">Delete</button></div>
+                        <div><button class="icon-dashboard-backtest" id="icon-dashboard-backtest" onclick="algo_backtests(event,'{{a.algo_uuid}}')"><img src="/static/imgs/new/b.svg">Backtests</button></div>
+                        {% endif %}
+                        </div>
+                        </div>
+                            <p class="menu_backtests">Backtests<img src="/static/imgs/new/dropdown.svg"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard_equities_section" id="dashboard_equities_section">
+                    {% if a.deployed|length < 1 and a.backtest|length < 1 %}
+                    <img id="no_backtests" src="/static/imgs/new/empty/backtests-empty.svg">
+                      <p class="backtest_row_error_message_display">No backtests</p>
+                    {% else %}
+                    <!-- <div class="show_more_eq">
+                        <p>Show more&nbsp;&nbsp;&nbsp;<img src="/static/imgs/icon-dashboard-show-more.png"></p>
+                    </div> -->
+                    {% if a.backtest|length > 0 %}
+                    <div class="algos_title">
+                        <div class="deploy_appear">
+                            <div class="deploy_holder">
+                            <button class="deploy deploy_disabled" id="deploy" onclick="deploy_algorithm_multi_popup(event,$(this),'{{a.algo_name}}','{{a.entry_logic}}','{{a.exit_logic}}','{{a.position_type}}','{{a.quantity}}','{{a.take_profit}}','{{a.stop_loss}}','{{a.time_frame}}','{{a.algo_uuid}}','{{a.chart_type|default:"candlestick"|title}}','{{a.trading_start_time|default:"09:15"}}','{{a.trading_stop_time|default:"23:30"}}');">Deploy</button>
+                            </div>
+                        </div>
+                        <div class="multiple_backtest_header">
+                        <div class="live_indicator_title">
+                            <p></p>
+                        </div>
+                        <div class="scrip_title">
+                            <p>Instrument</p>
+                        </div>
+                        <div class="ltp_title">
+                            <p>LTP</p>
+                        </div>
+                        <div class="pnl_title">
+                            <p>Backtest P&L</p>
+                        </div>
+                        <div class="signals_title">
+                            <p>Signals</p>
+                        </div>
+                        <div class="wins_title">
+                            <p>Wins</p>
+                        </div>
+                        <div class="losses_title">
+                            <p>Losses</p>
+                        </div>
+                        <div class="winning_streak_title">
+                            <p>WS</p>
+                        </div>
+                        <div class="losing_streak_title">
+                            <p>LS</p>
+                        </div>
+                        <div class="max_drawdown_title">
+                            <p>Max. DD</p>
+                        </div>
+                        <!-- <div class="action_deploy_title">
+                        </div> -->
+                        <!-- <div class="expand_title">
+                        </div>
+                        <div class="action_download_title">
+                        </div> -->
+                        <!-- <div class="action_share_title">
+                        </div> -->
+                        <div class="checkbox_title">
+                            <input type="checkbox" name="deploy_all_checkbox__{{a.algo_uuid}}" class="deploy_all_checkbox" id="deploy_all_checkbox__{{a.algo_uuid}}" onclick="select_all(event,$(this))">
+                        </div>
+                    </div>
+                        <!-- <p class="recent_bt">Results</p> -->
+                        <!-- <button data-tooltip-top="Deploy to market" class="deploy" id="deploy" onclick="deploy_algorithm_popup('{{a.algo_name}}','{{a.entry_logic}}','{{a.exit_logic}}','{{a.position_type}}','{{a.quantity}}','{{a.take_profit}}','{{a.stop_loss}}','{{a.time_frame}}','{{values.run_params.algo_uuid}}','{{values.run_params.symbols.0.1}}','{{values.run_params.symbols.0.0}}');"><img src="/static/imgs/icon-deploy.png">&nbsp;&nbsp;Deploy</button> -->
+                    </div>
+                        {% for bt_row in a.backtest %}
+                        {% for key, values in bt_row.backtest_result.items %}
+                        {% if key != "runtime" and key != "updated_time" %}
+                        <div class="token__{{values.run_params.symbols.0.0}}_{{values.run_params.symbols.0.1|space_to_hyphen}} row_container">
+                            {%if not values.sym_deployed %}
+                            <div class="live_indicator_detail"><span class="indicator_grey"></span></div>
+                            {% else %}
+                            <div class="live_indicator_detail"><span class="indicator_green"></span></div>
+                            {% endif %}
+                            <div class="scrip_row_detail"><p class="eq_name">{{values.run_params.symbols.0.1}}<span>&nbsp;{{values.run_params.symbols.0.0}}</span></p></div>
+                            <div class="ltp_row_detail"><p class="ltp"><span class="sub_ltp" style="color: #383838">0.0</span></p></div>
+                            <div class="pnl_row_detail">
+                                {% if values.final_pnl > 0 %}
+                                <p class="pnl"><!-- <span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span> --><span class="profit">+{{values.final_pnl|floatformat:2}}&nbsp;</span><span class="profit">( +{{values.return|floatformat:2}}%)&nbsp;</span></p>
+                                {% else %}
+                                <p class="pnl"><!-- <span><img src="/static/imgs/icon-arrow-down-red.png">&nbsp;</span> --><span class="loss">{{values.final_pnl|floatformat:2}}&nbsp;</span><span class="loss">( {{values.return|floatformat:2}}%)&nbsp;</span></p>
+                                {% endif %}
+                            </div>
+                            <div class="signals_row_detail"><p>{{values.total_number_of_signals}}</p></div>
+                            <div class="wins_row_detail"><p>{{values.win_count}}</p></div>
+                            <div class="losses_row_detail"><p>{{values.loss_count}}</p></div>
+                            <div class="winning_streak_row_detail"><p>{{values.winning_streak}}</p></div>
+                            <div class="losing_streak_row_detail"><p>{{values.lossing_streak}}</p></div>
+                            <div class="max_drawdown_row_detail"><p>{{values.max_draw|floatformat:2}}%</p></div>
+                            <div class="deploy_checkbox checkbox_row_detail">
+                                {% if values.sym_deployed %} <!-- <button class="force_stop" id="force_stop" data-tooltip-top="Force stop algo" onclick="$('.exit_position, .algo_stopped').hide();$('.force_stop_popup, .stop_options').show();$('body').addClass('body_scroll');force_stop('{{values.run_params.algo_uuid}}','{{values.run_params.symbols.0.1}}_{{values.run_params.symbols.0.0}}');"><img src="/static/imgs/icon-force-stop.png"><img src="/static/imgs/icon-force-stop.png">&nbsp;&nbsp;Stop</button><button class="view_od" id="view_od" onclick="$('.order_log_popup').show();$('body').addClass('body_scroll');algo_saved_backtests('{{a.algo_uuid}}');"><img src="/static/imgs/icon-view-order-details.png"></button> -->
+                                <input type="checkbox" data-deploy-params_name="{{a.algo_name}}" data-deploy-params_entry="{{a.entry_logic}}" data-deploy-params_exit="{{a.exit_logic}}" data-deploy-params_position_type="{{a.position_type}}" data-deploy-params_take_profit="{{a.take_profit}}" data-deploy-params_stop_loss="{{a.stop_loss}}" data-deploy-params_time_frame="{{a.time_frame}}" data-deploy-params_algo_uuid="{{values.run_params.algo_uuid}}" data-deploy-params_symbol="{{values.run_params.symbols.0.1}}" data-deploy-params_segment="{{values.run_params.symbols.0.0}}" name="deploy_checkbox__{{a.algo_uuid}}" id="deploy_checkbox__{{a.algo_uuid}}" disabled>
+                                {% else %}
+                                <!-- deploy_algorithm('{{values.run_params.algo_uuid}}','{{values.run_params.symbols.0.1}}','{{values.run_params.symbols.0.0}}'); -->
+                                <!-- <button data-tooltip-top="Deploy to market" class="deploy" id="deploy" onclick="deploy_algorithm_popup('{{a.algo_name}}','{{a.entry_logic}}','{{a.exit_logic}}','{{a.position_type}}','{{a.quantity}}','{{a.take_profit}}','{{a.stop_loss}}','{{a.time_frame}}','{{values.run_params.algo_uuid}}','{{values.run_params.symbols.0.1}}','{{values.run_params.symbols.0.0}}');"><img src="/static/imgs/icon-deploy.png">&nbsp;&nbsp;Deploy</button> -->
+                                <input type="checkbox" data-deploy-params_name="{{a.algo_name}}" data-deploy-params_entry="{{a.entry_logic}}" data-deploy-params_exit="{{a.exit_logic}}" data-deploy-params_position_type="{{a.position_type}}" data-deploy-params_take_profit="{{a.take_profit}}" data-deploy-params_stop_loss="{{a.stop_loss}}" data-deploy-params_time_frame="{{a.time_frame}}" data-deploy-params_algo_uuid="{{values.run_params.algo_uuid}}" data-deploy-params_symbol="{{values.run_params.symbols.0.1}}" data-deploy-params_segment="{{values.run_params.symbols.0.0}}" name="deploy_checkbox__{{a.algo_uuid}}" id="deploy_checkbox__{{a.algo_uuid}}" onclick="selected_any(event,$(this))">
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                      {% endfor %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endif %}
+                </div>
+                <!-- <div class="dashboard_actions_section">
+                    <div class="view_od"><button onclick="algo_saved_backtests('{{a.algo_uuid}}')"><img src="/static/imgs/icon-view-order-details.png">&nbsp;&nbsp;&nbsp;View Order Details</button></div>
+                    <div class="view_bt"><button onclick="algo_saved_backtests('{{algo_uuid}}')" ><img src="/static/imgs/icon-view-screens.png">&nbsp;&nbsp;&nbsp;View Backtest Screens</button></div>
+                    <div class="action_buttons">
+                        <button onclick="edit_algo('{{a.algo_uuid}}')"><img src="/static/imgs/icon-edit.png"></button>
+                        <button onclick="algo_clone('{{a.algo_uuid}}')"><img src="/static/imgs/icon-create-similar.png"></button>
+                        <button onclick="algo_backtests('{{a.algo_uuid}}')"><img src="/static/imgs/icon-dashboard-backtest.png"></button>
+                        <button><img onclick="power_scan('{{.algo_uuid}}')" src="/static/imgs/icon-dashboard-scan.png"></button>
+                        <button><img onclick="algo_delete('{{a.algo_uuid}}')" src="/static/imgs/icon-delete.png"></button>
+                    </div>
+                </div> -->
+            </div>
+        {% endfor %}
+        <div class="pagination" style="margin: 30px 0px;">
+          {% show_pages %}
+        </div>
+    </div>
+    <div class="force_stop_popup" style="display: none;">
+        <div class="card animated pulse">
+          <div class="close_popup"><img onclick="close_orders_popup();" src="/static/imgs/new/close.svg"></div>
+          <div class="stop_options animated fadeIn" style="display: none;">
+              <p class="stop_heading">Stop Algo</p>
+              <p class="stop_sub_heading">You can choose to close your position at market or exit manually later.</p>
+              <div class="options_section">
+                  <div>
+                      <button id="keep_positions_open" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Keep positions open</button>
+                      <p>Stop the algo and close position manually.</p>
+                  </div>
+                  <div>
+                      <button id="exit_positions_now" onclick="$('.stop_options, .algo_stopped').hide();$('.exit_position').show();">Exit positions now</button>
+                      <p>Stop the algo and exit position now at market.</p>
+                  </div>
+              </div>
+          </div>
+          <div class="exit_position animated fadeIn" style="display: none;">
+              <p class="stop_heading">Stop algo</p>
+              <p class="stop_sub_heading">Exit now at market.</p>
+              <div class="exit_position_section">
+                  <div class="back">
+                      <p><span onclick="$('.exit_position, .algo_stopped').hide();$('.stop_options').show();"><img src="/static/imgs/icon-back.png">Back</span></p>
+                  </div>
+                  <div>
+                      <div class="exit_window">
+                          <div class="exit_header">
+                              <!-- <p>Buy 500 stocks at 243.39</p> -->
+                          </div>
+                          <div class="exit_body">
+                              <!-- <div class="exit_options">
+                                  <div>
+                                      <div class="radio_options">
+                                          <div>
+                                              <span id="buy_radio_option"></span>
+                                              <p id="option_selected">CNC</p>
+                                          </div>
+                                          <div>
+                                              <span></span>
+                                              <p>MIS</p>
+                                          </div>
+                                      </div>
+                                      <div class="exit_qty">
+                                          <p>Quantity</p>
+                                          <input type="number" name="">
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <div class="radio_options">
+                                          <div>
+                                              <span></span>
+                                              <p>MKT</p>
+                                          </div>
+                                          <div>
+                                              <span id="buy_radio_option"></span>
+                                              <p id="option_selected">LMT</p>
+                                          </div>
+                                      </div>
+                                      <div class="exit_price">
+                                          <p>Price</p>
+                                          <input type="number" name="">
+                                      </div>
+                                  </div>
+                              </div>
+                              <div>
+                                  <button id="buy" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Buy</button>
+                              </div> -->
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="algo_stopped animated" style="display: none;">
+              <img src="/static/imgs/new/algo_deleted.gif">
+              <p class="stop_heading">Algo stopped</p>
+              <p class="stop_sub_heading">This algo is no longer active.<br><!-- You exited at market price. --></p>
+          </div>
+        </div>
+      </div>
+      <div class="delete_strategy_popup" style="display: none;">
+        <div class="card animated fadeIn">
+            <div class="close_popup"><img onclick="close_delete_strategy_popup();" src="/static/imgs/new/close.svg"></div>
+            <div class="delete_strategy" style="display: none;">
+            <p class="delete_strategy_title">Delete algo</p>
+            <p class="delete_strategy_subtitle">This will delete your algo and all the backtest results of the algo.</p>
+            <div class="delete_options">
+                <button id="cancel_delete_strategy" onclick="close_delete_strategy_popup();">Cancel</button>
+                <button id="confirm_delete_strategy" onclick="">Delete algo</button>
+            </div>
+            </div>
+            <div class="algo_deleted animated" style="display: none;">
+            <img src="/static/imgs/new/algo_deleted.gif">
+            <p class="stop_heading">Algo Deleted</p>
+            <p class="stop_sub_heading">This algo along with backtest results has been deleted</p>
+            </div>
+        </div>
+      </div>
+      <!-- <div class="order_log_popup" style="display: none;">
+      <div class="card animated fadeIn">
+          <div class="close_popup"><img onclick="close_order_log_popup();" src="/static/imgs/new/close.svg"></div>
+          <div class="progress_section">
+              <div class="prompter">
+                  
+              </div>
+              <div class="progress_line"></div>
+          </div>
+      </div>
+      </div> -->
+    {% else %}
+    <div class="empty_dashboard_body">
+      <img src="/static/imgs/empty-dashboard.png">
+      <p><br><a href="/strategy">Create strategy</a></p>
+    </div>
+{% endif %}
+<!-- </div> -->
+{% csrf_token %}
+{% if login_true == 1%}
+<script type="text/javascript">
+$(document).ready(function() {
+    ga('send', 'event', 'Logged In');
+});
+</script>
+{% endif %}
+{% if request.session.first_time_algos %}
+  <script type="text/javascript">
+    var first_time_algos = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_algos');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_algos = "false";
+  </script>
+  {% endif %}
+{% endblock %}
+{% block popup_body %}
+    <div class="deploy_header">
+        <div class="close" onclick="close_popup();"><img src="/static/imgs/new/close.svg"></div>
+        <div class="deploy_heading"><p>Deploy</p></div>
+        <div class="deploy_summary_heading"><p>AlgoTest</p></div>
+    </div>
+    <div class="deploy_container">
+    <div class="deploy_summary">
+        <div class="deploy_summary_body">
+            <p class="entry_heading"><img src="/static/imgs/new/entry.svg"><span>Entry</span></p>
+            <p class="condition_summary" id="entry_condition_summary">Buy 50 shares of CANBK if 20Day SMA is greater than 40Day SMA and RSI is greater than 75.</p>
+            <p class="exit_heading"><img src="/static/imgs/new/exit.svg"><span>Exit</span></p>
+            <p class="condition_summary" id="exit_condition_summary">Sell 50 shares of CANBK at Stop loss of 5% or Take profit of 10%.</p>
+            <!-- <p class="interval_heading">Candle interval</p> -->
+            <!-- <p class="condition_summary" id="interval_condition_summary">1 minute</p> -->
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="deploy_fields">
+        <div class="deploy_body">
+            <!-- <div><p>Broker</p></div> -->
+            <!-- <div><p class="zerodha_heading">Zerodha</p></div> -->
+            <div style="display: none;"><select id="ip_broker"><option value='zerodha'>Zerodha</option></select></div>
+            <!-- <div><p>Select your frequency</p></div>
+            <div><select id="ip_frequency">
+                <option value="1">Once</option>
+                <option value="2">Twice</option>
+                <option value="3">Thrice</option>
+                <option value="4">Four times</option>
+                <option value="5">Five times</option>
+            </select></div> -->
+            <div style="margin-top: 0px;"><p class="mis_disclaimer_deploy" id="mis_disclaimer_deploy">All Intraday (MIS) strategies will expire at 3:20 PM (currency futures at 4:30 PM)</p></div>
+            <div><p>Order type</p></div>
+            <div><input id="ip_live_period" value="Intraday (MIS)" data-val-text="Intraday (MIS)" readonly=""></input></div>
+            <div><p>Product</p></div>
+            <div><input id="ip_variety" value="REGULAR" data-val-text="REGULAR" readonly=""></input></div>
+            <div><p data-tooltip-top="Entry and respective Exit of a Strategy is defined as one strategy cycle">Strategy cycle</p></div>
+            <div><input id="ip_frequency" value="2" data-val-text="2" readonly=""></input></div>
+            <!-- <select id="ip_live_period">
+                <option value="1">Intraday (MIS)</option>
+                <option value="30">Overnight (CNC/NRML)</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5 days</option>
+                <option value="7">1 week</option>
+                <option value="30">1 month</option>
+            </select> -->
+        </div>
+    </div>
+    </div>
+    <div class="deploy_footer">
+    <div class="trading_terms"><!-- style="margin-bottom: -5%;" -->
+    <input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required checked>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" target="_blank" onclick="">Trading Terms</a>
+    </div>
+    <button class="deploy_confirm">Confirm</button>
+    </div>
+{% endblock %}
+{% block onconfirm %}
+deploy_action();ga('send', 'event', 'Deploy Algorithm', 'Confirmed', 'Popup');
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

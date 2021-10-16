@@ -1,0 +1,5299 @@
+var js_parsing_tree = null;
+var state = 1;
+var equity_added = {};
+var cursor_loc = 0;
+var third_cleared_loc = null;
+var third_cleared_flag = false;
+var third_cleared_item = null;
+var field_to_focus = null;
+var lastest_item = [];
+
+var auto_assist = false;
+var auto_assist_class = null;
+var trainer_model = null;
+// params for exit cursor
+var exit_shown = false;
+var exit_cursor_loc = 0;
+var exit_third_cleared_loc = null;
+var exit_third_cleared_flag = false;
+var exit_third_cleared_item = null;
+var exit_field_to_focus = null;
+var exit_lastest_item = [];
+
+// populating advanced fields
+adv_holding_type = 'MIS';
+adv_chart_type = "candlestick";
+adv_trading_start_time = "00:00";
+adv_trading_stop_time = "23:59";
+// -------------------------------------------- //
+var pref_data = null;
+var submit_algo_type = 'new';
+
+var candle_freq_map = {'min':10,
+                        '3min':9,
+                        '5min':8,
+                        '10min':7,
+                        '15min':6,
+                        '30min':5,
+                        '45min':4,
+                        'hour':3,
+                        'day':2,
+                        };
+var freq_candle_map = {10:'min',
+                        9:'3min',
+                        8:'5min',
+                        7:'10min',
+                        6:'15min',
+                        5:'30min',
+                        4:'45min',
+                        3:'hour',
+                        2:'day',
+                        };
+
+
+var interval_mapping = {'1 Minute':"min",'3 Minutes':"3min",'5 Minutes':"5min",'10 Minutes':"10min",'15 Minutes':"15min",'30 Minutes':"30min",'1 Hour':"hour",'1 Day':"day"};
+var chart_type_maping = {'Candlestick':"candlestick",'Heikin-Ashi':"heikinAshi"};
+var holding_type_mapping = {'MIS':"MIS",'CNC/NRML':"CNC"};
+
+var interval_mapping_rev = {"min":'1 Minute',"3min":'3 Minutes',"5min":'5 Minutes',"10min":'10 Minutes',"15min":'15 Minutes',"30min":'30 Minutes',"hour":'1 Hour',"day":'1 Day'};
+var chart_type_maping_rev = {"candlestick":'Candlestick',"heikinAshi":'Heikin-Ashi'};
+var holding_type_mapping_rev = {'MIS':"MIS","CNC":'CNC/NRML'};
+
+var min_candle_freq = 10;
+$.ajax({
+  dataType: "json",
+  url: '/static/js_parsing_tree.json',
+  async: false,
+  success: function(data) {
+    //data is the JSON string
+  console.log("tree loaded");
+  js_parsing_tree = data;
+  }
+});
+// $.getJSON('/static/js_parsing_tree.json', );
+
+var default_preferences = {'drag_container1':['at_price','number'],
+              'drag_container2_ti':['sma','ema','wma','rsi','mom','macd','macd_signal','macd_histogram','obv','tr','atr','natr','aroon_up','aroon_down','open','high','low','close','volume','at_price','number','cci','adx','willr','parabolic_sar','plus_di','minus_di','ubb','mbb','lbb','supertrend','prev_open','prev_close','prev_high','prev_low','atr_bands_top','atr_bands_bottom','proc','trix','engulfing','spinningtop',"stochastic","stochastic_mtm","prev_n","prev_n_vol","opening_range","opening_range_volume","trend_intensity_index","vwap","alligator"],
+              'drag_container2_ohlcv':['open','high','low','close','volume'],
+              'drag_container3':['higher_than','lower_than','crosses_above','crosses_below',"equal_to"],
+              'patterns':['engulfing','spinningtop']
+              };
+
+function show_tooltip(event,title,description,pos='up'){
+  tooltip='<div class="tooltip_top" id="tooltip"><div class="tt_container"><div class="tt_header"><p>'+title+'</p></div><div class="tt_body"><div class="tt_content"><p>'+description+'</p></div></div></div></div>';
+  if(pos!='up')
+    {
+      // $(event.target).before(tooltip);
+    }
+  else
+    {
+      // $(event.target).after(tooltip);
+    }
+  // return tooltip;
+}
+function remove_tooltip(event,title,description,pos='up'){
+  // tooltip='<div class="tooltip_top" id="tooltip"><div class="tt_container"><div class="tt_header"><p>'+title+'</p></div><div class="tt_body"><div class="tt_content"><p>'+description+'</p></div></div></div></div>';
+  // $(event.target).before(tooltip);
+  // if(pos!='up')
+  //  $(event.target).before(tooltip);
+  // else
+  //  $(event.target).after(tooltip);
+  setTimeout(function(){
+    $('.tooltip_top').remove();
+  },200);
+  // return tooltip;
+}
+function pref_loader(data){
+  if(data['status']){
+    pref_data = data;
+  }
+
+  $(".loader_parent").fadeOut();
+};
+
+function update_pref(key){
+  var form = new FormData();
+  form.append("indicator", key);
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "/update_preference/",
+    "method": "POST",
+    "headers": {
+      "cache-control": "no-cache",
+      "postman-token": "77a10891-d9c6-30bf-2c5a-8fcf20b41b09"
+    },
+    "processData": false,
+    "contentType": false,
+    "mimeType": "multipart/form-data",
+    "data": form
+  }
+  $.ajax(settings).done(function (response) {
+    console.log('pref updated');
+    load_toolbar();
+
+  });
+};
+// loading preferences
+function load_toolbar(){
+  var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+  params = {
+    'csrfmiddlewaretoken':csrfmiddlewaretoken
+  };
+  $.get('/load_preference/', params,function(data) {
+  // alert(data);
+    pref_loader(data);
+  });
+
+};
+
+function section_complete(params){ // ids list
+  section_done = true;
+  for(var i=0;i<params.length;i++){
+    if($('#'+params[i]).val()=='')
+      section_done = false;
+
+    if($('#'+params[i]).val()==null)
+      section_done = false;
+  }
+  return section_done;
+};
+
+function footer_updater(){
+  // strategy details updater
+  if($('#ip_strategy_name').val()=='' || $('#ip_strategy_name').val().length<3)
+    $('.strategy_name p').html('Strategy name');
+  else{
+    $('.strategy_name p').html($('#ip_strategy_name').val())
+  }
+  $('.strategy_desc p').html('');
+  // if($('#ip_strategy_desc').val()=='' || $('#ip_strategy_desc').val().length<3)
+  //  $('.strategy_desc p').html('Algorithm description');
+  // else{
+  //  $('.strategy_desc p').html($('#ip_strategy_desc').val())
+  // }
+  // entry summary
+  txt = ''
+  if ($("#ip_position_type").val()=='Buy')
+    txt += 'Buy ';
+  else
+    txt += 'Sell ';
+
+  if ($("#ip_position_qty").val()!=undefined)
+    txt += $("#ip_position_qty").val()+' shares ';
+      
+  txt += 'when ';
+    $("#display_condition1").find('span').each(function(e){ 
+      if($(this).text()!='Clear')
+        txt = txt + ' ' + $(this).text();
+    });
+    if(cursor_loc%3==0)
+    $(".and_or").each(function(e){ 
+    andor1 = $(this).find("#andor option:selected").val();
+
+    // injecting hidden <p> which will be used later select and/or during page revisit
+    // $(this).find("#andor_save").each(function(e,obj){$(obj).remove();});
+
+    // $(this).append("<p id='andor_save' style='display:none'>"+andor1+"</p>");
+      andor1_input = '';
+
+    $(this).find("span").each(function(e,obj){
+      if($(this).text()!='Clear' && andor1_input!='Indicator' && andor1_input!=' Indicator' && andor1_input!=' Comparator')
+          andor1_input = andor1_input + ' ' +$(obj).text();
+      });
+      if (andor1_input != '' && andor1_input!= 'Indicator Comparator Indicator' && andor1_input!='Indicator' && andor1_input!=' Indicator' && andor1_input!=' Comparator'){
+      txt = txt + ' ' + andor1 + ' ' + andor1_input;
+        }
+    // });
+  });
+  txt = txt.replace(/\s+/g,' ').trim();
+  if(txt!='' || txt !=' '){
+    $('.entry p').html(txt);
+  }
+  if(cursor_loc==0){
+    $('.entry p').html('When something interesting happens !'); 
+  }
+
+  // exit summary
+  exit_str = 'Sell 50 shares at a Stop Loss of 5% or Target Profit of 10%' // this servers as an template 
+  exit_str = '';
+
+  // at a';
+
+  if($("#ip_position_qty").val())
+    // exit_qty = $("#ip_position_type").val();
+  {
+    if ($("#ip_position_type").val()=='Sell')
+      exit_str += 'Buy ';
+    else
+      exit_str += 'Sell ';
+
+    exit_str += $("#ip_position_qty").val()+' shares'
+  }
+
+  exit_str += ' at ';
+
+  if($("#ip_stop_loss").val()!='')
+    exit_str += 'Stop loss of '+$('#ip_stop_loss').val()+'%';
+  else
+    exit_str += 'Stop loss';
+
+  if($("#ip_take_profit").val()!='')
+    exit_str += ' or Target profit of '+$('#ip_take_profit').val()+'%';
+  else
+    exit_str += ' or Target profit';
+
+
+  // if($("#ip_position_qty").val())
+  //  // exit_qty = $("#ip_position_type").val();
+  // {
+  //  exit_str += $("#ip_position_qty").val()+' shares'
+
+  //  exit_str += ' at a ';
+
+  //  if($("#ip_stop_loss").val()!='')
+  //    exit_str += 'Stop loss of '+$('#ip_stop_loss').val()+'%';
+  //  if($("#ip_take_profit").val()!='')
+  //    exit_str += ' or Target profit of '+$('#ip_take_profit').val()+'%';
+  // }
+
+  $(".exit p").html(exit_str);
+
+  if(section_complete(['ip_strategy_name','ip_strategy_desc']) &&section_complete(['ip_position_type','ip_position_qty']) &&  section_complete(['ip_take_profit','ip_stop_loss']) && section_complete(['ip_position_type','ip_position_qty']) && cursor_loc/3>=1 && cursor_loc%3==0 && Object.keys(equity_added).length>0 && $('.indicator_popup').length<1 && !third_cleared_flag){
+    // $('.save_backtest').unbind('click');
+    x = "<div><button class=\"save_backtest\" onmousedown=\"save_algorithm_new();\">Backtest</button><p id='advanced_section' class='advanced_section' onclick='show_advanced_section();'>Advanced (MIS/CNC)</p></div>";
+    if($('#algo_submit').html()!=x)
+      $('#algo_submit').html(x);
+    $($('.finish_section div span')[0]).css("background-color", "#06d092");
+    $($('.finish_section div span')[0]).css("border-color", "#bdfbe8");
+  }
+  else{
+    // save_backtest_disabled
+    // $('.save_backtest').unbind('click');
+    x = "<div><button class=\"save_backtest save_backtest_disabled\" onmousedown=\"show_snackbar(event,'Complete all the fields');\">Backtest</button><p id='advanced_section' class='advanced_section' onclick='show_advanced_section();'>Advanced (MIS/CNC)</p></div>"
+    if($('#algo_submit').html()!=x)
+      $('#algo_submit').html(x);
+    $($('.finish_section div span')[0]).css("background-color", "#FFFFFF");
+    $($('.finish_section div span')[0]).css("border-color", "#dee7f1");
+  }
+  if (cursor_loc/3<1){
+    $($('.enter_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+    $($('.enter_strategy_section div span')[0]).css("border-color", "#dee7f1");
+  }
+  
+  if(exit_cursor_loc%3!=0 || !section_complete(['ip_take_profit','ip_stop_loss'])){
+    $($('.exit_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+    $($('.exit_strategy_section div span')[0]).css("border-color", "#dee7f1"); 
+  }
+
+  if(third_cleared_flag)
+    {
+    $($('.enter_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+    $($('.enter_strategy_section div span')[0]).css("border-color", "#dee7f1");
+  }
+
+  if(exit_third_cleared_flag || !section_complete(['ip_take_profit','ip_stop_loss']))
+    {
+    $($('.exit_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+    $($('.exit_strategy_section div span')[0]).css("border-color", "#dee7f1");
+  }
+};
+
+function fill_assist(algo_state){
+  var pos_type = $("#ip_position_type").val().toUpperCase();
+  algo_state = algo_state[pos_type][0];
+  if (algo_state==undefined){
+    return false
+  }
+  // conditions.html('<div class="prompter_text" style=""><p>Add an Indicator<span>(Hint)</span></p></div>');
+  if(algo_state.entryIndicators != undefined){
+    $('.conditions .display_condition').remove();
+    $('.conditions .another_condition').remove();
+    var conditions = $('.conditions');
+    if(algo_state.entryIndicators.length>0){
+      if(algo_state.entryIndicators[0].indicator!="Indicator"){
+        for(var j=0;j<algo_state.entryIndicators.length;j++){
+          class_tag = algo_state.entryIndicators[j].indicatorItem.class;
+          if(algo_state.entryIndicators[j].indicatorItem.class=='close')
+            class_tag = 'close_';
+
+          inplace_click = 'onclick="custom_click_inplace(event)"';
+          if(Object.keys(algo_state.entryIndicators[j].indicatorDetails).length==0){
+            inplace_click = '';
+          }
+
+          comparator_inplace_click = 'onclick="custom_click_inplace(event)"';
+          try{
+            if(Object.keys(algo_state.entryIndicators[j].compareIndicatorDetails).length==0){
+            comparator_inplace_click = '';
+            }
+          }catch(e){
+
+          }
+
+          if(j==0)
+            {
+              if(algo_state.entryIndicators[j].comparator=='N/A' && algo_state.entryIndicators[j].compareIndicator=='N/A')
+                ind1 = '<div class="display_condition input_condition2" id="display_condition1"><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+              else
+                ind1 = '<div class="display_condition input_condition2" id="display_condition1"><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+            }
+          else
+            {
+              and_or = algo_state.entryIndicators[j-1].andor
+              if(and_or=="or")
+                and_or_html = '<select id="andor"><option>and</option><option selected>or</option></select>';
+              else
+                and_or_html = '<select id="andor"><option selected>and</option><option>or</option></select>';
+
+                if(algo_state.entryIndicators[j].comparator=='N/A' && algo_state.entryIndicators[j].compareIndicator=='N/A')
+                  ind1 = '<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+                else
+                  ind1 = '<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+
+            }
+
+          if(algo_state.entryIndicators[j].comparator=='N/A')
+            comp1 = '<div class="input_divs" style="display: none;"><input type="text" name="search_co" class="search_co ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off"></div>';
+          else
+            comp1 = '<div class="input_divs"><input type="text" name="search_co" class="search_co ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off" data-val-text="'+algo_state.entryIndicators[j].comparator+'"></div>';
+
+          if(algo_state.entryIndicators[j].compareIndicator=='N/A')
+            ind2 = '<div class="input_divs" style="display: none;"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2 ui-autocomplete-input" placeholder="Indicator ex: EMA" autocomplete="off"></div>'
+          else
+            {
+              class_tag_comp = algo_state.entryIndicators[j].compareIndicatorItem.class;
+              if(algo_state.entryIndicators[j].compareIndicatorItem.class=='close')
+                class_tag_comp = 'close_';
+              ind2 = '<div class="input_divs '+class_tag_comp+'"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Indicator ex: EMA" data-val-text="'+algo_state.entryIndicators[j].compareIndicator+'" readonly="readonly" data-params="" '+comparator_inplace_click+'></div>'
+            }
+
+          if(j==0)
+            clear_t = '<span class="clear" onclick="clear_condition_first(event)">Clear</span></div>'
+          else
+            clear_t = '<span class="clear" onclick="clear_condition(event)">Remove</span></div>'
+          if(j==algo_state.entryIndicators.length-1)
+            add_another = '<div class="another_condition"><p onclick="insert_condition3(event);">+ Add another condition</p></div>';
+          else
+            add_another = '<div class="another_condition"><p onclick="insert_condition3(event);" style="display: none;">+ Add another condition</p></div>';
+
+          conditions.append($(ind1+comp1+ind2+clear_t));
+          conditions.append($(add_another));
+        }
+      }
+    }
+  }
+  
+  update_autocomplete_all();
+
+  $('.display_condition .input_divs input').each(function(e,obj){
+    if($(obj).data('val-text')!="" && $(obj).data('val-text')!=undefined && e%3==0){
+      cursor_loc += 3;
+    }
+  })
+  // cursor_loc = parseInt(cursor_loc/3);
+
+  for(var i=0;i<$('.display_condition').length;i++){
+    $($('.display_condition')[i]).find('input').each(function(e,obj){
+      if($(obj).attr('data-val-text')){
+        $(obj).val($(obj).attr('data-val-text'));
+        if(!['higher than','lower than','crosses above','crosses below'].includes($(obj).attr('data-val-text')))
+        {
+          try{
+            lastest_item.shift();
+            item_class = $(obj).parent()[0].classList[1];
+            if(item_class=='close_'){
+              item_class = 'close'; // the class list for close is close_
+            }
+            $(obj).autocomplete("destroy");
+            lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+          }catch(e){
+            $.ajax({
+              dataType: "json",
+              url: '/static/js_parsing_tree.json?v=1.6.7',
+              async: false,
+              success: function(data) {
+                //data is the JSON string
+              console.log("tree loaded");
+              js_parsing_tree = data;
+              }
+            });
+            lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+          }
+        }
+      }
+    });
+  }
+
+  if(cursor_loc>=3 && cursor_loc%3==0){
+    $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");
+    $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+  }
+
+
+  // // trying to fill exit
+  if(exit_shown && exit_cursor_loc==0)
+  {
+    if(algo_state.exitIndicators != undefined){
+      if(algo_state.exitIndicators.length!=0){
+        $('.conditions_exit .display_condition').remove();
+        $('.conditions_exit .another_condition').remove();
+        var exit_conditions = $('.conditions_exit');
+        if(algo_state.exitIndicators.length>0){
+          if(algo_state.exitIndicators[0].indicator!="Indicator"){
+            exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="hide_exit_div(event)" style="cursor: pointer;">Remove exit condition<span>(optional)</span></p></div>');
+            for(var j=0;j<algo_state.exitIndicators.length;j++){
+              class_tag = algo_state.exitIndicators[j].indicatorItem.class;
+              if(algo_state.exitIndicators[j].indicatorItem.class=='close')
+                class_tag = 'close_';
+    
+              inplace_click_exit = 'onclick="custom_click_inplace_exit(event)"';
+              if(Object.keys(algo_state.exitIndicators[j].indicatorDetails).length==0){
+                inplace_click_exit = '';
+              }
+    
+              comparator_inplace_click_exit = 'onclick="custom_click_inplace_exit(event)"';
+    
+              try{
+                if(Object.keys(algo_state.exitIndicators[j].compareIndicatorDetails).length==0){
+                comparator_inplace_click_exit = '';
+                }
+              }catch(e){
+    
+              }
+    
+              if(j==0)
+                {
+                  if(algo_state.exitIndicators[j].comparator=='N/A' && algo_state.exitIndicators[j].compareIndicator=='N/A')
+                    ind1 = '<div class="display_condition_exit input_condition2" id="display_condition1_exit"><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                  else
+                    ind1 = '<div class="display_condition_exit input_condition2" id="display_condition1_exit"><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                }
+              else
+                {
+                  and_or = algo_state.exitIndicators[j-1].andor
+                  if(and_or=="or")
+                    and_or_html = '<select id="andor"><option>and</option><option selected>or</option></select>';
+                  else
+                    and_or_html = '<select id="andor"><option selected>and</option><option>or</option></select>';
+    
+                  if(algo_state.exitIndicators[j].comparator=='N/A' && algo_state.exitIndicators[j].compareIndicator=='N/A')
+                    ind1 = '<div class="display_condition_exit" id="display_condition1_exit"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                  else
+                    ind1 = '<div class="display_condition_exit" id="display_condition1_exit"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+    
+                }
+    
+              if(algo_state.exitIndicators[j].comparator=='N/A')
+                comp1 = '<div class="input_divs" style="display: none;"><input type="text" name="search_co_exit" class="search_co_exit ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off"></div>';
+              else
+                comp1 = '<div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off" data-val-text="'+algo_state.exitIndicators[j].comparator+'"></div>';
+    
+              if(algo_state.exitIndicators[j].compareIndicator=='N/A')
+                ind2 = '<div class="input_divs" style="display: none;"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit ui-autocomplete-input" placeholder="Indicator ex: EMA" autocomplete="off"></div>'
+              else
+                {
+                  class_tag_comp = algo_state.exitIndicators[j].compareIndicatorItem.class;
+                  if(algo_state.exitIndicators[j].compareIndicatorItem.class=='close')
+                    class_tag_comp = 'close_';
+                  ind2 = '<div class="input_divs '+class_tag_comp+'"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA" data-val-text="'+algo_state.exitIndicators[j].compareIndicator+'" readonly="readonly" data-params="" '+comparator_inplace_click_exit+'></div>'
+                }
+    
+              if(j==0)
+                clear_t = '<span class="clear" onclick="clear_condition_first_exit(event)">Clear</span></div>'
+              else
+                clear_t = '<span class="clear" onclick="clear_condition_exit(event)">Remove</span></div>'
+              if(j==algo_state.exitIndicators.length-1)
+                add_another = '<div class="another_condition_exit"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>';
+              else
+                add_another = '<div class="another_condition_exit"><p onclick="insert_condition3_exit(event);" style="display: none;">+ Add another condition</p></div>';
+    
+              exit_conditions.append($(ind1+comp1+ind2+clear_t));
+              exit_conditions.append($(add_another));
+            }
+          }
+          else{
+            exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="show_exit_div(event)" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div><div class="display_condition_exit input_condition2" id="display_condition1_exit" style="display: none;"></div><div class="another_condition_exit" style="display: none;"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+          }
+        }else{
+           exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="show_exit_div(event)" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div><div class="display_condition_exit input_condition2" id="display_condition1_exit" style="display: none;"></div><div class="another_condition_exit" style="display: none;"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+        }
+      }
+      else{
+        // return false
+      }
+    }
+  
+    update_autocomplete_all_exit();
+  
+    $('.display_condition_exit .input_divs input').each(function(e,obj){
+      if($(obj).data('val-text')!="" && $(obj).data('val-text')!=undefined && e%3==0){
+        exit_cursor_loc += 3;
+      }
+    })
+    // exit_cursor_loc = parseInt(exit_cursor_loc/3);
+  
+    for(var i=0;i<$('.display_condition_exit').length;i++){
+      $($('.display_condition_exit')[i]).find('input').each(function(e,obj){
+        if($(obj).attr('data-val-text')){
+          $(obj).val($(obj).attr('data-val-text'));
+          if(!['higher than','lower than','crosses above','crosses below'].includes($(obj).attr('data-val-text')))
+            {
+              try{
+              exit_lastest_item.shift();
+              item_class = $(obj).parent()[0].classList[1];
+              if(item_class=='close_'){
+                item_class = 'close'; // the class list for close is close_
+              }
+                $(obj).autocomplete("destroy");
+                exit_lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+              }catch(e){
+                $.ajax({
+                  dataType: "json",
+                  url: '/static/js_parsing_tree.json?v=1.6.6',
+                  async: false,
+                  success: function(data) {
+                    //data is the JSON string
+                  console.log("tree loaded");
+                  js_parsing_tree = data;
+                  }
+                });
+                exit_lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+              }
+            }
+        }
+      });
+    }
+  
+    if(exit_cursor_loc>=3 && exit_cursor_loc%3==0){
+      $($('#exit_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('#exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+    }
+  }
+
+  $(".and_or").each(function(e){ 
+    andor1 = $(this).find("#andor");
+    // andor1_input = $(this).find("#andor1_input").val()
+    andor_save = $(this).find("#andor_save").text();
+    if (andor_save!='')
+      $(andor1[0]).val(andor_save);
+  });
+  show_close();
+  return true;
+}
+
+function fill_assist_exit(algo_state=null){
+  var pos_type = $("#ip_position_type").val().toUpperCase();
+  if(algo_state==null)
+    algo_state = trainer_model[auto_assist_class][pos_type][0];
+  else
+    algo_state = algo_state[pos_type][0];
+
+  if (algo_state==undefined){
+    return false
+  }
+  // trying to fill exit
+  if(algo_state.exitIndicators != undefined){
+    if(algo_state.exitIndicators.length!=0){
+      // $('.conditions_exit .display_condition').remove();
+      // $('.conditions_exit .another_condition').remove();
+      var exit_conditions = $('.conditions_exit');
+      if(algo_state.exitIndicators.length>0){
+        if(algo_state.exitIndicators[0].indicator!="Indicator"){
+          exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="hide_exit_div(event)" style="cursor: pointer;">Remove exit condition<span>(optional)</span></p></div>');
+          for(var j=0;j<algo_state.exitIndicators.length;j++){
+            class_tag = algo_state.exitIndicators[j].indicatorItem.class;
+            if(algo_state.exitIndicators[j].indicatorItem.class=='close')
+              class_tag = 'close_';
+
+            inplace_click_exit = 'onclick="custom_click_inplace_exit(event)"';
+            if(Object.keys(algo_state.exitIndicators[j].indicatorDetails).length==0){
+              inplace_click_exit = '';
+            }
+
+            comparator_inplace_click_exit = 'onclick="custom_click_inplace_exit(event)"';
+
+            try{
+              if(Object.keys(algo_state.exitIndicators[j].compareIndicatorDetails).length==0){
+              comparator_inplace_click_exit = '';
+              }
+            }catch(e){
+
+            }
+
+            if(j==0)
+              {
+                if(algo_state.exitIndicators[j].comparator=='N/A' && algo_state.exitIndicators[j].compareIndicator=='N/A')
+                  ind1 = '<div class="display_condition_exit input_condition2" id="display_condition1_exit"><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                else
+                  ind1 = '<div class="display_condition_exit input_condition2" id="display_condition1_exit"><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+              }
+            else
+              {
+                and_or = algo_state.exitIndicators[j-1].andor
+                if(and_or=="or")
+                  and_or_html = '<select id="andor"><option>and</option><option selected>or</option></select>';
+                else
+                  and_or_html = '<select id="andor"><option selected>and</option><option>or</option></select>';
+
+                if(algo_state.exitIndicators[j].comparator=='N/A' && algo_state.exitIndicators[j].compareIndicator=='N/A')
+                  ind1 = '<div class="display_condition_exit" id="display_condition1_exit"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                else
+                  ind1 = '<div class="display_condition_exit" id="display_condition1_exit"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+
+              }
+
+            if(algo_state.exitIndicators[j].comparator=='N/A')
+              comp1 = '<div class="input_divs" style="display: none;"><input type="text" name="search_co_exit" class="search_co_exit ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off"></div>';
+            else
+              comp1 = '<div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off" data-val-text="'+algo_state.exitIndicators[j].comparator+'"></div>';
+
+            if(algo_state.exitIndicators[j].compareIndicator=='N/A')
+              ind2 = '<div class="input_divs" style="display: none;"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit ui-autocomplete-input" placeholder="Indicator ex: EMA" autocomplete="off"></div>'
+            else
+              {
+                class_tag_comp = algo_state.exitIndicators[j].compareIndicatorItem.class;
+                if(algo_state.exitIndicators[j].compareIndicatorItem.class=='close')
+                  class_tag_comp = 'close_';
+                ind2 = '<div class="input_divs '+class_tag_comp+'"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA" data-val-text="'+algo_state.exitIndicators[j].compareIndicator+'" readonly="readonly" data-params="" '+comparator_inplace_click_exit+'></div>'
+              }
+
+            if(j==0)
+              clear_t = '<span class="clear" onclick="clear_condition_first_exit(event)">Clear</span></div>'
+            else
+              clear_t = '<span class="clear" onclick="clear_condition_exit(event)">Remove</span></div>'
+            if(j==algo_state.exitIndicators.length-1)
+              add_another = '<div class="another_condition_exit"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>';
+            else
+              add_another = '<div class="another_condition_exit"><p onclick="insert_condition3_exit(event);" style="display: none;">+ Add another condition</p></div>';
+
+            exit_conditions.append($(ind1+comp1+ind2+clear_t));
+            exit_conditions.append($(add_another));
+          }
+        }
+        else{
+          exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="show_exit_div(event)" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div><div class="display_condition_exit input_condition2" id="display_condition1_exit" style="display: none;"></div><div class="another_condition_exit" style="display: none;"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+        }
+      }else{
+         exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="show_exit_div(event)" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div><div class="display_condition_exit input_condition2" id="display_condition1_exit" style="display: none;"></div><div class="another_condition_exit" style="display: none;"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+      }
+    }
+    else{
+      return false
+    }
+  }
+
+  update_autocomplete_all_exit();
+
+  $('.display_condition_exit .input_divs input').each(function(e,obj){
+    if($(obj).data('val-text')!="" && $(obj).data('val-text')!=undefined && e%3==0){
+      exit_cursor_loc += 3;
+    }
+  })
+  // exit_cursor_loc = parseInt(exit_cursor_loc/3);
+
+  for(var i=0;i<$('.display_condition_exit').length;i++){
+    $($('.display_condition_exit')[i]).find('input').each(function(e,obj){
+      if($(obj).attr('data-val-text')){
+        $(obj).val($(obj).attr('data-val-text'));
+        if(!['higher than','lower than','crosses above','crosses below'].includes($(obj).attr('data-val-text')))
+          {
+            try{
+            exit_lastest_item.shift();
+            item_class = $(obj).parent()[0].classList[1];
+            if(item_class=='close_'){
+              item_class = 'close'; // the class list for close is close_
+            }
+              $(obj).autocomplete("destroy");
+              exit_lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+            }catch(e){
+              $.ajax({
+                dataType: "json",
+                url: '/static/js_parsing_tree.json?v=1.6.6',
+                async: false,
+                success: function(data) {
+                  //data is the JSON string
+                console.log("tree loaded");
+                js_parsing_tree = data;
+                }
+              });
+              exit_lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+            }
+          }
+      }
+    });
+  }
+
+  // if(exit_cursor_loc>=3 && exit_cursor_loc%3==0){
+  //   $($('#exit_strategy_section div span')[0]).css("background-color", "#06d092");
+  //   $($('#exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+  // }
+
+  $(".and_or").each(function(e){ 
+    andor1 = $(this).find("#andor");
+    // andor1_input = $(this).find("#andor1_input").val()
+    andor_save = $(this).find("#andor_save").text();
+    if (andor_save!='')
+      $(andor1[0]).val(andor_save);
+  });
+  
+  show_close();
+  return true;
+}
+function show_prompter_text(){
+  // $('.prompter_text').hide();
+  // $('.prompter_text').empty();
+  $('.prompter_text').show();
+  if(cursor_loc%3==1){
+    // $('#prompter_text_p').html('Add a Comparator<span>(Hint)</span>');
+  }
+  else{
+    // $('#prompter_text_p').html('Add an indicator<span>(Hint)</span>');
+  }
+}
+// function show_snackbar(e,msg){
+
+// }
+function and_or_select_change(e){
+  footer_updater();
+}
+function drop_animation(e){
+  var drop_location = $('.conditions');
+    var drop_location_height = (drop_location.height())/3.5;
+    var drop_location_width = (drop_location.width())/3.5;
+    // var imgtodrag = $(this).parent('.item').find("img").eq(0);
+    var imgtodrag = $(e.target).find('img');
+    // var imgtodrag = $(this);
+    if (imgtodrag) {
+        var imgclone = imgtodrag.clone()
+            .offset({
+            top: imgtodrag.offset().top,
+            left: imgtodrag.offset().left
+        })
+            .css({
+              'display' : 'block',
+              'opacity': '0.5',
+                'position': 'absolute',
+                'height': '75px',
+                'width': '75px',
+                'z-index': '100'
+        })
+            .appendTo($('body'))
+            .animate({
+            'top': drop_location.offset().top + drop_location_height,
+                'left': drop_location.offset().left + drop_location_width,
+                'width': 75,
+                'height': 75
+        }, 1000, 'easeInOutExpo');
+
+        // setTimeout(function () {
+        //     drop_location.effect("", {
+        //         times: 2
+        //     }, 200);
+        // }, 1500);
+
+        imgclone.animate({
+            'width': 0,
+                'height': 0
+        }, function () {
+            $(e.target).detach()
+        });
+    }
+}
+
+function chart_type_click(event){
+  $("#ip_chart_type").attr('data-val-text','Renko('+$("#chart_type_renko").val()+')');
+  $("#ip_chart_type").removeAttr('readonly');
+  $("#ip_chart_type").val('Renko('+$("#chart_type_renko").val()+')');
+  $("#ip_chart_type").attr('readonly',"");
+  $("#ip_chart_type").attr('value','Renko('+$("#chart_type_renko").val()+')');
+  adv_chart_type = 'Renko('+$("#chart_type_renko").val()+')';
+  $(".indicator_popup").remove();
+  footer_updater();
+}
+
+function show_close(){
+  $(".input_divs").mouseenter(function(event){
+    if($(event.target).val()!='' && $(event.target).val()!=undefined)
+      $(this).find(".third_ip_close").show();
+  });
+  $(".input_divs").mouseleave(function(event){
+    // if($(event.target).val()!='' && $(event.target).val()!=undefined)
+      $(this).find(".third_ip_close").hide();
+  });
+}
+$(document).ready( function() {
+  // $("#tooltip").hide();
+  footer_updater();
+  
+  show_close();
+  // $(".third_ip_close").click(function(event){
+  //   clear_third_indicator(event);
+  // });
+
+  $('input').focusout(function(){
+    footer_updater();
+  });
+  // $("#ip_interval").on('change',function(){
+  //   if(candle_freq_map[interval_mapping[$("#ip_interval").val()]]<min_candle_freq && !(min_candle_freq==10||min_candle_freq==1000)){
+  //     $("#ip_interval").val(interval_mapping_rev[freq_candle_map[min_candle_freq+1]]);
+  //     show_snackbar(null,'Choose a smaller candle interval');
+  //   }
+  // });
+
+  $('select').focusout(function(){
+    footer_updater();
+  });
+
+  interval_mapping = {'1 Minute':"min",'3 Minutes':"3min",'5 Minutes':"5min",'10 Minutes':"10min",'15 Minutes':"15min",'30 Minutes':"30min",'1 Hour':"hour",'1 Day':"day"};
+  chart_type_maping = {'Candlestick':"candlestick",'Heikin-Ashi':"heikinAshi"};
+  holding_type_mapping = {'MIS':"MIS",'CNC/NRML':"CNC"};
+  $("#ip_interval").autocomplete({
+      source: function(request,response){
+        results = ['1 Minute','3 Minutes','5 Minutes','10 Minutes','15 Minutes','30 Minutes','1 Hour','1 Day'];
+
+        x = $.map(results, function (el) {
+        // console.log(el)
+         return {
+           label: el,//+'<p>'+el[1]+'</p>',
+           value: el//assumption, symbols and segment name does not have space in between
+            };
+          });
+        response(x);
+      },
+      delay: 0,
+      minLength: 0,
+      focus: function(event,ui){
+            // if($(this).val()=='' && is_the_correct_input(this))
+            //   cursor_loc +=1 ;
+          },
+      select:function(event, ui){
+        if(candle_freq_map[interval_mapping[ui.item.value]]<min_candle_freq && !(min_candle_freq==10||min_candle_freq==1000)){
+            ui.item.value = interval_mapping_rev[freq_candle_map[min_candle_freq+1]];
+            show_snackbar(null,'Choose a smaller candle interval');
+          }
+          $(this).attr('data-val-text',ui.item.value);
+          $(this).removeAttr('readonly');
+          $(this).val(ui.item.value);
+          $(this).attr('readonly',"");
+          $(this).attr('value',ui.item.value);
+          $(this).focusout();
+          $(this).blur();
+
+          // fetch_open_orders();
+          // console.log(ui.item.value);
+        }
+      }).focus(function() {
+        $(this).autocomplete('search', '');
+    });
+
+  $('#ip_position_type').autocomplete({
+      source: function(request,response){
+        results = ['Buy','Sell'];
+        x = $.map(results, function (el) {
+        // console.log(el)
+         return {
+           label: el,//+'<p>'+el[1]+'</p>',
+           value: el//assumption, symbols and segment name does not have space in between
+            };
+          });
+        response(x);
+      },
+      delay: 0,
+      minLength: 0,
+      focus: function(event,ui){
+            // if($(this).val()=='' && is_the_correct_input(this))
+            //   cursor_loc +=1 ;
+          },
+      select:function(event, ui){
+          $(this).attr('data-val-text',ui.item.value);
+          $(this).removeAttr('readonly');
+          $(this).val(ui.item.value);
+          $(this).attr('readonly',"");
+          $(this).attr('value',ui.item.value);
+          $(this).focusout();
+          $(this).blur();
+
+          // fetch_open_orders();
+          // console.log(ui.item.value);
+        }
+      }).focus(function() {
+        $(this).autocomplete('search', '');
+    });
+
+  $('#ip_chart_type').autocomplete({
+      source: function(request,response){
+        try{
+          if(subscription_status.subscription_plan=='free')
+            results = ['Candlestick'];
+          else if(subscription_status.subscription_plan=='ultimate')
+            results = ['Candlestick','Heikin-Ashi','Renko'];
+          else
+            results = ['Candlestick','Heikin-Ashi'];
+        }
+        catch(e){
+          results = ['Candlestick','Heikin-Ashi'];
+        }
+        x = $.map(results, function (el) {
+        // console.log(el)
+         return {
+           label: el,//+'<p>'+el[1]+'</p>',
+           value: el//assumption, symbols and segment name does not have space in between
+            };
+          });
+        response(x);
+      },
+      delay: 0,
+      minLength: 0,
+      focus: function(event,ui){
+            // if($(this).val()=='' && is_the_correct_input(this))
+            //   cursor_loc +=1 ;
+          },
+      select:function(event, ui){
+        if(ui.item.value=='Renko'){
+          $("#ip_chart_type").after("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'><p id='popup_title_chart'>Renko chart</p><div class='field'><p style='text-transform:capitalize;'>Brick Size</p><input id='chart_type_renko' type='number' name='' step='1' min='0' value='1' onfocus=''></div><div class='indicator_popup_buttons'><button type='submit' class='done' onclick='chart_type_click(event)'>Done</button><button type='submit' class='ti_cancel'>Cancel</button></div></div></div></div>");
+
+          $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+            $(".indicator_popup").remove();
+            adv_chart_type = 'Renko(1)';
+            $("#ip_chart_type").attr('data-val-text','Renko(1)');
+            $("#ip_chart_type").removeAttr('readonly');
+            $("#ip_chart_type").val('Renko(1)');
+            $("#ip_chart_type").attr('readonly',"");
+            $("#ip_chart_type").attr('value','Renko(1)');
+          });
+        }
+        else
+          {
+            $(this).attr('data-val-text',chart_type_maping[ui.item.value]);
+            $(this).removeAttr('readonly');
+            $(this).val(ui.item.value);
+            $(this).attr('readonly',"");
+            $(this).attr('value',ui.item.value);
+            adv_chart_type = chart_type_maping[ui.item.value];
+          }
+          $(this).focusout();
+          $(this).blur();
+
+          // fetch_open_orders();
+          // console.log(ui.item.value);
+        }
+      }).focus(function() {
+        $(this).autocomplete('search', '');
+  });
+
+  $('#ip_holding_type').autocomplete({
+      source: function(request,response){
+        results = ['MIS','CNC/NRML'];
+        x = $.map(results, function (el) {
+        // console.log(el)
+         return {
+           label: el,//+'<p>'+el[1]+'</p>',
+           value: el//assumption, symbols and segment name does not have space in between
+            };
+          });
+        response(x);
+      },
+      delay: 0,
+      minLength: 0,
+      focus: function(event,ui){
+            // if($(this).val()=='' && is_the_correct_input(this))
+            //   cursor_loc +=1 ;
+          },
+      select:function(event, ui){
+          $(this).attr('data-val-text',holding_type_mapping[ui.item.value]);
+          $(this).removeAttr('readonly');
+          $(this).val(ui.item.value);
+          $(this).attr('readonly',"");
+          $(this).attr('value',ui.item.value);
+          adv_holding_type = holding_type_mapping[ui.item.value];
+          $(this).focusout();
+          $(this).blur();
+
+          // fetch_open_orders();
+          // console.log(ui.item.value);
+        }
+      }).focus(function() {
+        $(this).autocomplete('search', '');
+    });
+
+  $('.done').on('click', function () {
+        
+    });
+
+    $("#ip_position_type").focusout(function(){
+      v = $("#ip_position_type").val();
+      if(v==undefined||v==''){
+        $("#ip_position_type").addClass('empty_input_field');
+        show_snackbar(null,'Select trade type');
+      }else{
+        $("#ip_position_type").removeClass('empty_input_field');
+      }
+    });
+    $("#ip_position_qty").focusout(function(){
+      v = $("#ip_position_qty").val();
+      if(v==undefined||v==''){
+        $("#ip_position_qty").addClass('empty_input_field');
+        show_snackbar(null,'Enter quantity');
+      }else{
+        $("#ip_position_qty").removeClass('empty_input_field');
+      }
+    });
+    $("#ip_strategy_name").focusout(function(){
+      v = $("#ip_strategy_name").val();
+      if(v==undefined||v==''){
+        $("#ip_strategy_name").addClass('empty_input_field');
+        show_snackbar(null,'Enter strategy name');
+      }else{
+        $("#ip_strategy_name").removeClass('empty_input_field');
+      }
+    });
+    $("#ip_strategy_desc").focusout(function(){
+      v = $("#ip_strategy_desc").val();
+      if(v==undefined||v==''){
+        $("#ip_strategy_desc").addClass('empty_input_field');
+        show_snackbar(null,'Enter algo description');
+      }else{
+        $("#ip_strategy_desc").removeClass('empty_input_field');
+      }
+    });
+    $("#ip_stop_loss").focusout(function(){
+      v = $("#ip_stop_loss").val();
+      if(v==undefined||v==''){
+        $("#ip_stop_loss").addClass('empty_input_field');
+        show_snackbar(null,'Enter valid stop loss percentage');
+      }else{
+        $("#ip_stop_loss").removeClass('empty_input_field');
+      }
+    });
+    $("#ip_take_profit").focusout(function(){
+      v = $("#ip_take_profit").val();
+      if(v==undefined||v==''){
+        $("#ip_take_profit").addClass('empty_input_field');
+        show_snackbar(null,'Enter valid target profit percentage');
+      }else{
+        $("#ip_take_profit").removeClass('empty_input_field');
+      }
+    });
+    $("#equities_input").focusout(function(){
+      show_inline_error_for_blank_equity();
+    });
+    function show_inline_error_for_blank_equity(){
+      if(Object.keys(equity_added).length==0){
+        $("#equities_input").addClass('empty_input_field');
+        show_snackbar(null,'Select an instrument');
+      }else{
+        $("#equities_input").removeClass('empty_input_field');
+      }
+    }
+
+  $(".drag_tech_elements span").click(function(){
+    $(".indicator_popup").remove();
+    $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'><p id='ti_name'>Middle Bollinger Band</p><div id='ti_populate'><div class='field'><p>Period</p><input type='number' name=''></div><div class='field'><p>Frequency</p><input type='number' name=''></div></div></div><div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div></div>").insertAfter(this);
+    $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+        $(".indicator_popup").remove();
+      });
+      setTimeout(function(){
+        if($(".left_main").find(".indicator_popup").length==1){
+        $("body").click(function(e){
+            var subject = $("#indicator_popup"); 
+            if(e.target.id != subject.attr('id') && !subject.has(e.target).length)
+            {
+                subject.remove();
+                $("body").unbind("click");
+                if(e.target.classList[0] == "ti"){
+                $(".indicator_popup").remove();
+          $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'><p id='ti_name'>Middle Bollinger Band</p><div id='ti_populate'><div class='field'><p>Period</p><input type='number' name=''></div><div class='field'><p>Frequency</p><input type='number' name=''></div></div></div><div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div></div>").insertAfter(e.target);
+          $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+              $(".indicator_popup").remove();
+            });
+              }
+          }
+      });
+      }
+      },100);
+  });
+  // $("#search_ti").focusin(function(){
+  //   $("#add_indicators_text").hide();
+  //   $(".search_ti").css({"width" : "100%"});
+  // });
+  // $("#search_ti").focusout(function(){
+  //   $("#add_indicators_text").fadeIn();
+  //   $(".search_ti").css({"width" : "auto"});
+  // });
+  // $("#search_ti").keydown(function(){
+  //   // TODO perform search and append in front of the queue the latest indicator
+  // });
+  
+  if(section_complete(['ip_position_type','ip_position_qty'])){
+        $($('.write_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.write_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      }
+      else{
+      $($('.write_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.write_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  if(section_complete(['ip_strategy_name','ip_strategy_desc'])){
+        $($('.naming_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.naming_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      }
+      else{
+      $($('.naming_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.naming_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+
+  if(section_complete(['ip_take_profit','ip_stop_loss']) && exit_cursor_loc/3>=1 && exit_cursor_loc%3==0 && exit_third_cleared_flag==false){
+        $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      }
+      else{
+      $($('.exit_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+
+  $('#trading_start_time').on('change',function(){
+    adv_trading_start_time = $('#trading_start_time').val();   
+  });
+  $('#trading_stop_time').on('change',function(){
+    adv_trading_stop_time = $('#trading_stop_time').val();   
+  });
+
+  $("#ip_position_qty").on('focus change input',function(){
+    // console.log('out');
+      if(section_complete(['ip_position_type','ip_position_qty'])){
+        $($('.write_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.write_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+      }
+      else{
+      $($('.write_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.write_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  });
+  $("#ip_position_type").on('focus change input',function() {
+    // console.log('out');
+      if(section_complete(['ip_position_type','ip_position_qty'])){
+        $($('.write_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.write_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+      }
+      else{
+      $($('.write_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.write_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  });
+  
+  $("#ip_strategy_name").on('focus change input',function(){
+    // console.log('out');
+      if(section_complete(['ip_strategy_name','ip_strategy_desc'])){
+        $($('.naming_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.naming_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+      }
+      else{
+      $($('.naming_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.naming_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  });
+  $("#ip_strategy_desc").on('focus change input',function() {
+    // console.log('out');
+      if(section_complete(['ip_strategy_name','ip_strategy_desc'])){
+        $($('.naming_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.naming_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+      }
+      else{
+      $($('.naming_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.naming_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  });
+
+  $("#ip_stop_loss").on('focus change input',function(){
+    // console.log('out');
+      if(section_complete(['ip_take_profit','ip_stop_loss']) && exit_cursor_loc%3==0 && exit_third_cleared_flag==false){
+        $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+      }
+      else{
+      $($('.exit_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  });
+  $("#ip_take_profit").on('focus change input',function(){
+    // console.log('out');
+      if(section_complete(['ip_take_profit','ip_stop_loss']) && exit_cursor_loc%3==0 && exit_third_cleared_flag==false ){
+        $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+      }
+    else{
+      $($('.exit_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#dee7f1");
+    }
+  });
+
+  $("#equities_input").autocomplete({
+    source: function(request,response){
+    // params = {'query':request['term'].toLowerCase()}
+    params = JSON.stringify({"limit":40,"search":request['term'].toLowerCase(),"search_fields": ["name", "symbol","segment"]});
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      data: params,
+      url: 'https://s.streak.world/instruments/basic_search',
+      headers: { 'Content-Type': 'application/json' },
+      // async: false,
+      success: function(data) {
+        //data is the JSON string
+        response($.map(data['data'], function (el) {
+         return {
+           label: el['symbol']+' '+el['segment'],
+           name: el['name'],
+           value: el['symbol']+' '+el['segment'], //assumption, symbols and segment name does not have space in between
+         };
+       }));
+      }
+    });
+    // $.post('https://s.streak.world/instruments/basic_search', params,function(data) {
+    //   // alert(data);
+    //   // if(data['status']=='success'){
+
+    //     response($.map(data['data'], function (el) {
+    //        return {
+    //          label: el['symbol']+' '+el['segment'],
+    //          name: el['name'],
+    //          value: el['symbol']+' '+el['segment'], //assumption, symbols and segment name does not have space in between
+    //        };
+    //      }));
+    //   // }
+    // });
+    },
+    delay: 0,
+    minLength: 2,
+    change: function(event,ui)
+    {
+    if (ui.item==null)
+      {
+      $("#equities_input").val('');
+      $("#equities_input").focus();
+      }
+     $("#equities_input").val('');
+     $("#equities_input").focus();
+     // ui.item.value = "";
+    },
+    select:function(event, ui){
+      // console.log('selected');
+      // console.log(ui['item'])
+      val = ui.item.value.split(' ');
+      if(val.length>2){
+        // var temp = val[1];
+        val[0]=val[0]+' '+val[1];
+        val[1]=val[2];
+        if(val[0]=="NIFTY FIN"){ 
+          val[0]="NIFTY FIN SERVICE"; 
+          val[1]="INDICES"; 
+        } 
+        if(val[0]=="NIFTY PSU"){ 
+          val[0]="NIFTY PSU BANK"; 
+          val[1]="INDICES"; 
+        } 
+      }
+      if(Object.keys(equity_added).length>=20)
+      {
+        show_snackbar(null,'Cannot add more than 20 instruments');
+        return false;
+      }
+      if(val[val.length-1]!='NSE' && val[val.length-1]!='NFO-FUT' && val[val.length-1]!='INDICES' && val[val.length-1]!='CDS-FUT' &&  val[0].indexOf('/')==-1){
+        var basket_name = ui.item.value.split(' ').slice(0,val.length-1).join(' ');
+        load_basket(basket_name);
+        $("#equities_input").val('');
+        $("#equities_input").focus();
+        return false;
+      }
+      if(equity_added[val[0]+'_'+val[1]]==null)
+      {
+        // $('.added_equities').append('<span><span data-syms="'+val[0]+'_'+val[1]+'">'+ui.item.value+'</span><span><img src="/static/imgs/close.png"></span></span>');
+        $('.added_equities').append('<span><span data-syms="'+val[0]+'_'+val[1]+'">'+ui.item.value+'</span><span><img src="/static/imgs/new/close.svg"></span></span>');
+        // symbols.push(ui.item.value.split(' ').reverse());
+        // ui.item.value = "";
+        $(".added_equities img").click(function(){
+        // $(this).parentsUntil('.added_equities').hide();
+        x = $($($(this).parentsUntil('.added_equities')).find('span')[0]).data('syms');
+        if(x!=null){
+          [sym,seg] = x.split('_');
+          delete equity_added[sym];
+        }
+        $(this).parentsUntil('.added_equities').remove();
+        
+        if(Object.keys(equity_added).length==0){
+          $($('.adding_equities_section div span')[0]).css("background-color", "#FFFFFF");
+          $($('.adding_equities_section div span')[0]).css("border-color", "#dee7f1");
+        }
+        footer_updater();
+        show_inline_error_for_blank_equity();
+      });
+      
+      equity_added[val[0]+'_'+val[1]]=val[1];
+      $($('.adding_equities_section div span')[0]).css("background-color", "#06d092");
+      $($('.adding_equities_section div span')[0]).css("border-color", "#bdfbe8");
+      footer_updater();
+        show_inline_error_for_blank_equity();
+      }
+      $("#equities_input").val('');
+      $("#equities_input").focus();
+      return false
+     }
+  }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      // console.log(item)
+      return $( "<li></li>" )
+        .data( "item.autocomplete", item )
+        .append( "<a><img src='/static/imgs/new/currencies/"+item.label.split('/')[0]+".png'/>" + item.label +"</a>" )
+        .appendTo( ul );
+    };
+
+  load_toolbar();
+  update_autocomplete_all();
+
+  update_autocomplete_all_exit();
+
+  $("#drag_tech_elements span, #drag_comp_elements span").mouseenter(function(e,d){
+    var ele_id = e.target.id;
+    try {
+        if(drag_dict[ele_id]['content']!=undefined && drag_dict[ele_id]['content']!='')
+        {
+          $("#tooltip").show();
+          $(".tt_content").find("p").html(drag_dict[ele_id]['content']);
+          $(".tt_header").find("p").text(drag_dict[ele_id]['title']);
+        }
+        else{
+          $("#tooltip").hide();
+          $(".tt_content").find("p").html('');
+          $(".tt_header").find("p").text('');
+        }
+    }
+    catch(err) {
+      // document.getElementById("demo").innerHTML = err.message;
+      $("#tooltip").hide();
+      $(".tt_content").find("p").html('');
+      $(".tt_header").find("p").text('');
+    }
+  });
+  $("#tooltip").mouseleave(function(){
+    $("#tooltip").hide();
+    $(".tt_content").find("p").html('');
+    $(".tt_header").find("p").text('');
+  });
+  $(".right_main, .header").mouseenter(function(){
+    $("#tooltip").hide();
+    $(".tt_content").find("p").html('');
+    $(".tt_header").find("p").text('');
+  });
+  
+  $(".close_position_div").hide();
+  // $("#create_title").click(function(){
+  //   $(this).parent().find("#create_algo").slideToggle(1000);
+  // });
+  // $("#exchanges_input").val('NSE');
+
+  // $('.clear').on('click',function(e){
+  //  $(e.target.previousSibling).html("<span>Indicator</span><span>Comparator</span><span>Indicator</span>");
+  //  $(e.target.previousSibling).find('span').each(function(e,obj)
+  //    {
+  //      if($(obj).html()!='Indicator' && $(obj).html()!='Comparator'){
+  //        if($(obj).html().indexOf('range')!=-1)
+  //          cursor_loc -= 3;
+  //        else
+  //          cursor_loc -= 1;
+  //      }
+  //    });
+  //  });
+
+  if(cursor_loc<0){
+    cursor_loc = 0
+  }
+
+  $('.brokerage_toggle:checkbox').on('change',function(e){
+      if($(e.target).is(':checked')){
+        auto_assist = true;
+        try{
+              ga('send', {hitType: 'event', eventCategory: 'Assist', eventAction: 'Assist turned on', eventLabel: 'Create page', eventValue: 1});
+            }catch(e){
+              
+            }
+      }
+      else{
+        auto_assist = false;
+        try{
+              ga('send', {hitType: 'event', eventCategory: 'Assist', eventAction: 'Assist turned off', eventLabel: 'Create page', eventValue: 1});
+            }catch(e){
+              
+            }
+      }
+  });
+});
+
+
+$.getJSON('/static/js_parsing_tree.json', function(data) {
+    //data is the JSON string
+  console.log("tree loaded");
+  js_parsing_tree = data;
+});
+
+$.getJSON('/fetch_trainer_model/', function(data) {
+    //data is the JSON string
+  console.log("trainer tree loaded");
+  trainer_model = data;
+});
+
+$(document).load(function () {
+  
+});
+
+function ti_render_function( ul, item ) {
+        // console.log(item.label);
+        // if(!cursor_loc>0 && item.label.indexOf('AT_PRICE')!=-1)
+        return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append("<div>" + item.label.replace(/_/g,' ') + "</div>")
+            .appendTo( ul );
+};
+
+function update_autocomplete_all(){
+  $(".search_ti1").each(function(e,obj){
+    if(!$(obj).val())
+      $(obj).autocomplete({
+      source: function(request,response){
+        if(is_the_correct_input(obj,false))
+        {
+          if(request['term']!=undefined && request['term']!=''){
+            params = {'query':request['term'].toLowerCase()}
+            $.get('/autocomplete_indicators2/', params,function(data) {
+              // alert(data);
+              if(data['status']=='success'){
+                response($.map(data['results'], function (el) {
+                  // console.log(el)
+                    if(cursor_loc>0 && el[0]!='at_price')
+                      {
+                      return {
+                         label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                         value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                        };
+                      }
+                    else if(cursor_loc==0)
+                      return {
+                         label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                         value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                        };
+                  })
+                );
+              }
+            });
+          }
+          else{
+            results = get_suggestions('ti');
+            x = $.map(results, function (el) {
+            // console.log(el)
+             // return {
+             //   label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+             //   value: el[0].toLowerCase()//assumption, symbols and segment name does not have space in between
+             //    };
+                if(cursor_loc>0 && el[0]!='at_price')
+                  {
+                  return {
+                     label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                     value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                    };
+                }
+                else if(cursor_loc==0)
+                  return {
+                     label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                     value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                    };
+              });
+            response(x);
+          }
+        }
+      },    
+      delay: 0,
+      minLength: 0,
+      change: function(event,ui)
+      {
+      if (ui.item==null)
+        {
+        $(obj).val('');
+        $(obj).focus();
+        }
+       $(obj).val('');
+       $(obj).focus();
+       // ui.item.value = "";
+      },
+      select:function(event, ui){
+        // console.log('selected');
+        // console.log(ui['item'])
+        val = ui.item.value.replace(/ /g,'_');
+        item = js_parsing_tree.main.indicator[val];
+        if(cursor_loc==0 && auto_assist==true){
+          console.log('First item selected',item);
+          if(item!=undefined){
+            if(item.class!=undefined && trainer_model[item.class]!=undefined)
+            {
+              if (fill_assist(trainer_model[item.class]))
+              {
+                auto_assist_class = item.class;
+                $(obj).focusout();
+                $(obj).blur();
+                // //   $(obj).focus();
+                $(obj).autocomplete('close')
+                if(field_to_focus)
+                  {
+                    field_to_focus.focus();
+                    field_to_focus = null;
+                  }
+                return false;
+              }
+            }
+          }
+        }
+        if(lastest_item.length<1)
+        {
+          ev = {};
+          ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+          custom_click(ev,event);
+        // update_pref(val);
+        }
+        else
+        {
+        // condition_div = $('.input_condition');
+        // right_div = null;
+        // right_span = null;
+        // if(condition_div.length==parseInt(cursor_loc/3))
+
+          latest_indicator = lastest_item[0]
+          // if(latest_indicator['allowed_comparision'].includes(item['function_group']) || (cursor_loc/3>=1 && cursor_loc%3==0 && cursor_loc%3!=0))
+          // {
+            ev = {};
+            ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+            custom_click(ev,event);
+            // update_pref(val);
+          // }
+          // else{
+            // alert('Not applicable here');
+          // }
+        }
+        // $(obj).val('');
+          $(obj).focusout();
+          $(obj).blur();
+          // //   $(obj).focus();
+          $(obj).autocomplete('close')
+          if(field_to_focus)
+            {
+              field_to_focus.focus();
+              field_to_focus = null;
+            }
+          return false;
+        }
+    }).focus(function() {
+        if($(this).data( "ui-autocomplete" )!=undefined)
+        {
+          if(is_the_correct_input(this))
+          {
+            $(this).data( "ui-autocomplete" )._renderItem = ti_render_function;
+            $(this).autocomplete('search', '');
+          }
+        }
+        // return response({label:'sma',value:'SMA'});
+    });
+  });
+  
+  $(".search_co").each(function(e,obj){
+    // if(!$(obj).val())
+    if(true)
+      $(obj).autocomplete({
+        source: function(request,response){
+          if(is_the_correct_input(obj,false))
+          {
+            results = get_suggestions('co');
+            x = $.map(results, function (el) {
+            // console.log(el)
+             return {
+               label: el[1].description.toLowerCase(),//+'<p>'+el[1]+'</p>',
+               value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                };
+              });
+            response(x);
+          }
+        },    
+        delay: 0,
+        minLength: 0,
+        change: function(event,ui)
+        {
+        if (ui.item==null)
+          {
+          $(obj).val('');
+          $(obj).focus();
+          }
+         // $(obj).val('');
+         // $(obj).focus();
+         // ui.item.value = "";
+        },
+        focus: function(event,ui){
+          // if($(this).val()=='' && is_the_correct_input(this))
+          //   cursor_loc +=1 ;
+        },
+        select:function(event, ui){
+          // console.log('selected');
+          // console.log(ui['item'])
+          if(is_the_exactly_correct_input(this))
+            cursor_loc +=1 ;
+          val = ui.item.value.replace(/ /g,'_');
+          item = js_parsing_tree.main.comparator[val];
+          if(lastest_item.length<1)
+          {
+            ev = {};
+            ev['currentTarget']={'className':'co co_tags','classList':['co','co_tags'],'id':val};
+            // custom_click(ev,event);
+          // update_pref(val);
+          }
+          else
+          {
+          // condition_div = $('.input_condition');
+          // right_div = null;
+          // right_span = null;
+          // if(condition_div.length==parseInt(cursor_loc/3))
+
+            latest_indicator = lastest_item[0]
+            // if(latest_indicator['allowed_comparision'].includes(item['function_group']) || (cursor_loc/3>=1 && cursor_loc%3==0))
+            // {
+              ev = {};
+              ev['currentTarget']={'className':'co co_tags','classList':['co','co_tags'],'id':val};
+              // custom_click(ev,event);
+              // update_pref(val);
+            // }
+            // else{
+              // show_snackbar(null,'Not applicable here');
+            // }
+          }
+          $(this).val(val);
+          $(this).attr('data-val-text',ui.item.value);
+          $(this).focusout();
+          $(this).blur();
+          // //   $(obj).focus();
+          // $(obj).autocomplete('close')
+          //   $(obj).focus();
+          return true;
+          }
+      }).focus(function() {
+          if($(this).data( "uiAutocomplete" )._renderItem!=undefined)
+          {
+            if(is_the_correct_input(this))
+            {
+              $(this).data( "uiAutocomplete" )._renderItem = ti_render_function;
+              $(this).autocomplete('search', '');
+            }
+          }
+          // return response({label:'sma',value:'SMA'});
+      }).focusout(function(){
+        if($(this).attr('data-val-text')!='')
+          $(this).val($(this).attr('data-val-text'));
+        // console.log('focusout');
+      });
+  });
+
+  $(".search_ti2").each(function(e,obj){
+    if(!$(obj).val())
+      $(obj).autocomplete({
+        source: function(request,response){
+          if(cursor_loc%3!=2 && !third_cleared_flag){
+           return [];
+          }
+          if(is_the_correct_input(obj,false))
+          {
+            if(request['term']!=undefined && request['term']!=''){
+              params = {'query':request['term'].toLowerCase()}
+              $.get('/autocomplete_indicators2/', params,function(data) {
+                // alert(data);
+                if(data['status']=='success'){
+
+                  latest_indicator = lastest_item[0]
+                  response($.map(data['results'], function (el) {
+                    // console.log(el)
+                    item = js_parsing_tree.main.indicator[el[0].toLowerCase()];
+                    if((latest_indicator['allowed_comparision'].includes(item['function_group']) || (cursor_loc/3>=1 && cursor_loc%3==0))&& !third_cleared_flag){
+                      return {
+                        label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                        value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                      };
+                    }
+                    else if(third_cleared_item && third_cleared_flag && third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+                       return {
+                              label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                              value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                        };
+                      }
+                    })
+                  );
+                }
+              });
+            }
+            else{
+              results = get_suggestions('ti');
+              x = $.map(results, function (el) {
+              // console.log(el)
+              item = js_parsing_tree.main.indicator[el[0].toLowerCase()];
+              latest_indicator = lastest_item[0];
+              if((latest_indicator['allowed_comparision'].includes(item['function_group']) || (cursor_loc/3>=1 && cursor_loc%3==0))&& !third_cleared_flag){
+                return {
+                       label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                       value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                      };
+                    }
+              else if(third_cleared_item && third_cleared_flag && third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+                return {
+                        label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                        value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                      };
+                    }
+                });
+
+              response(x);
+            }
+          }
+        },    
+        delay: 0,
+        minLength: 0,
+        change: function(event,ui)
+        {
+        if (ui.item==null)
+          {
+          $(obj).val('');
+          $(obj).focus();
+          }
+         $(obj).val('');
+         $(obj).focus();
+         // ui.item.value = "";
+        },
+        select:function(event, ui){
+          // console.log('selected');
+          // console.log(ui['item'])
+          val = ui.item.value.replace(/ /g,'_');
+          item = js_parsing_tree.main.indicator[val];
+          if(lastest_item.length<1)
+          {
+            ev = {};
+            ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+            custom_click(ev,event);
+          // update_pref(val);
+          }
+          else
+          {
+          // condition_div = $('.input_condition');
+          // right_div = null;
+          // right_span = null;
+          // if(condition_div.length==parseInt(cursor_loc/3))
+
+            latest_indicator = lastest_item[0]
+            if((latest_indicator['allowed_comparision'].includes(item['function_group']) || (cursor_loc/3>=1 && cursor_loc%3==0))&& !third_cleared_flag)
+            {
+              ev = {};
+              ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+              custom_click(ev,event);
+              // update_pref(val);
+            }
+            else if(third_cleared_item && third_cleared_flag && third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+              ev = {};
+              ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+              custom_click(ev,event);
+            }
+            else{
+              alert('Not applicable here');
+            }
+          }
+          // $(obj).val('');
+           // $(obj).focusout();
+          //   $(obj).focus();
+          $(obj).focusout();
+          $(obj).blur();
+          // //   $(obj).focus();
+          $(obj).autocomplete('close');
+          if(field_to_focus)
+            {
+              field_to_focus.focus();
+              field_to_focus = null;
+            }
+          return false;
+          }
+      }).focus(function() {
+        if(cursor_loc%3!=2 && !third_cleared_flag && $(this).val()==''){
+          if(cursor_loc%3==0)
+            show_snackbar(null,'Fill the previous indicator and comparator')
+          if(cursor_loc%3==1)
+            show_snackbar(null,'Fill the previous comparator')
+          return false;
+        }
+          if($(this).data( "ui-autocomplete" )!=undefined)
+          {
+            if(is_the_correct_input(this))
+            {
+              $(this).data( "ui-autocomplete" )._renderItem = ti_render_function;
+              $(this).autocomplete('search', '');
+            }
+          }
+          // return response({label:'sma',value:'SMA'});
+      });
+  });
+}
+
+function get_suggestions(section){
+  resp = []
+  if (section=='ti')
+    {
+      var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+      params = {
+        'csrfmiddlewaretoken':csrfmiddlewaretoken
+      };
+      $.get('/load_preference/', params,function(data) {
+      // alert(data);
+        pref_data = data;
+        if(data['status']){
+          ti_pref = pref_data['ti_indicators'];
+          ti_pref = arrayUnique(ti_pref.concat(default_preferences.drag_container2_ti));
+          for(var i=0;i<ti_pref.length;i++){
+
+            key = ti_pref[i];
+            item = js_parsing_tree.main.indicator[key];
+
+            if(cursor_loc%3==1 && !third_cleared_flag) { 
+              // first indicator has been placed so nothing should be done
+              // resp.append([])
+            }
+            else if(cursor_loc%3==2 && !latest_indicator['allowed_comparision'].includes(item['function_group']) && !third_cleared_flag){
+              // the following Indicator is not supported
+            }
+            else if(third_cleared_item && third_cleared_flag && third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+              resp.push([key,item.description])
+            }
+            else{
+              // results = [['sma','Simple moving average']]
+              // the following Indicator is not supported
+              resp.push([key,item.description])
+            }
+          }
+        }
+        return resp;
+      }).fail(function(){
+        x = default_preferences.drag_container2_ti;
+        for(var i=0;i<x.length;i++){
+          key = x[i];
+          item = js_parsing_tree.main.indicator[key];
+          resp.push([key,item])
+        }
+        return resp;
+      })
+
+    if (pref_data != null){
+        ti_pref = pref_data['ti_indicators'];
+        ti_pref = arrayUnique(ti_pref.concat(default_preferences.drag_container2_ti));
+        for(var i=0;i<ti_pref.length;i++){
+
+          key = ti_pref[i];
+          item = js_parsing_tree.main.indicator[key];
+
+          if(cursor_loc%3==1 && !third_cleared_flag){
+            // first indicator has been placed so nothing should be done
+            // resp.push([])
+          }
+          else if(cursor_loc%3==2 && !latest_indicator['allowed_comparision'].includes(item['function_group']) && !third_cleared_flag){
+            // the following Indicator is not supported
+          }
+          else if(third_cleared_item && third_cleared_flag && third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+              resp.push([key,item.description])
+            }
+          else{
+            // results = [['sma','Simple moving average']]
+            // the following Indicator is not supported
+            resp.push([key,item.description])
+          }
+        }
+        return resp
+      } 
+    }
+  if (section=='co')
+    {
+      x = default_preferences.drag_container3;
+      for(var i=0;i<x.length;i++){
+        key = x[i];
+        item = js_parsing_tree.main.comparator[key];
+        resp.push([key,item])
+      }
+      return resp;
+    }
+}
+
+var logical_operators_dict = {
+  'OR':{
+  'desc':''
+  },
+  'AND':{
+  'desc':''
+  }
+}
+function select_color(){
+  // alert("Here");
+  close_position();
+  var eSelect = document.getElementById("buysell_select");
+    // var optOtherReason = document.getElementById('otherdetail');
+    // eSelect.onchange = function() {
+      if(eSelect.selectedIndex === 1) {
+        $("#buysell_select").css({"background-color" : "#d20e0e"});
+      } else {
+         $("#buysell_select").css({"background-color" : "#00897b"});
+      }
+    // }
+}
+function clear_condition_first(e){
+  // $(e.target.previousSibling.parentElement.parentElement.previousSibling).find('.another_condition').show();
+  // $(e.target.previousSibling.parentElement.parentElement).remove();
+  if($(e.target.previousElementSibling).html().indexOf('@')){
+
+  }
+  x = e.target.previousElementSibling.previousElementSibling.previousElementSibling.parentNode;
+  $(x).find('div').each(function(e,obj)
+  {
+    if($(obj).find('input').val()!='Indicator' && $(obj).find('input').val()!='Comparator'){
+      if($(obj).find('input').val().indexOf('in range')!=-1)
+        cursor_loc -= 3;
+      else
+        cursor_loc -= 1;
+    }
+    // update_autcomplete(obj);
+  });
+  if(cursor_loc<0){
+    cursor_loc = 0
+  }
+  $(x).html('<div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" onclick="custom_click_inplace(event)" readonly="readonly"></div><div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div><div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Indicator ex: EMA" onclick="custom_click_inplace(event)" readonly="readonly"></div><span class="clear" onclick="clear_condition_first(event)">Clear</span>');
+  // $(x).next('.another_condition').show();
+  // if($('.display_condition').length<1)
+    // $('.another_condition').show();
+  if($('.display_condition').length>1){
+    prev_div = $('#display_condition1');
+    all_displays = $('.display_condition');
+    for(var i=1;i<all_displays.length;i++){
+      // prev_div.find('.input_divs').html($(all_displays[i]).find('.input_divs').html());
+      prev_div_inputs = prev_div.find('.input_divs');
+      for(var j=0;j<prev_div_inputs.length;j++){
+        // if($(all_displays[i]).html().indexOf('@')){
+        //   if(j!=0){
+        //     $(prev_div_inputs[j]).find('input').hide();
+        //   }
+        //   if(j==0){
+        //     $($(prev_div_inputs[j]).find('input').parentElement).width('100%');
+        //   }
+        // }
+        // else{
+        //   $(prev_div_inputs[j]).find('input').show();
+        //   $($(prev_div_inputs[j]).find('input').parentElement).width((100/3).toString()+'%');
+        // }
+        if($($(all_displays[i]).find('.input_divs')[j]).find('input').data('tag')=='chart_pattern'){
+          $(prev_div_inputs[j]).find('input').val($($(all_displays[i]).find('.input_divs')[j]).find('input').val());
+          $(prev_div_inputs[j]).attr("placeholder",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("placeholder"));
+          $(prev_div_inputs[j]).attr("class",$($(all_displays[i]).find('.input_divs')[j]).attr("class"));
+          $(prev_div_inputs[j]).find('input').attr("data-val-text",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-val-text"));
+          $(prev_div_inputs[j]).find('input').attr("data-params",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-params"));
+          $(prev_div_inputs[j]).find('input').attr("data-tag",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-tag"));
+
+          // this will remove readonly is the feild is blank
+          if($($(all_displays[i]).find('.input_divs')[j]).find('input').val()=='')
+            $(prev_div_inputs[j]).find('input').removeAttr('readonly');
+          
+          $(prev_div_inputs[j]).next('div').hide();
+          $(prev_div_inputs[j]).next('div').next('div').hide();
+          $(prev_div_inputs[j]).width('100%');
+          
+          // if(j==0){
+          //   for(var m=j+1;m<prev_div_inputs.length;m++){
+          //     $(prev_div_inputs[m]).find('input').val('');
+          //     $(prev_div_inputs[m]).attr("placeholder",$($(all_displays[i]).find('.input_divs')[m]).find('input').attr("placeholder"));
+          //     $(prev_div_inputs[m]).attr("class",$($(all_displays[i]).find('.input_divs')[m]).attr("class"));
+          //     $(prev_div_inputs[m]).find('input').attr("data-val-text",$($(all_displays[i]).find('.input_divs')[m]).find('input').attr("data-val-text"));
+          //     $(prev_div_inputs[m]).find('input').attr("data-params",$($(all_displays[i]).find('.input_divs')[m]).find('input').attr("data-params"));
+
+          //     // this will remove readonly is the feild is blank
+          //     if($($(all_displays[i]).find('.input_divs')[m]).find('input').val()=='')
+          //       $(prev_div_inputs[m]).find('input').removeAttr('readonly');
+          //   }
+          // }
+          j+=2;
+        }
+        else{
+          $(prev_div_inputs[j]).find('input').val($($(all_displays[i]).find('.input_divs')[j]).find('input').val());
+          $(prev_div_inputs[j]).attr("placeholder",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("placeholder"));
+          $(prev_div_inputs[j]).attr("class",$($(all_displays[i]).find('.input_divs')[j]).attr("class"));
+          $(prev_div_inputs[j]).find('input').attr("data-val-text",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-val-text"));
+          $(prev_div_inputs[j]).find('input').attr("data-params",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-params"));
+          $(prev_div_inputs[j]).find('input').removeAttr("data-tag");
+            //,$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-tag"));
+
+          // this will remove readonly is the feild is blank
+          if($($(all_displays[i]).find('.input_divs')[j]).find('input').val()=='')
+            $(prev_div_inputs[j]).find('input').removeAttr('readonly');
+        }
+      }
+      prev_div = $(all_displays[i]);
+    }
+    
+    if($('.display_condition').length==1)
+      {
+        $('.another_condition').show();
+        $('.another_condition p').show();
+      }
+    // else if($('.display_condition').length==2)
+    //  $('.another_condition').show();
+    else{
+      // prev_div.find('.and_or').remove();
+      prev_div.remove();
+      if($('.display_condition').length==1)
+      {
+        // $('.another_condition').show();
+        // $('.another_condition p').show();
+      }
+      else
+      {
+        $($('.display_condition').last()).find('.another_condition').show();
+        $($('.display_condition').last()).find('.another_condition p').show();
+      } 
+      // prev_div.find('.another_condition').show();
+    }
+    update_autocomplete_all();
+    show_close()
+  }
+  else{
+    $(x).html('<div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA"></div><div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div><div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Indicator ex: EMA"></div><span class="clear" onclick="clear_condition_first(event)">Clear</span>');
+    $(x).next('.another_condition').show();
+    update_autocomplete_all();
+  }
+  footer_updater();
+  refresh_toolbar();
+  third_cleared_flag=false;
+}
+function clear_condition(e){
+  // $(e.target.previousSibling).html("<span>Indicator</span><span>Comparator</span><span>Indicator</span>");
+  console.log('clear addition click');
+  x = e.target.previousElementSibling.previousElementSibling.previousElementSibling.parentNode;
+  if($(x).find('.indicator_popup_body')[0]!=undefined){
+    return;
+  }
+  $(x).find('div').each(function(e,obj)
+  {
+    // if($(obj).find('input').val()!='Indicator' && $(obj).find('input').val()!='Comparator' && obj.className!="and_or")
+    if($(obj).find('input').val())
+      if($(obj).find('input').val().indexOf('indicator')==-1 && $(obj).find('input').val().indexOf('comparator')==-1 && obj.className!="and_or")
+      {
+        if($(obj).find('input').val().indexOf('in range')!=-1||$(obj).find('input').val().indexOf('is formed')!=-1)
+          cursor_loc -= 3;
+        else
+          cursor_loc -= 1;
+      }
+  });
+
+  if(cursor_loc/3>1)
+    { $(x).find('.another_condition').show();
+      $(x).remove();
+      if($('.display_condition').length==1)
+        {
+          // $('.another_condition').show();
+          // $('.another_condition p').show();
+        }
+      else
+        {
+          $($('.display_condition').last()).find('.another_condition').show();
+          $($('.display_condition').last()).find('.another_condition p').show();
+        }
+    }
+  else if (cursor_loc/3==1)
+    try
+      {
+      $(x).remove();
+      // $('.another_condition').show()
+      if($('.display_condition').length==1)
+        {
+          // $('.another_condition').show();
+          // $('.another_condition p').show();
+        }
+      else
+        {
+          $($('.display_condition').last()).find('.another_condition').show();
+          $($('.display_condition').last()).find('.another_condition p').show();
+        }
+      }
+    catch(e){
+
+    }
+  else{
+    
+  }
+  if(cursor_loc<0){
+    cursor_loc = 0
+  }
+  footer_updater();
+  refresh_toolbar();
+  third_cleared_flag=false;
+}
+
+function clear_third_indicator(event){
+  console.log(event);
+  if(!third_cleared_flag){
+    third_cleared_flag = true;
+    curr_div = $(event.target).parent().closest('div');
+    curr_input = curr_div.find('input');
+    third_cleared_loc = curr_div;
+    if(curr_input.val()!=''){
+      curr_div.removeAttr('class');
+      curr_div.attr('class','input_divs');
+      curr_input.val('');
+      curr_input.removeAttr('data-val-text');
+      curr_input.removeAttr('onclick');
+      curr_input.removeAttr('readonly');
+      update_autocomplete_all();
+      first_item = third_cleared_loc.parent().find('div[class*="input_divs"]')[0].classList[1];
+      if (first_item=='close_')
+        first_item = 'close';
+      third_cleared_item = js_parsing_tree.main.indicator[first_item];
+      // cursor_loc = cursor_loc - 1;
+      // if(cursor_loc<0){
+      //   cursor_loc = 0
+      // }
+      footer_updater();
+    }
+  }else{
+    show_snackbar(null,'First Complete the previously cleared field');
+  }
+}
+function insert_condition3(event){
+  // $(".conditions").append("<div class='display_condition'><div class='and_or'><select id='andor'><option>and</option><option>or</option></select><span>&nbsp;&nbsp;Indicator&nbsp;&nbsp;</span><span>&nbsp;&nbsp;Comparator&nbsp;&nbsp;</span><span>&nbsp;&nbsp;Indicator&nbsp;&nbsp;</span></div><div class='another_condition'><p onclick='insert_condition2();$(this).hide();'>+ Add another condition</p></div></div>");
+  // if(cursor_loc!=0 && cursor_loc==3 && $($(event.target.parentElement).prev('.display_condition')[0]).index()==parseInt(cursor_loc/3)*2+1)
+  // {
+  //   $(event.target).hide();
+  //   $(".conditions").append('<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div><div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Enter indicator1"></div> <div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div> <div class="input_divs"><input type="text" name="search_ti2" class="search_ti2" placeholder="Enter indicator2"></div> <span class="clear" onclick="clear_condition(event)">Clear</span></div><div class="another_condition"><p onclick="insert_condition3(event);">+ Add another condition</p></div>');
+  //   show_prompter_text();
+  //   update_autocomplete_all();
+  // }
+  // else 
+  if(cursor_loc!=0 && cursor_loc%3==0 && $('.display_condition').length<(cursor_loc/3+1) && third_cleared_flag==false)
+  { 
+    var max_len_cond = 5;
+    try{
+      if(subscription_status.subscription_plan=='premium')
+        max_len_cond = 7;
+      else if(subscription_status.subscription_plan=='ultimate')
+        max_len_cond = 10;
+      else
+        max_len_cond = 5;
+    }
+    catch(e){
+      max_len_cond = 5;
+    }
+    if($('.display_condition').length<max_len_cond){
+      $(event.target).hide();
+      $(".conditions").append('<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div><div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA"></div> <div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div> <div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Indicator ex: EMA"></div> <span class="clear" onclick="clear_condition(event)">Remove</span></div><div class="another_condition"><p onclick="insert_condition3(event);">+ Add another condition</p></div>');
+      show_prompter_text();
+      update_autocomplete_all();
+    }
+    else{
+      show_snackbar(null,'You have reached max number of conditions limit');
+    }
+    // else{
+      // $(".conditions").append('<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div><div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Enter indicator1"></div> <div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div> <div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Enter indicator2"></div> <span class="clear" onclick="clear_condition(event)">Remove</span></div><div class="another_condition" style="display:none"><p onclick="insert_condition3(event);">+ Add another condition</p></div>');
+    // }
+  }
+  else{
+    show_snackbar(null,'Complete the previous condition');
+  }
+}
+
+// function insert_condition2(){
+//   // $(".conditions").append("<div class='display_condition'><div class='and_or'><select id='andor'><option>and</option><option>or</option></select><span>&nbsp;&nbsp;Indicator&nbsp;&nbsp;</span><span>&nbsp;&nbsp;Comparator&nbsp;&nbsp;</span><span>&nbsp;&nbsp;Indicator&nbsp;&nbsp;</span></div><div class='another_condition'><p onclick='insert_condition2();$(this).hide();'>+ Add another condition</p></div></div>");
+//   $(".conditions").append("<div class='display_condition'><div class='and_or' onchange='and_or_select_change(event)'><select id='andor'><option>and</option><option>or</option></select><p class='input_condition'><span>Indicator</span><span>Comparator</span><span>Indicator</span></p><span class='clear clear_additional' onclick='clear_condition(event)'>Clear</span></div><div class='another_condition'><p onclick='insert_condition2();$(this).hide();'>+ Add another condition</p></div></div>");
+//   show_prompter_text()
+// }
+
+function insert_condition(){
+  // $(".conditions").append("<div class='display_condition'><div class='and_or'><select><option>and</option><option>or</option></select><input readonly type='text' name='' placeholder='Indicator &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comparator &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Indicator' ondrop='drop(event);' ondragover='allowDrop(event);'></div><div class='another_condition'><p onclick='insert_condition();$(this).hide();'>+ Add another condition</p></div></div>");
+  // $(".conditions").append("<div class='display_condition'><div class='and_or'><select><option>and</option><option>or</option></select><p class='input_condition'><span>Indicator</span><span>Comparator</span><span>Indicator</span></p></div><div class='another_condition'><p onclick='insert_condition();$(this).hide();'>+ Add another condition</p></div></div>");
+  $(".conditions").append("<div class='display_condition'><div class='and_or'><select><option>and</option><option>or</option></select><p class='input_condition'><span>Indicator</span><span>Comparator</span><span>Indicator</span></p><span class='clear'>Clear</span></div><div class='another_condition'><p onclick='insert_condition();$(this).hide();'>+ Add another condition</p></div></div>");
+}
+function insert_close_condition(){  
+  $(".close_position_div").append("<div class='andordiv'><table><tr><th class='left_th'><p><select class='andor' id='andor1' name='andor'><option id='and' value=' AND '>and</option><option id='or' value=' OR '>or</option></select></p></th><th class='right_th'><span id='and'><p id='andor1_input' ondrop='drop(event);' ondragover='allowDrop(event);'></p></span></th></tr><tr><th></th><th><p id='close_condition_button' onclick='insert_close_condition();$(this).hide();'>Add another Condition</p></th><th></th></tr></table></div>");
+}   
+function close_position() {   
+  var close_exc = $('#exchanges_input').val();  
+  var close_eq = $('#equities_input').val();  
+  var close_qty = $('#qty_input').val();  
+  var eSelect = document.getElementById("buysell_select");  
+  var buysell = $('#buy').val().toString();   
+  // alert(close_exc+close_eq+close_qty+eSelect.selectedIndex);   
+  $('#close_exc').text(close_exc);  
+  $('#close_eq').text(close_eq);  
+  $('#close_qty').text(close_qty);  
+  if(eSelect.selectedIndex === 0) {   
+  $('#close_pos').text('Sell');   
+  $("#buysell_sel").css({"background-color" : "#d20e0e"});  
+  // $("#buysell_select").css({"background-color" : "#d20e0e"});  
+      } else {  
+  $('#close_pos').text('Buy');  
+  $("#buysell_sel").css({"background-color" : "#00897b"});  
+  // $("#buysell_select").css({"background-color" : "#00897b"});  
+      }   
+  // if(buysell == 'BUY'){  
+  //   $('#close_pos').text('Sell');  
+  //   $("#buysell_sel").css({"background-color" : "#d20e0e"});   
+  // }  
+  // else{  
+  //   $('#close_pos').text('Buy');   
+  //   $("#buysell_sel").css({"background-color" : "#00897b"});   
+  // }  
+}   
+function close_position_toggle(){   
+  var position = $("#close_position_toggle").text();  
+  // alert(position);   
+  if (position == 'Add a Close Position'){  
+  $('.close_position_div').show();  
+  close_position();   
+  $("#close_position_toggle").text('Remove Close Position');  
+  $("#close_position_toggle").css({"color" : "#D20E0E", "border" : "none", "text-decoration" : "underline", "margin-bottom" : "30px"});
+  }   
+  else{   
+  $("#close_position_toggle").text('Add a Close Position');   
+  $("#close_position_toggle").css({"color" : "orange", "border" : "1px solid orange", "text-decoration" : "none", "margin-bottom" : "0px"});
+  $("#close_position_div").hide();
+  }   
+}
+
+function algo_input_valid(algo_name,
+        algo_desc,
+        position_type,
+        entry_logic,
+        exit_logic,
+        take_profit,
+        stop_loss,
+        position_qty){
+  // if(!isNaN(position_qty) && position_qty.toString().indexOf('.') != -1){
+  //   show_snackbar(null,'Quantity must be positve integer');
+  //   $(".loader_parent").fadeOut();
+  //   return false;
+  // }
+  if(!isNaN(position_qty) && parseFloat(position_qty)<0){
+    show_snackbar(null,'Quantity must be positve integer');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(!isNaN(position_qty) && parseFloat(position_qty)==0){
+    show_snackbar(null,'Quantity must not be 0');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(!isNaN(position_qty) && parseFloat(position_qty)>10000000){
+    show_snackbar(null,'Quantity too high');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(isNaN(position_qty)){
+    show_snackbar(null,'Quantity must be a positive integer');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(position_qty==null || position_qty== undefined || position_qty==''){
+    show_snackbar(null,'Quantity must be a positive integer');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(stop_loss==null || stop_loss== undefined || stop_loss==''){
+    show_snackbar(null,'Stop loss percentage must be a positive number');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(take_profit==null || take_profit== undefined || take_profit==''){
+    show_snackbar(null,'Target profit percentage must be a positive number');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(parseFloat(take_profit)==0){
+    show_snackbar(null,'Target profit percentage cannot be 0%');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  // if(parseFloat(take_profit)>95){
+  //   show_snackbar(null,'Target profit cannot less than 0% !');
+  //   $(".loader_parent").fadeOut();
+  //   return false;
+  // }
+  var stop_loss_rep = stop_loss.replace('.','');
+  if(stop_loss_rep.indexOf('.')>-1){
+    show_snackbar(null,'Stop loss percentage must be between 0 to 100');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  var take_profit_rep = take_profit.replace('.','');
+  if(take_profit_rep.indexOf('.')>-1){
+    show_snackbar(null,'Stop loss percentage must be between 0 to 100');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  // if(position_qty.indexOf('.')>-1){
+  //   show_snackbar(null,'Quantity must be a positive integer');
+  //   $(".loader_parent").fadeOut();
+  //   return false;
+  // }
+  if(parseFloat(take_profit)<0 || parseFloat(take_profit)>=10000){
+    show_snackbar(null,'Target profit percentage must be between 0% to 10000%');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(parseFloat(stop_loss)==0){
+    show_snackbar(null,'Stop loss percentage cannot be 0%');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  // if(parseFloat(stop_loss)>95){
+  //   show_snackbar(null,'Stop loss cannot be 0% !');
+  //   $(".loader_parent").fadeOut();
+  //   return false;
+  // }
+  if(parseFloat(stop_loss)<0 || parseFloat(stop_loss)>=10000){
+    show_snackbar(null,'Stop loss percentage must be between 0 to 10000');
+    $(".loader_parent").fadeOut();
+    return false;
+  }
+  if(algo_name.indexOf(':')!=-1 || algo_name.indexOf("'")!=-1 || algo_name.indexOf('"')!=-1||algo_name.indexOf('`')!=-1||algo_name.indexOf('~')!=-1||algo_name.indexOf('%')!=-1){
+      show_snackbar(null,'Strategy name has an invalid character, kindly use alphabet and numbers');
+      $(".loader_parent").fadeOut();
+      return false;
+    }
+  return true;
+}
+
+function save_algorithm(){
+  $(".loader_parent").fadeIn();
+  if(parser_error_all()){
+   $(".loader_parent").fadeOut();
+  return;
+  }
+  // alert('In here');
+  var action_name = $("#algo_name").val();
+  var action_uuid = $("#action_id").val();
+  var action_desc = $("#algo_description").val();
+  var transaction_type = $("#buysell_select option:selected").val();
+  var exchanges_input = $("#exchanges_input").val();
+  var equities_input = $("#equities_input").val();
+  var qty_input = $("#qty_input").val();
+  var when_input = $("#when_input").val();
+  var stop_loss = $("#stop_loss").val();
+  var take_profit = $("#take_profit").val();
+
+  var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+
+  $("#when_input").find('span').each(function(e){ when_input = when_input + ' ' + $(this).text();
+  });
+
+  $(".andordiv").each(function(e){ 
+  andor1 = $(this).find("#andor1 option:selected").val();
+  // andor1_input = $(this).find("#andor1_input").val()
+
+  // injecting hidden <p> which will be used later select and/or during page revisit
+  $(this).find("#andor_save").each(function(e,obj){$(obj).remove();});
+
+  $(this).append("<p id='andor_save' style='display:none'>"+andor1+"</p>");
+
+  $(this).find("#andor1_input").each(function(e,obj){
+    andor1_input = '';
+    $(obj).find('span').each(function(e){ andor1_input = andor1_input + ' ' +$(this).text();
+    });
+    if (andor1_input != ''){
+    when_input = when_input + ' ' + andor1 + ' ' + andor1_input;
+    }
+  });
+  
+  });
+
+  var create_segment = $(".right_main").html();
+
+  if (algo_input_valid(action_name,
+        action_desc,
+        transaction_type,
+        exchanges_input,
+        equities_input,
+        qty_input,
+        exchanges_input,
+        when_input,
+        stop_loss,
+        take_profit,
+        quantity
+  )==true)
+  {
+    if (action_name.length>50){
+      close_popup();
+      // $('.ti_msg_popup').show();
+  //  $('.ti_msg_popup> div').show(); 
+     //  // $('.ti_msg').html('Parse error !!!<br>'+msg);
+     //  $('.ti_msg').html('The name is too long. It needs to be under 50 characters.');
+    $('#error_message').text('Strategy name is too long, max character limit 50');
+    $("#error_box").show();
+      $(".body").css({"margin-top": "5px"});
+      $(".loader_parent").fadeOut();
+      return;
+    }
+    else if(action_name.length<=0){
+    $('#error_message').text('Enter a strategy name');
+    $("#error_box").show();
+      $(".body").css({"margin-top": "5px"});
+      $(".loader_parent").fadeOut();
+      return;
+    }
+    if (action_desc.length>200){
+      // close_popup();
+      $('#error_message').text('Description Name is too long, max character limit 50');
+    $("#error_box").show();
+      $(".body").css({"margin-top": "5px"});
+      $(".loader_parent").fadeOut();
+      return;
+    }
+    if(action_name.indexOf(':')!=-1 || action_name.indexOf("'")!=-1 || action_name.indexOf('"')!=-1||action_name.indexOf('`')!=-1||action_name.indexOf('~')!=-1||action_name.indexOf('%')!=-1){
+      $('#error_message').text('Strategy name has an invalid character, kindly use alphabet and numbers');
+      $("#error_box").show();
+      $(".body").css({"margin-top": "5px"});
+      $(".loader_parent").fadeOut();
+      return;
+    }
+  // perform a post call to the view , passing the params
+  params = {
+    'action_uuid':action_uuid,
+    'action_name':action_name,
+    'action_desc':action_desc,
+    'transaction_type' : transaction_type,
+    'exchange': exchanges_input,
+    'symbol':equities_input,
+    'qty':qty_input,
+    'when_text':when_input,
+    'stop_loss':stop_loss,
+    'take_profit':take_profit,
+    'create_segment_html':create_segment,
+    'csrfmiddlewaretoken':csrfmiddlewaretoken,
+  };
+
+  // $(".loader_parent").fadeOut();
+  close_popup();
+  $.post('/submit_algorithm/', params,function(data) {
+    // alert(data);
+    if(data['status']){
+      window.location = '/test';
+      }
+    else{
+      if(data['msg']){
+      // alert(data['error']);
+    //     $('.ti_msg_popup').show();
+      // $('.ti_msg_popup> div').show(); 
+      // $('.ti_msg').html('Parse error !!!<br>'+msg);
+      $('#error_message').text(data['msg']);
+      for (var e in data['error'])
+      { 
+        $('#error_message').append('<br>');
+        $('#error_message').append(data['error'][e]);
+      }
+        $("#error_box").show();
+        $(".body").css({"margin-top": "5px"});
+      }
+      window.scrollTo(0,0);
+
+    }
+    $(".loader_parent").fadeOut();
+    });
+  }
+  else{
+  close_popup();
+  // alert('Input error');
+  $(".loader_parent").fadeOut();
+
+  }
+}
+
+function ti_popup_show4(data,ev,id,searched,search_target){
+    $(".indicator_popup").remove();
+
+    r = parseInt(Math.random()*100); // for being able to modify and remove individual elements
+
+    condition_div = $('.display_condition');
+    right_div = null;
+    right_span = null;
+
+    // if(cursor_loc==0){
+    right_div = condition_div[parseInt(cursor_loc/3)];
+    // right_span = $(right_div).find("div")[cursor_loc%3];
+    if(cursor_loc>=3)
+      right_span = $(right_div).find("div")[cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[cursor_loc%3];
+
+    if (data==undefined)
+      return
+    var ti_name = data['name'];
+
+    if (data['params'].length==0){
+
+      if(third_cleared_loc!=null && third_cleared_flag){
+          third_cleared_loc.addClass(data['class']);   
+          third_cleared_loc.find('input').id = id+'__'+r;
+          dat = data['syntax'].replace('<offset> <interval> ','').replace('<offset> back ','');   
+          third_cleared_loc.find('input').val(dat);    
+          third_cleared_loc.find('input').attr('data-val-text',js_parsing_tree.main.indicator[id]['syntax']);   
+          third_cleared_loc.find('input').attr('readonly','');    
+          // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");   
+          third_cleared_loc.find('input').attr('data-params',id);    
+          // else{    
+          //   $(right_span.parentElement).next('.another_condition').show();   
+          // }    
+          // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');   
+             
+          // $($(right_span).find('span')).click(custom_click_inplace);   
+          // $(right_span).click(custom_click_inplace);   
+          // third_cleared_loc.find('input').attr('onclick', 'custom_click_inplace(event)');    
+          try{    
+          $(third_cleared_loc.find('input')[0]).autocomplete("destroy")   
+          }   
+          catch(e){   
+               
+          }   
+
+          if(!third_cleared_flag)   
+          {   
+           lastest_item.shift();   
+          lastest_item.push(data);    
+          }   
+          refresh_toolbar();    
+          // footer_updater();    
+          third_cleared_loc = null;   
+          third_cleared_flag = false;   
+          third_cleared_item = null;    
+          if (cursor_loc/3>=1 && cursor_loc%3==0){    
+           $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");   
+           $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");   
+           $(".indicator_popup").remove();   
+           footer_updater();   
+          }   
+          // if(cursor_loc==0 || cursor_loc%3!=0){    
+          //   show_prompter_text();    
+          // }else{   
+          //   $('.prompter_text').hide()   
+          // }  
+          footer_updater();   
+          return;
+      }
+
+      // $('.ti_popup div').fadeOut();
+      // $('.ti_popup').fadeOut();
+      $(".indicator_popup").remove();
+      if(condition_div.length==parseInt(cursor_loc/3))
+      {
+        $('.another_condition').hide()
+        insert_condition3(search_target);
+        condition_div = $('.display_condition');
+        right_div = condition_div[parseInt(cursor_loc/3)];
+        right_span = $(right_div).find("div")[cursor_loc%3];
+      }
+      try{
+        $(right_span).find('input').autocomplete("destroy");
+        // $(right_span).find('input').removeData("autocomplete");
+      }
+      catch(e){}
+      $(right_span).find('input').id = id+'__'+r;
+      $(right_span).addClass(data['class']);
+          // $(right_span).html('&nbsp;'+js_parsing_tree.main.comparator[data.id]['name']+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+data.id+'__'+r+'\')">');
+      dat = data['syntax'].replace('<offset> <interval> ','').replace('<offset> back ','');
+      $(right_span).find('input').val(dat);
+      $(right_span).find('input').attr('data-val-text',dat);
+      $(right_span).find('input').attr('readonly',''); 
+      // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+      $(right_span).attr('data-params',id);
+
+      if(data['function_group']=='Condition')
+        cursor_loc += 3;
+      else
+        cursor_loc += 1;
+
+      refresh_toolbar()
+      if (cursor_loc/3>=1 && cursor_loc%3==0){
+        $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+        footer_updater();
+      }
+      if(!third_cleared_flag)
+      {   
+        lastest_item.shift();
+        lastest_item.push(data);
+      }
+    }
+    else{
+      if(searched==true){
+        $(search_target).after("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>");
+      }
+      else{
+        $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>").insertAfter(ev.target);
+      }
+      $('.indicator_popup_body').append("<p id='ti_name'>"+ti_name+"</p>");
+      $('.indicator_popup_body').append("<div id='ti_populate'></div>");
+
+      for(var i=0;i<data['params'].length;i++){
+        row = "<div class='field'>";
+
+        if(data['params'][i][0]=='offset')
+          row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][3].replace(/_/g,' ')+"</p>";
+        else
+          row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][0].replace(/_/g,' ')+"</p>";
+
+        if(data['params'][i][0]=='range_percentage')
+          row += '<input id="'+data['params'][i][0]+r+'" type="number" name="" step="'+data['params'][i][4]+'" min="0" value='+ data['params'][i][1]+'>';
+        else if(data['params'][i][0]=='interval')
+          row += '<input list="intervals" id="'+data['params'][i][0]+r+'"type="text" name="myText" value="'+data['params'][i][1]+'"><datalist id="intervals"><option value="min"><option value="5min"><option value="15min"><option value="30min"><option value="hour"><option value="day"></datalist>';
+        else
+          row += '<input id="' + data['params'][i][0]+r+'" type="number" name="" step="1" min="0" value='+ data['params'][i][1]+' onfocus="this.value = this.value;">';
+
+
+        row += '</div>';
+        $("#ti_populate").append(row);
+        if(i==0)
+          field_to_focus = $("#"+data['params'][i][0]+r)
+      }
+      $('.indicator_popup_body').append("<div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div>");
+      $('.indicator_popup_body').focus();
+
+      $('.done').unbind('click');
+      if(searched==true)
+        $('.done').click(function(event){ti_done3(data,r,ev,id);update_pref(id.toLowerCase());});
+      else
+        $('.done').click(function(event){ti_done3(data,r,ev,id);});
+      $(".ti_cancel").click(function(){
+          $(".indicator_popup").remove();
+      });
+
+    }
+    // $(".indicator_popup").remove();
+    //  $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'><p id='ti_name'>Middle Bollinger Band</p><div id='ti_populate'><div class='field'><p>Period</p><input type='number' name=''></div><div class='field'><p>Frequency</p><input type='number' name=''></div></div></div><div class='indicator_popup_buttons'><button type='submit' class='ti_cancel'>Cancel</button><button type='submit' class='done'>Done</button></div></div>").insertAfter(ev.target);
+    $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+          $(".indicator_popup").remove();
+      });
+}
+
+function popup_dropdown_li_click(event){
+  // $(".popup_dropdown_li ul").show();
+  var popup_dropdown_li = $(event.target).closest('.popup_dropdown_li');
+  popup_dropdown_li.find('ul').show();
+}
+
+function popup_dropdown_li_element_click(event){
+  var selected_item = $(event.target).text()
+  if(selected_item)
+    {
+      $(event.target.parentElement.parentElement).data('selected',selected_item);
+      $(event.target.parentElement.parentElement).find('p').text(selected_item);
+      $(".popup_dropdown_li ul").hide();
+      event.stopPropagation();
+      // $()BullishBullishBearish
+    }
+}
+function ti_popup_show5(data,ev,id,searched,search_target){
+    $(".indicator_popup").remove();
+
+    r = parseInt(Math.random()*100); // for being able to modify and remove individual elements
+
+    condition_div = $('.display_condition');
+    right_div = null;
+    right_span = null;
+
+    // if(cursor_loc==0){
+    right_div = condition_div[parseInt(cursor_loc/3)];
+    // right_span = $(right_div).find("div")[cursor_loc%3];
+    if(cursor_loc>=3)
+      right_span = $(right_div).find("div")[cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[cursor_loc%3];
+
+    if (data==undefined)
+      return
+    var ti_name = data['name'];
+
+    if (data['params'].length==0){
+
+      if(third_cleared_loc!=null && third_cleared_flag){
+          third_cleared_loc.addClass(data['class']);   
+          third_cleared_loc.find('input').id = id+'__'+r;
+          dat = data['syntax'].replace('<offset> <interval> ','').replace('<offset> back ','');   
+          third_cleared_loc.find('input').val(dat);    
+          third_cleared_loc.find('input').attr('data-val-text',js_parsing_tree.main.indicator[id]['syntax']);   
+          third_cleared_loc.find('input').attr('readonly','');    
+          // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");   
+          third_cleared_loc.find('input').attr('data-params',id);    
+          // else{    
+          //   $(right_span.parentElement).next('.another_condition').show();   
+          // }    
+          // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');   
+             
+          // $($(right_span).find('span')).click(custom_click_inplace);   
+          // $(right_span).click(custom_click_inplace);   
+          // third_cleared_loc.find('input').attr('onclick', 'custom_click_inplace(event)');    
+          try{    
+          $(third_cleared_loc.find('input')[0]).autocomplete("destroy")   
+          }   
+          catch(e){   
+               
+          }   
+
+          if(!third_cleared_flag)   
+          {   
+           lastest_item.shift();   
+          lastest_item.push(data);    
+          }   
+          refresh_toolbar();    
+          // footer_updater();    
+          third_cleared_loc = null;   
+          third_cleared_flag = false;   
+          third_cleared_item = null;    
+          if (cursor_loc/3>=1 && cursor_loc%3==0){    
+           $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");   
+           $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");   
+           $(".indicator_popup").remove();   
+           footer_updater();   
+          }   
+          // if(cursor_loc==0 || cursor_loc%3!=0){    
+          //   show_prompter_text();    
+          // }else{   
+          //   $('.prompter_text').hide()   
+          // }  
+          footer_updater();   
+          return;
+      }
+
+      // $('.ti_popup div').fadeOut();
+      // $('.ti_popup').fadeOut();
+      $(".indicator_popup").remove();
+      if(condition_div.length==parseInt(cursor_loc/3))
+      {
+        $('.another_condition').hide()
+        insert_condition3(search_target);
+        condition_div = $('.display_condition');
+        right_div = condition_div[parseInt(cursor_loc/3)];
+        right_span = $(right_div).find("div")[cursor_loc%3];
+      }
+      try{
+        $(right_span).find('input').autocomplete("destroy");
+        // $(right_span).find('input').removeData("autocomplete");
+      }
+      catch(e){}
+      $(right_span).find('input').id = id+'__'+r;
+      $(right_span).addClass(data['class']);
+          // $(right_span).html('&nbsp;'+js_parsing_tree.main.comparator[data.id]['name']+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+data.id+'__'+r+'\')">');
+      dat = data['syntax'].replace('<offset> <interval> ','').replace('<offset> back ','');
+      $(right_span).find('input').val(dat);
+      $(right_span).find('input').attr('data-val-text',dat);
+      $(right_span).find('input').attr('readonly',''); 
+      // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+      $(right_span).attr('data-params',id);
+
+      if(data['function_group']=='Condition'||data['function_group']=='Candle Pattern')
+        cursor_loc += 3;
+      else
+        cursor_loc += 1;
+
+      refresh_toolbar()
+      if (cursor_loc/3>=1 && cursor_loc%3==0){
+        $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+        footer_updater();
+      }
+      if(!third_cleared_flag)
+      {   
+        lastest_item.shift();
+        lastest_item.push(data);
+      }
+    }
+    else{
+      if(searched==true){
+        $(search_target).after("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>");
+      }
+      else{
+        $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>").insertAfter(ev.target);
+      }
+      $('.indicator_popup_body').append("<p id='ti_name'>"+ti_name+"</p>");
+      $('.indicator_popup_body').append("<div id='ti_populate'></div>");
+
+      for(var i=0;i<data['params'].length;i++){
+        row = "<div class='field'>";
+
+        if(data['params'][i][0]=='offset')
+          row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][3].replace(/_/g,' ')+"</p>";
+        else
+          row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][0].replace(/_/g,' ')+"</p>";
+
+        if(data['params'][i][0]=='range_percentage')
+          row += '<input id="'+data['params'][i][0]+r+'" type="number" name="" step="'+data['params'][i][4]+'" min="0" value='+ data['params'][i][1]+'>';
+        else if(data['params'][i][0]=='interval')
+          row += '<input list="intervals" id="'+data['params'][i][0]+r+'" type="text" name="myText" value="'+data['params'][i][1]+'"><datalist id="intervals"><option value="min"><option value="5min"><option value="15min"><option value="30min"><option value="hour"><option value="day"></datalist>';
+        else if(data['params'][i][3]=='dropdown'){
+          row += '<li class="popup_dropdown_li" id="'+data['params'][i][0]+r+'" onclick="popup_dropdown_li_click(event)" data-selected="'+data['params'][i][1]+'"><p style="color: #192024;">'+data['params'][i][1]+'</p><ul>';
+          var candle_type = interval_mapping[$("#ip_interval").val()];
+          for(var d=0;d<data['params'][i][4].length;d++)
+          {
+            if(candle_freq_map[data['params'][i][4][d]]==undefined)
+            {
+              row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+            }
+            else
+            {
+              if (candle_freq_map[data['params'][i][4][d]] <= candle_freq_map[candle_type])
+                row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+            }
+          }
+          row += '</ul></li>';
+        }
+        else
+          row += '<input id="' + data['params'][i][0]+r+'" type="number" name="" step="1" min="0" value='+ data['params'][i][1]+' onfocus="this.value = this.value;">';
+
+
+        row += '</div>';
+        $("#ti_populate").append(row);
+        if(i==0)
+          field_to_focus = $("#"+data['params'][i][0]+r)
+      }
+      $('.indicator_popup_body').append("<div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div>");
+      $('.indicator_popup_body').focus();
+
+      $('.done').unbind('click');
+      if(searched==true)
+        $('.done').click(function(event){ti_done3(data,r,ev,id);update_pref(id.toLowerCase());});
+      else
+        $('.done').click(function(event){ti_done3(data,r,ev,id);});
+      $(".ti_cancel").click(function(){
+          $(".indicator_popup").remove();
+      });
+
+    }
+    // $(".indicator_popup").remove();
+    //  $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'><p id='ti_name'>Middle Bollinger Band</p><div id='ti_populate'><div class='field'><p>Period</p><input type='number' name=''></div><div class='field'><p>Frequency</p><input type='number' name=''></div></div></div><div class='indicator_popup_buttons'><button type='submit' class='ti_cancel'>Cancel</button><button type='submit' class='done'>Done</button></div></div>").insertAfter(ev.target);
+    $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+          $(".indicator_popup").remove();
+      });
+}
+
+function is_the_exactly_correct_input(event,show_msg=false){
+  condition_div = $('.display_condition');
+  expected_div = condition_div[parseInt(cursor_loc/3)];
+  // display_condition_count = parseInt(cursor_loc/3)*2+1;
+  if ($(expected_div).index()!=$(event.parentElement.parentElement).index()){
+    if(show_msg)
+      show_snackbar(null,'Fill all previous fields in conditions');
+    return false;
+  }
+  right_span_count = 0
+  if(cursor_loc>=3)
+      right_span_count = cursor_loc%3+1;
+    else
+      right_span_count = cursor_loc%3;
+  if(right_span_count!=$(event.parentElement).index()){
+    if (cursor_loc%3==0)
+      if(show_msg)
+        show_snackbar(null,'Fill previous indicator');
+    if (cursor_loc%3==1)
+      if(show_msg)
+        show_snackbar(null,'Fill previous comparator');
+    return false;
+  }
+  return true;
+}
+
+function is_the_correct_input(event,show_msg=true){
+  condition_div = $('.display_condition');
+  expected_div = condition_div[parseInt(cursor_loc/3)];
+  // display_condition_count = parseInt(cursor_loc/3)*2+1;
+  if(third_cleared_flag && third_cleared_loc!=null && third_cleared_loc[0]==event.parentElement){
+    return true;}
+  else if(third_cleared_flag && third_cleared_loc!=null && third_cleared_loc[0]!=event.parentElement){
+    show_snackbar(null,'Fill the previous cleared indicator');
+    return false;
+  }
+  if($(event).val()!='' || $(event).parent().next().find('input').val()!='')
+    return true;
+  if ($(expected_div).index()<$(event.parentElement.parentElement).index() && $(expected_div).index()!=-1){
+    if(show_msg)
+    show_snackbar(null,'Fill all previous fields in conditions');
+    return false;
+  }
+  right_span_count = 0
+  if(cursor_loc>=3)
+      right_span_count = cursor_loc%3+1;
+    else
+      right_span_count = cursor_loc%3;
+  if(right_span_count<$(event.parentElement).index() && $(event.parentElement).index()!= -1){
+    if (cursor_loc%3==0)
+      if(show_msg)
+        show_snackbar(null,'Fill previous indicator');
+    if (cursor_loc%3==1)
+      if(show_msg)
+        show_snackbar(null,'Fill previous comparator');
+    return false;
+  }
+  return true;
+}
+function ti_done3(data,r,ev,id){
+  txt = '';
+
+  syntax = data['syntax'];
+  // syntax = syntax.split(' ');
+
+  var default_value = false;
+  params = [];
+  // probably more effective approach is to loop though params of the item and replace them in syntax 
+  for(var i=0;i<data['params'].length;i++){
+    // if(data['params'][i][0]=='offset'&&data['params'][i][1] == parseInt($('#'+data['params'][i][0]+r).val()))
+    // {
+    //   syntax = syntax.replace('<offset> <interval> ago','');
+    //   syntax = syntax.replace('<interval> back','');
+    //   syntax = syntax.replace('back','');
+    // }
+    if(data['params'][i][3]=='dropdown'){
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).data('selected')!=""){
+        syntax = syntax.replace(re,$(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.'));
+        var param_to_push = $(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.');
+        params.push(param_to_push);
+        if(candle_freq_map[param_to_push]!=undefined)
+          // if(min_candle_freq>candle_freq_map[param_to_push]){
+            min_candle_freq = candle_freq_map[param_to_push];
+          // }
+        }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+    else{
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).val()!=""){
+        syntax_val = $(field_id).val().replace(/^0+/, '').replace(/^\./,'0.');
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax = syntax.replace(re,syntax_val);
+        params.push(syntax_val);
+        }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+  }
+  txt = syntax.replace(',)',')');
+  // txt trimming
+  // if(txt.endsWith('with ')){
+  //  txt.replace('with ','');
+  // }
+
+  $('.ti_popup').hide();
+  $('.ti_popup div').hide();
+  $('#tim_name').empty();
+  $('#ti_populate').find("tr").remove();
+
+  if(txt!='' && txt!=' '){
+    condition_div = $('.display_condition');
+    right_div = null;
+    right_span = null;
+
+    if(condition_div.length==parseInt(cursor_loc/3) && third_cleared_flag==false)
+    {
+      $('.another_condition').hide()
+      insert_condition3(ev);
+      condition_div = $('.display_condition');
+    }
+      // $(this).hide();
+
+    right_div = condition_div[parseInt(cursor_loc/3)];
+    if(cursor_loc>=3)
+      right_span = $(right_div).find("div")[cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[cursor_loc%3];
+    
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    if(third_cleared_loc!=null && third_cleared_flag){
+      third_cleared_loc.addClass(data['class']);
+      third_cleared_loc.find('input').val(txt);
+      third_cleared_loc.find('input').attr('data-val-text',txt);
+      third_cleared_loc.find('input').attr('readonly','');
+      // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+      third_cleared_loc.find('input').attr('data-params',params.join());
+      // else{
+      //   $(right_span.parentElement).next('.another_condition').show();
+      // }
+      // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');
+      
+      // $($(right_span).find('span')).click(custom_click_inplace);
+      // $(right_span).click(custom_click_inplace);
+      third_cleared_loc.find('input').attr('onclick', 'custom_click_inplace(event)');
+      try{
+      $(third_cleared_loc.find('input')[0]).autocomplete("destroy")
+      }
+      catch(e){
+        
+      }
+
+      if(!third_cleared_flag)
+      {
+        lastest_item.shift();
+        lastest_item.push(data);
+      }
+      refresh_toolbar();
+    // footer_updater();
+      third_cleared_loc = null;
+      third_cleared_flag = false;
+      third_cleared_item = null;
+      if (cursor_loc/3>=1 && cursor_loc%3==0){
+        $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+        $(".indicator_popup").remove();
+        footer_updater();
+      }
+      // if(cursor_loc==0 || cursor_loc%3!=0){
+      //   show_prompter_text(); 
+      // }else{
+      //   $('.prompter_text').hide()
+      // }
+      footer_updater();
+      return;
+    }
+    // $(right_span).text(data['name']);
+    try{
+      $(right_span).find('input').autocomplete("destroy");
+      // $(right_span).find('input').removeData("autocomplete");
+    }
+    catch(e){
+
+    }
+    $(right_span).find('input').id = id+'__'+r;
+    $(right_span).addClass(data['class']);
+    $(right_span).find('input').val(txt);
+    $(right_span).find('input').attr('data-val-text',txt);
+    $(right_span).find('input').attr('readonly','');
+    // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+    $(right_span).find('input').attr('data-params',params.join());
+    if(txt.indexOf('@')!=-1){
+      $(right_span).next('div').hide();
+      $($(right_span).next('div')).next('div').hide();
+      $(right_span).width('100%');
+      $(right_span.parentElement).next('.another_condition').hide();
+    }
+    if(data['function_group']=='Candle Pattern'){
+      $(right_span).find('input').attr('data-tag',data['tag']);
+      $(right_span).next('div').hide();
+      $($(right_span).next('div')).next('div').hide();
+      $(right_span).width('100%');
+      // $(right_span.parentElement).next('.another_condition').hide(); 
+    }
+    // else{
+    //   $(right_span.parentElement).next('.another_condition').show();
+    // }
+    // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');
+    
+    // $($(right_span).find('span')).click(custom_click_inplace);
+    // $(right_span).click(custom_click_inplace);
+    $(right_span).find('input').attr('onclick', 'custom_click_inplace(event)');
+
+    if(data['function_group']=='Condition'||data['function_group']=='Candle Pattern')
+      {
+        // $($(right_div).find("span")[cursor_loc%3+1]).remove();
+        // $($(right_div).find("span")[cursor_loc%3+1]).remove();
+        cursor_loc += 3;
+      }
+    else
+      {
+        cursor_loc += 1;
+      }
+
+    if(!third_cleared_flag)
+      {
+        lastest_item.shift();
+        lastest_item.push(data);
+      }
+    refresh_toolbar();
+    third_cleared_flag = false;
+  // footer_updater();
+    if (cursor_loc/3>=1 && cursor_loc%3==0){
+      $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      $(".indicator_popup").remove();
+      show_close();
+      footer_updater();
+    }
+    if(cursor_loc==0 || cursor_loc%3!=0){
+      show_prompter_text(); 
+    }else{
+      // $('.prompter_text').hide()
+    }
+  }
+}
+
+function ti_popup_show_inplace3(data,ev,id){
+
+  $(".indicator_popup").remove();
+
+  condition_div = $(ev.currentTarget);
+  right_div = null;
+  right_span = null;
+
+  [key,r] = ev.currentTarget.id.split('__');
+
+  // if(cursor_loc==0){
+  right_div = $(ev.currentTarget);
+  right_span = $(ev.currentTarget);
+  // }
+  if (data==undefined)
+    return
+  var ti_name = data['name'];
+
+  if (data['params'].length==0){
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    // right_span.id = id+'__'+r;
+    $(right_span).text(data['name']);
+    $(right_span).addClass(data['class']);
+    $(right_span).append('&nbsp;<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+key+'__'+r+'\')">');
+    cursor_loc += 1;
+  }
+  else{
+    $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>").insertAfter(ev.target);
+      $('.indicator_popup_body').append("<p id='ti_name'>"+ti_name+"</p>");
+      $('.indicator_popup_body').append("<div id='ti_populate'></div>");
+
+    $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+          $(".indicator_popup").remove();
+      });
+    field_to_focus_local = null;
+    for(var i=0;i<data['params'].length;i++){
+      row = "<div class='field'>";
+      if(data['params'][i][0]=='offset')
+        row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][3].replace(/_/g,' ')+"</p>";
+      else
+        row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][0].replace(/_/g,' ')+"</p>";
+      if(data['params'][i][0]=='range_percentage')
+        row += '<input id="'+data['params'][i][0]+r+'" type="number" name="" step="'+data['params'][i][4]+'" min="0" value='+ data['params'][i][1]+'>';
+      else if(data['params'][i][0]=='interval')
+        row += '<input list="intervals" id="'+data['params'][i][0]+r+'"type="text" name="myText" value="'+data['params'][i][1]+'"><datalist id="intervals"><option value="min"><option value="5min"><option value="15min"><option value="30min"><option value="hour"><option value="day"></datalist>';
+      else if(data['params'][i][3]=='dropdown'){
+          row += '<li class="popup_dropdown_li" id="'+data['params'][i][0]+r+'" onclick="popup_dropdown_li_click(event)" data-selected="'+data['params'][i][1]+'"><p style="color: #192024;">'+data['params'][i][1]+'</p><ul>';
+          var candle_type = interval_mapping[$("#ip_interval").val()];
+          for(var d=0;d<data['params'][i][4].length;d++)
+            {
+              if(candle_freq_map[data['params'][i][4][d]]==undefined)
+              {
+                row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+              else
+              {
+                if (candle_freq_map[data['params'][i][4][d]] <= candle_freq_map[candle_type])
+                  row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+            }
+          row += '</ul></li>';
+        } 
+      else
+        row += '<input id="' + data['params'][i][0]+r+'" type="number" name="" step="1" min="0" value='+ data['params'][i][1]+'>';
+
+      row += '</div>';
+      $("#ti_populate").append(row);
+
+      if(i==0)
+        field_to_focus_local = $("#"+data['params'][i][0]+r)
+    }
+    $('.indicator_popup_body').append("<div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div>");
+    $('.done').unbind('click');
+    $('.done').click(function(event){ti_done_inplace3(data,ev,id);});
+    $(".ti_cancel").click(function(){
+          $(".indicator_popup").remove();
+      });
+    field_to_focus_local.focus(); 
+  }
+}
+
+function ti_popup_show_inplace(data,ev,id){
+  $('#ti_name').empty();
+    $('#ti_name').html(data['name']);
+
+  condition_div = $(ev.currentTarget);
+  right_div = null;
+  right_span = null;
+
+  [key,r] = ev.currentTarget.id.split('__');
+
+  // if(cursor_loc==0){
+  right_div = $(ev.currentTarget);
+  right_span = $(ev.currentTarget);
+  // }
+  
+  if (data['params'].length==0){
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    // right_span.id = id+'__'+r;
+    $(right_span).text(data['name']);
+    $(right_span).addClass(data['class']);
+    $(right_span).append('&nbsp;<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+key+'__'+r+'\')">');
+    cursor_loc += 1;
+  }
+  else{
+    $('.ti_popup').show();
+    $('.ti_popup div').show();
+
+    $("#ti_populate").find("tr").remove();
+    for(var i=0;i<data['params'].length;i++){
+      row = '<tr>';
+      if(data['params'][i][0]=='offset')
+        row += '<th style="text-transform:capitalize;">'+data['params'][i][3].replace(/_/g,' ')+'</th>';
+      else
+        row += '<th style="text-transform:capitalize;">'+data['params'][i][0].replace(/_/g,' ')+'</th>';
+      if(data['params'][i][0]=='range_percentage')
+        row += '<th><input id="'+data['params'][i][0]+r+'" type="number" name="" step="'+data['params'][i][4]+'" min="0" value='+ data['params'][i][1]+'></th>';
+      else if(data['params'][i][0]=='interval')
+        row += '<th><input list="intervals" id="'+data['params'][i][0]+r+'"type="text" name="myText" value="'+data['params'][i][1]+'"><datalist id="intervals"><option value="min"><option value="5min"><option value="15min"><option value="30min"><option value="hour"><option value="day"></datalist></th>';
+      else if(data['params'][i][3]=='dropdown'){
+          row += '<li class="popup_dropdown_li" id="'+data['params'][i][0]+r+'" onclick="popup_dropdown_li_click(event)" data-selected="'+data['params'][i][1]+'"><p style="color: #192024;">'+data['params'][i][1]+'</p><ul>';
+          var candle_type = interval_mapping[$("#ip_interval").val()];
+          for(var d=0;d<data['params'][i][4].length;d++)
+            {
+              if(candle_freq_map[data['params'][i][4][d]]==undefined)
+              {
+                row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+              else
+              {
+                if (candle_freq_map[data['params'][i][4][d]] <= candle_freq_map[candle_type])
+                  row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+            }
+          row += '</ul></li>';
+        }
+      else
+        row += '<th><input id="' + data['params'][i][0]+r+'" type="number" name="" step="1" min="0" value='+ data['params'][i][1]+'></th>';
+
+      row += '</tr>';
+      $("#ti_populate").append(row);
+    }
+    $('.done').unbind('click');
+    $('.done').click(function(event){drop_animation(event);ti_done_inplace(data,ev,id);});
+  }
+}
+
+function ti_done_inplace3(data,ev,id){
+  txt = '';
+
+  syntax = data['syntax'];
+  // syntax = syntax.split(' ');
+  [key,r] = ev.target.id.split('__');
+  var default_value = false;
+  var params = [];
+  // probably more effective approach is to loop though params of the item and replace them in syntax 
+  for(var i=0;i<data['params'].length;i++){
+    // if(data['params'][i][0]=='offset'&&data['params'][i][1] == parseInt($('#'+data['params'][i][0]+r).val()))
+    // {
+    //   syntax = syntax.replace('<offset> <interval> ago','');
+    //   syntax = syntax.replace('<interval> back','');
+    //   syntax = syntax.replace('back','');
+    // }
+    if(data['params'][i][3]=='dropdown'){
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).data('selected')!=""){
+        syntax = syntax.replace(re,$(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.'));
+        var param_to_push = $(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.');
+        params.push(param_to_push);
+        if(candle_freq_map[param_to_push]!=undefined)
+          // if(min_candle_freq>candle_freq_map[param_to_push]){
+            min_candle_freq = candle_freq_map[param_to_push];
+          // }
+        }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+    else{
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).val()!="")
+      {
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax_val = $(field_id).val().replace(/^0+/, '').replace(/^\./,'0.');
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax = syntax.replace(re,syntax_val);
+        params.push(syntax_val);
+      }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+  }
+  txt = syntax.replace(',)',')');
+  // txt trimming
+  // if(txt.endsWith('with ')){
+  //  txt.replace('with ','');
+  // }
+
+  $('.indicator_popup').remove();
+
+  if(txt!='' && txt!=' '){
+    condition_div = $(ev.target);
+    right_div = null;
+    right_span = $(ev.target);
+
+    // if(condition_div.length==parseInt(cursor_loc/3))
+    // {
+    //  $('.another_condition').hide()
+    //  insert_condition2();
+    //  condition_div = $('.display_condition');
+    // }
+      // $(this).hide();
+
+    // right_div = condition_div[parseInt(cursor_loc/3)];
+    // right_span = $(right_div).find("span")[cursor_loc%3];
+    
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    // right_span.id = id+'__'+r;
+    // $(right_span).text(data['name']);
+    // $(right_span).addClass(data['class']);
+    $(right_span).val(txt);
+    $(right_span).attr('data-val-text',txt);
+    try
+    {
+      $(right_span).autocomplete("destroy");
+      // $(right_span).find('input').removeData("autocomplete");
+    }
+    catch(e){}
+    $(right_span).attr('readonly','');
+    // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+    $(right_span).attr('data-params',params.join());
+    
+    // $(right_span).click(custom_click_inplace);
+    $(right_span).attr('onclick', 'custom_click_inplace(event)');
+    if(third_cleared_flag && third_cleared_loc.parent().index()==$(ev.target.parentElement.parentElement).index() && third_cleared_loc.index()==$(ev.target.parentElement).index())
+    {
+      third_cleared_flag = false;
+    }
+  }
+    footer_updater();
+}
+
+function custom_click_inplace(ev){
+  // TODO for editing varaible on click
+  var ele_class = ev.currentTarget.className;
+  var ele_class_list = ev.currentTarget.classList; // ['ti','ti_tags']
+  var data = ev.currentTarget.parentElement; // 'sma'
+  var bool_ti = true;
+
+  // if (ele_class_list.contains == null)
+  //  bool_ti = ele_class_list.includes('ti')
+  // else
+  //  bool_ti = ele_class_list.contains('ti')
+
+  if(bool_ti){
+    if (data.classList[data.classList.length-1]=='close_')
+      data.classList[data.classList.length-1] = 'close';
+    ti_popup_show_inplace3(js_parsing_tree.main.indicator[data.classList[data.classList.length-1]],ev,data.id);
+    footer_updater();
+  }
+}
+
+function save_algorithm_new(){
+  $(".loader_parent").fadeIn();
+
+  var error = 'Complete all the sections, following things you have missed:<br>'
+
+  var algo_name = $('#ip_strategy_name').val();
+  var algo_desc = $('#ip_strategy_desc').val();
+  var algo_uuid = $('#algo_uuid').val();
+  var position_type = $('#ip_position_type').val();
+  var position_qty = $('#ip_position_qty').val();
+  var candle_interval = interval_mapping[$("#ip_interval").val()];
+
+  if(algo_uuid==null)
+    algo_uuid = ''
+  // entry summary
+  txt = '';
+  $("#display_condition1").find('input').each(function(e){ 
+      if($(this).text()!='Clear')
+        txt = txt + ' ' + $(this).val();
+    });
+  $(".conditions .and_or").each(function(e){ 
+      andor1 = $(this).find("#andor option:selected").val();
+
+      // injecting hidden <p> which will be used later select and/or during page revisit
+      $(this).find("#andor_save").each(function(e,obj){$(obj).remove();});
+
+      $(this).append("<p id='andor_save' style='display:none'>"+andor1+"</p>");
+      andor1_input = '';
+
+      $(this).parent().find("input").each(function(e,obj){
+        if($(this).val()!='Clear')
+            andor1_input = andor1_input + ' ' +$(obj).val();
+      });
+      if (andor1_input != '' && andor1_input!='   '){
+        txt = txt + ' ' + andor1 + ' ' + andor1_input;
+      }
+    // });
+  });
+  txt = txt.replace(/\s+/g,' ').trim();
+
+  var entry_logic = txt;
+
+  // exit summary
+  var exit_txt = '';
+  $("#display_condition1_exit").find('input').each(function(e){ 
+      if($(this).text()!='Clear')
+        exit_txt = exit_txt + ' ' + $(this).val();
+    });
+  $(".conditions_exit .and_or").each(function(e){ 
+      andor1 = $(this).find("#andor option:selected").val();
+
+      // injecting hidden <p> which will be used later select and/or during page revisit
+      $(this).find("#andor_save").each(function(e,obj){$(obj).remove();});
+
+      $(this).append("<p id='andor_save' style='display:none'>"+andor1+"</p>");
+      andor1_input = '';
+
+      $(this).parent().find("input").each(function(e,obj){
+        if($(this).val()!='Clear')
+            andor1_input = andor1_input + ' ' +$(obj).val();
+      });
+      if (andor1_input != '' && andor1_input!='   ' && andor1_input.replace(/ /g,'')!=''){
+        exit_txt = exit_txt + ' ' + andor1 + ' ' + andor1_input;
+      }
+    // });
+  });
+  exit_txt = exit_txt.replace(/\s+/g,' ').trim();
+  var exit_logic = exit_txt;
+
+  var take_profit = $('#ip_take_profit').val();
+  var stop_loss = $('#ip_stop_loss').val();
+
+  // advanced parameters
+  var holding_type = adv_holding_type;
+  var chart_type = adv_chart_type;
+  var trading_start_time = adv_trading_start_time;
+  var trading_stop_time = adv_trading_stop_time;
+  var trade_time_given = "False";
+  if(trading_stop_time!=''&&trading_start_time!=''&&trading_stop_time>trading_start_time){
+    trade_time_given = "True";
+  }
+  //----------------------//
+  var html_block = '';//$(".right_main").html();
+
+  var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+
+  // validate input
+  if(algo_name==''){
+    error += 'Stratergy name<br>';
+  }
+  if(position_qty==''){
+    error += 'Quantity<br>';
+  }
+  if(take_profit=='' || take_profit=='0'){
+    error += 'Target profit percentage<br>';
+  }
+  if(stop_loss=='' || stop_loss=='0'){
+    error += 'Target profit percentage<br>';
+  }
+  if(Object.keys(equity_added).length==0){
+    error += 'Equities to run trade with<br>';  
+  }
+  // console.log(take_profit);
+  if(algo_input_valid(algo_name,
+        algo_desc,
+        position_type,
+        entry_logic,
+        exit_logic,
+        take_profit,
+        stop_loss,
+        position_qty)==false)
+  {
+    return false;
+  }
+  if(error!='Complete all the sections, following things you have missed:<br>'){
+
+  }
+  else{
+    params={
+      'algo_uuid':algo_uuid,//.hexEncode(),
+      'algo_name':algo_name,//.hexEncode(),
+      'algo_desc':algo_desc,//.hexEncode(),
+      'position_type':position_type,
+      'position_qty':position_qty,
+      'time_frame':candle_interval,
+      'equities':JSON.stringify(equity_added).hexEncode(), // SYM:SEG
+      'entry_logic':entry_logic,//.hexEncode(),
+      'exit_logic':exit_logic,//hexEncode(),
+      'take_profit':take_profit,
+      'stop_loss':stop_loss,
+      'html_block':html_block,
+      'min_candle_freq':min_candle_freq,
+      // advanced parameters
+      'holding_type':holding_type,
+      'chart_type':chart_type,
+      'trade_time_given':trade_time_given,
+      'trading_start_time':trading_start_time,
+      'trading_stop_time':trading_stop_time,
+      'csrfmiddlewaretoken':csrfmiddlewaretoken
+    };
+    $.post('/submit_algorithm/',params,function(data){
+      if(data['status']){
+        // window.location = '/test';
+        var redirect = '/backtests/';
+        delete params["html_block"];
+        if(data['algo_uuid']!=undefined && data['algo_uuid']!='')
+          params['algo_uuid']=data['algo_uuid'];
+          var ga_eq = JSON.stringify(equity_added).split(",").length;
+          if(submit_algo_type == 'new'){
+            // alert(submit_algo_type);
+            try{
+              ga('send', {hitType: 'event', eventCategory: 'Algo saved', eventAction: 'Submit new algo', eventLabel: 'Create page', eventValue: ga_eq});
+            }catch(e){
+              
+            }
+          }
+          else if(window.location.href.indexOf('#sample')>-1){
+            try{
+              ga('send', {hitType: 'event', eventCategory: 'Algo saved', eventAction: 'Submit sample algo', eventLabel: 'Sample algo page', eventValue: ga_eq});
+            }catch(e){
+              
+            }
+          }
+          else if(submit_algo_type == 'edit'){
+            try{
+              ga('send', {hitType: 'event', eventCategory: 'Algo saved', eventAction: 'Submit edited algo', eventLabel: 'Edit page', eventValue: ga_eq});
+            }catch(e){
+              
+            }
+            // alert(submit_algo_type);
+          }
+          else{
+            // alert(submit_algo_type);
+            try{
+              ga('send', {hitType: 'event', eventCategory: 'Algo saved', eventAction: 'Submit similar algo', eventLabel: 'Create similar page', eventValue: ga_eq});
+            }catch(e){
+              
+            }
+          }
+          $.redirectPost(redirect, params);
+      }
+      else{
+        // handle any error from save algorithm
+        show_snackbar(null,data['error'].join('<br>'));
+        $(".loader_parent").fadeOut();
+      }
+    }).fail(function() {
+      $(".loader_parent").fadeOut();
+      show_snackbar(null,"Some error occured during saving, please try again.");
+    });
+    close_popup();
+    // $(".loader_parent").fadeOut();
+  }
+}
+
+function refresh_toolbar(){
+    pref_loader(pref_data);
+}
+
+function custom_click(ev,event){
+  console.log('custom_click');
+  var searched = false;
+  var search_target = null
+  if (ev.target == null)
+    {
+      ev.target = ev.currentTarget;
+      searched = true;
+      search_target = event.target;
+    }
+  var ele_class = ev.target.className;
+  var ele_class_list = ev.target.classList; // ['ti','ti_tags']
+  var data = ev.target; // 'sma'
+  var bool_ti = false
+
+  if (ele_class_list.contains == null)
+    bool_ti = ele_class_list.includes('ti')
+  else
+    bool_ti = ele_class_list.contains('ti')
+
+  if(bool_ti){
+    ti_popup_show5(js_parsing_tree.main.indicator[data.id],ev,data.id,searched,search_target);
+  }
+  else{
+    condition_div = $('.display_condition');
+    right_div = null;
+    right_span = null;
+
+    r = parseInt(Math.random()*100);
+
+    right_div = condition_div[parseInt(cursor_loc/3)];
+    if(cursor_loc>=3)
+      right_span = $(right_div).find("div")[cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[cursor_loc%3];
+    
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    r = parseInt(Math.random()*100);
+
+    try{
+      // $(right_span).find('input').autocomplete("destroy");
+      // $(right_span).find('input').removeData("autocomplete");
+    }
+    catch(e){}
+
+    $(right_span).find('input')[0].id = data.id+'__'+r;
+    // $(right_span).text(data['name']);
+    $(right_span).addClass(data['class']);
+    // $(right_span).html('&nbsp;'+js_parsing_tree.main.comparator[data.id]['name']+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+data.id+'__'+r+'\')">'); 
+    $(right_span).find('input').val(js_parsing_tree.main.comparator[data.id]['syntax']);
+    $(right_span).find('input').attr('data-val-text',js_parsing_tree.main.comparator[data.id]['syntax']);
+    // $(right_span).find('input').attr('readonly','');  
+    // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+    $(right_span).attr('data-params',data.id);
+
+    if(data['function_group']=='Condition')
+      cursor_loc += 3;
+    else
+      cursor_loc += 1;
+
+    // lastest_item.shift();
+    // lastest_item.push(js_parsing_tree.main.comparator[data.id]);
+    refresh_toolbar();
+    if(cursor_loc==0 || cursor_loc%3!=0){
+      show_prompter_text(); 
+    }else{
+      // $('.prompter_text').hide()
+    }
+  }
+  // if(condition_div.length==parseInt(cursor_loc/3))
+  //  {
+  //    $('.another_condition').hide()
+  //    insert_condition2();
+  //    condition_div = $('.display_condition');
+  //  }
+}
+
+$.extend(
+{
+    redirectPost: function(location, args)
+    {
+        var form = '';
+        $.each( args, function( key, value ) {
+            form += '<input type="hidden" name="'+key+'" value="'+value+'">';
+        });
+        form = $('<form action="'+location+'" method="POST">'+form+'</form>');
+        $(document.body).append(form);
+        form.submit();
+    }
+});
+
+function remove_id(id){
+  // $('#'+id).hide();
+  // $("#"+id).remove();
+  $("#"+id).empty();
+  $("#"+id).html('&nbsp;&nbsp;Indicator&nbsp;&nbsp;');
+  cursor_loc -= 1;
+  if(cursor_loc<0){
+    cursor_loc = 0
+  }
+  refresh_toolbar();
+}
+
+function replace_indicator(content, id, ele_class){
+  var content = content;
+  var id = id;
+  var ele_class = ele_class;
+  // alert("I'm here"+content+ele_class);
+  if(ele_class.split(' ').includes('ti')){
+  $("#drag_tech_elements").append("<span draggable='true' ondragstart='drag(event);' class='ti' id='"+id+"'> "+content+"</span>");
+  }
+  else{
+  $("#drag_comp_elements").append("<span draggable='true' ondragstart='drag(event);' class='co' id='"+id+"'> "+content+"</span>");
+  } 
+}
+
+function get_suggestions_exit(section){
+  resp = []
+  if (section=='ti')
+    {
+      var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+      params = {
+        'csrfmiddlewaretoken':csrfmiddlewaretoken
+      };
+      $.get('/load_preference/', params,function(data) {
+      // alert(data);
+        pref_data = data;
+        if(data['status']){
+          ti_pref = pref_data['ti_indicators'];
+          ti_pref = arrayUnique(ti_pref.concat(default_preferences.drag_container2_ti));
+          for(var i=0;i<ti_pref.length;i++){
+
+            key = ti_pref[i];
+            item = js_parsing_tree.main.indicator[key];
+
+            if(exit_cursor_loc%3==1 && !exit_third_cleared_flag) { 
+              // first indicator has been placed so nothing should be done
+              // resp.append([])
+            }
+            else if(exit_cursor_loc%3==2 && !exit_latest_indicator['allowed_comparision'].includes(item['function_group']) && !exit_third_cleared_flag){
+              // the following Indicator is not supported
+            }
+            else if(exit_third_cleared_item && exit_third_cleared_flag && exit_third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+              resp.push([key,item.description])
+            }
+            else{
+              // results = [['sma','Simple moving average']]
+              // the following Indicator is not supported
+              resp.push([key,item.description])
+            }
+          }
+        }
+        return resp;
+      }).fail(function(){
+        x = default_preferences.drag_container2_ti;
+        for(var i=0;i<x.length;i++){
+          key = x[i];
+          item = js_parsing_tree.main.indicator[key];
+          resp.push([key,item])
+        }
+        return resp;
+      })
+
+    if (pref_data != null){
+        ti_pref = pref_data['ti_indicators'];
+        ti_pref = arrayUnique(ti_pref.concat(default_preferences.drag_container2_ti));
+        for(var i=0;i<ti_pref.length;i++){
+
+          key = ti_pref[i];
+          item = js_parsing_tree.main.indicator[key];
+
+          if(exit_cursor_loc%3==1 && !exit_third_cleared_flag){
+            // first indicator has been placed so nothing should be done
+            // resp.push([])
+          }
+          else if(exit_cursor_loc%3==2 && !exit_latest_indicator['allowed_comparision'].includes(item['function_group']) && !third_cleared_flag){
+            // the following Indicator is not supported
+          }
+          else if(exit_third_cleared_item && exit_third_cleared_flag && exit_third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+              resp.push([key,item.description])
+            }
+          else{
+            // results = [['sma','Simple moving average']]
+            // the following Indicator is not supported
+            resp.push([key,item.description])
+          }
+        }
+        return resp
+      } 
+    }
+  if (section=='co')
+    {
+      x = default_preferences.drag_container3;
+      for(var i=0;i<x.length;i++){
+        key = x[i];
+        item = js_parsing_tree.main.comparator[key];
+        resp.push([key,item])
+      }
+      return resp;
+    }
+}
+
+// Condition based exit
+function update_autocomplete_all_exit(){
+  $(".search_ti1_exit").each(function(e,obj){
+    if(!$(obj).val())
+      $(obj).autocomplete({
+      source: function(request,response){
+        if(is_the_correct_input_exit(obj,false))
+        {
+          if(request['term']!=undefined && request['term']!=''){
+            params = {'query':request['term'].toLowerCase()}
+            $.get('/autocomplete_indicators2/', params,function(data) {
+              // alert(data);
+              if(data['status']=='success'){
+                response($.map(data['results'], function (el) {
+                  // console.log(el)
+                    // if(exit_cursor_loc>0 && el[0]!='at_price')
+                    if(el[0]!='at_price') // this will not allow exit to have at-price
+                      {
+                      return {
+                         label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                         value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                        };
+                      }
+                    // else if(exit_cursor_loc==0)
+                    //   return {
+                    //      label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                    //      value: el[0].toLowerCase().replace('_',' ')//assumption, symbols and segment name does not have space in between
+                    //     };
+                  })
+                );
+              }
+            });
+          }
+          else{
+            results = get_suggestions_exit('ti');
+            x = $.map(results, function (el) {
+            // console.log(el)
+             // return {
+             //   label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+             //   value: el[0].toLowerCase()//assumption, symbols and segment name does not have space in between
+             //    };
+                // if(exit_cursor_loc>0 && el[0]!='at_price')
+                if(el[0]!='at_price') // this will not allow exit to have at-price
+                  {
+                  return {
+                     label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                     value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                    };
+                }
+                // else if(exit_cursor_loc==0)
+                //   return {
+                //      label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                //      value: el[0].toLowerCase().replace('_',' ')//assumption, symbols and segment name does not have space in between
+                //     };
+              });
+            response(x);
+          }
+        }
+      },    
+      delay: 0,
+      minLength: 0,
+      change: function(event,ui)
+      {
+      if (ui.item==null)
+        {
+        $(obj).val('');
+        $(obj).focus();
+        }
+       $(obj).val('');
+       $(obj).focus();
+       // ui.item.value = "";
+      },
+      select:function(event, ui){
+        // console.log('selected');
+        // console.log(ui['item'])
+        val = ui.item.value.replace(/ /g,'_');
+        item = js_parsing_tree.main.indicator[val];
+        if(exit_cursor_loc==0 && auto_assist==true){
+          console.log('First item selected',item);
+          if(item!=undefined){
+            if(item.class!=undefined && trainer_model[item.class]!=undefined)
+            {
+              if (fill_assist_exit(trainer_model[item.class]))
+              {
+                // auto_assist_class = item.class;
+                $(obj).focusout();
+                $(obj).blur();
+                // //   $(obj).focus();
+                $(obj).autocomplete('close')
+                if(exit_field_to_focus)
+                {
+                  exit_field_to_focus.focus();
+                  exit_field_to_focus = null;
+                }
+                return false;
+              }
+            }
+          }
+        }
+        if(exit_lastest_item.length<1)
+        {
+          ev = {};
+          ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+          custom_click_exit(ev,event);
+        // update_pref(val);
+        }
+        else
+        {
+        // condition_div = $('.input_condition');
+        // right_div = null;
+        // right_span = null;
+        // if(condition_div.length==parseInt(exit_cursor_loc/3))
+
+          exit_latest_indicator = exit_lastest_item[0]
+          // if(exit_latest_indicator['allowed_comparision'].includes(item['function_group']) || (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0 && exit_cursor_loc%3!=0))
+          // {
+            ev = {};
+            ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+            custom_click_exit(ev,event);
+            // update_pref(val);
+          // }
+          // else{
+            // alert('Not applicable here');
+          // }
+        }
+        // $(obj).val('');
+          $(obj).focusout();
+          $(obj).blur();
+          // //   $(obj).focus();
+          $(obj).autocomplete('close')
+          if(exit_field_to_focus)
+            {
+              exit_field_to_focus.focus();
+              exit_field_to_focus = null;
+            }
+          return false;
+        }
+    }).focus(function() {
+        if($(this).data( "ui-autocomplete" )!=undefined)
+        {
+          if(is_the_correct_input_exit(this))
+          {
+            $(this).data( "ui-autocomplete" )._renderItem = ti_render_function;
+            $(this).autocomplete('search', '');
+          }
+        }
+        // return response({label:'sma',value:'SMA'});
+    });
+  });
+  
+  $(".search_co_exit").each(function(e,obj){
+    // if(!$(obj).val())
+    if(true)
+      $(obj).autocomplete({
+        source: function(request,response){
+          if(is_the_correct_input_exit(obj,false))
+          {
+            results = get_suggestions_exit('co');
+            x = $.map(results, function (el) {
+            // console.log(el)
+             return {
+               label: el[1].description.toLowerCase(),//+'<p>'+el[1]+'</p>',
+               value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                };
+              });
+            response(x);
+          }
+        },    
+        delay: 0,
+        minLength: 0,
+        change: function(event,ui)
+        {
+        if (ui.item==null)
+          {
+          $(obj).val('');
+          $(obj).focus();
+          }
+         // $(obj).val('');
+         // $(obj).focus();
+         // ui.item.value = "";
+        },
+        focus: function(event,ui){
+          // if($(this).val()=='' && is_the_correct_input_exit(this))
+          //   exit_cursor_loc +=1 ;
+        },
+        select:function(event, ui){
+          // console.log('selected');
+          // console.log(ui['item'])
+          if(is_the_exactly_correct_input_exit(this))
+            exit_cursor_loc +=1 ;
+          val = ui.item.value.replace(/ /g,'_');
+          item = js_parsing_tree.main.comparator[val];
+          if(exit_lastest_item.length<1)
+          {
+            ev = {};
+            ev['currentTarget']={'className':'co co_tags','classList':['co','co_tags'],'id':val};
+            // custom_click(ev,event);
+          // update_pref(val);
+          }
+          else
+          {
+          // condition_div = $('.input_condition');
+          // right_div = null;
+          // right_span = null;
+          // if(condition_div.length==parseInt(exit_cursor_loc/3))
+
+            exit_latest_indicator = exit_lastest_item[0]
+            // if(exit_latest_indicator['allowed_comparision'].includes(item['function_group']) || (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0))
+            // {
+              ev = {};
+              ev['currentTarget']={'className':'co co_tags','classList':['co','co_tags'],'id':val};
+              // custom_click(ev,event);
+              // update_pref(val);
+            // }
+            // else{
+              // show_snackbar(null,'Not applicable here');
+            // }
+          }
+          $(this).val(val);
+          $(this).attr('data-val-text',ui.item.value);
+          $(this).focusout();
+          $(this).blur();
+          // //   $(obj).focus();
+          // $(obj).autocomplete('close')
+          //   $(obj).focus();
+          return true;
+          }
+      }).focus(function() {
+          if($(this).data( "uiAutocomplete" )._renderItem!=undefined)
+          {
+            if(is_the_correct_input_exit(this))
+            {
+              $(this).data( "uiAutocomplete" )._renderItem = ti_render_function;
+              $(this).autocomplete('search', '');
+            }
+          }
+          // return response({label:'sma',value:'SMA'});
+      }).focusout(function(){
+        if($(this).attr('data-val-text')!='')
+          $(this).val($(this).attr('data-val-text'));
+        // console.log('focusout');
+      });
+  });
+
+  $(".search_ti2_exit").each(function(e,obj){
+    if(!$(obj).val())
+      $(obj).autocomplete({
+        source: function(request,response){
+          if(exit_cursor_loc%3!=2 && !exit_third_cleared_flag){
+           return [];
+          }
+          if(is_the_correct_input_exit(obj,false))
+          {
+            if(request['term']!=undefined && request['term']!=''){
+              params = {'query':request['term'].toLowerCase()}
+              $.get('/autocomplete_indicators2/', params,function(data) {
+                // alert(data);
+                if(data['status']=='success'){
+
+                  exit_latest_indicator = exit_lastest_item[0]
+                  response($.map(data['results'], function (el) {
+                    // console.log(el)
+                    item = js_parsing_tree.main.indicator[el[0].toLowerCase()];
+                    if((exit_latest_indicator['allowed_comparision'].includes(item['function_group']) || (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0))&& !exit_third_cleared_flag){
+                      return {
+                        label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                        value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                      };
+                    }
+                    else if(exit_third_cleared_item && exit_third_cleared_flag && exit_third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+                       return {
+                              label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                              value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                        };
+                      }
+                    })
+                  );
+                }
+              });
+            }
+            else{
+              results = get_suggestions_exit('ti');
+              x = $.map(results, function (el) {
+              // console.log(el)
+              item = js_parsing_tree.main.indicator[el[0].toLowerCase()];
+              exit_latest_indicator = exit_lastest_item[0];
+              if((exit_latest_indicator['allowed_comparision'].includes(item['function_group']) || (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0))&& !exit_third_cleared_flag){
+                return {
+                       label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                       value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                      };
+                    }
+              else if(exit_third_cleared_item && exit_third_cleared_flag && exit_third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+                return {
+                        label: el[0].toUpperCase()+'<p>'+el[1]+'</p>',
+                        value: el[0].toLowerCase().replace(/_/g,' ')//assumption, symbols and segment name does not have space in between
+                      };
+                    }
+                });
+
+              response(x);
+            }
+          }
+        },    
+        delay: 0,
+        minLength: 0,
+        change: function(event,ui)
+        {
+        if (ui.item==null)
+          {
+          $(obj).val('');
+          $(obj).focus();
+          }
+         $(obj).val('');
+         $(obj).focus();
+         // ui.item.value = "";
+        },
+        select:function(event, ui){
+          // console.log('selected');
+          // console.log(ui['item'])
+          val = ui.item.value.replace(/ /g,'_');
+          item = js_parsing_tree.main.indicator[val];
+          if(exit_lastest_item.length<1)
+          {
+            ev = {};
+            ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+            custom_click_exit(ev,event);
+          // update_pref(val);
+          }
+          else
+          {
+          // condition_div = $('.input_condition');
+          // right_div = null;
+          // right_span = null;
+          // if(condition_div.length==parseInt(exit_cursor_loc/3))
+
+            exit_latest_indicator = exit_lastest_item[0]
+            if((exit_latest_indicator['allowed_comparision'].includes(item['function_group']) || (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0))&& !exit_third_cleared_flag)
+            {
+              ev = {};
+              ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+              custom_click_exit(ev,event);
+              // update_pref(val);
+            }
+            else if(exit_third_cleared_item && exit_third_cleared_flag && exit_third_cleared_item['allowed_comparision'].includes(item['function_group'])){
+              ev = {};
+              ev['currentTarget']={'className':'ti ti_tags','classList':['ti','ti_tags'],'id':val};
+              custom_click_exit(ev,event);
+            }
+            else{
+              alert('Not applicable here');
+            }
+          }
+          // $(obj).val('');
+           // $(obj).focusout();
+          //   $(obj).focus();
+          $(obj).focusout();
+          $(obj).blur();
+          // //   $(obj).focus();
+          $(obj).autocomplete('close');
+          if(exit_field_to_focus)
+            {
+              exit_field_to_focus.focus();
+              exit_field_to_focus = null;
+            }
+          return false;
+          }
+      }).focus(function() {
+        if(exit_cursor_loc%3!=2 && !exit_third_cleared_flag && $(this).val()==''){
+          if(exit_cursor_loc%3==0)
+            show_snackbar(null,'Fill the previous indicator and comparator')
+          if(exit_cursor_loc%3==1)
+            show_snackbar(null,'Fill the previous comparator')
+          return false;
+        }
+          if($(this).data( "ui-autocomplete" )!=undefined)
+          {
+            if(is_the_correct_input_exit(this))
+            {
+              $(this).data( "ui-autocomplete" )._renderItem = ti_render_function;
+              $(this).autocomplete('search', '');
+            }
+          }
+          // return response({label:'sma',value:'SMA'});
+      });
+  });
+}
+
+function is_the_correct_input_exit(event,show_msg=true){
+  condition_div = $('.display_condition_exit');
+  expected_div = condition_div[parseInt(exit_cursor_loc/3)];
+  // display_condition_count = parseInt(exit_cursor_loc/3)*2+1;
+  if(exit_third_cleared_flag && exit_third_cleared_loc!=null && exit_third_cleared_loc[0]==event.parentElement){
+    return true;}
+  else if(exit_third_cleared_flag && exit_third_cleared_loc!=null && exit_third_cleared_loc[0]!=event.parentElement){
+    show_snackbar(null,'Fill the previous cleared indicator');
+    return false;
+  }
+  if($(event).val()!='' || $(event).parent().next().find('input').val()!='')
+    return true;
+  if ($(expected_div).index()<$(event.parentElement.parentElement).index() && $(expected_div).index()!=-1){
+    if(show_msg)
+    show_snackbar(null,'Fill all previous fields in conditions');
+    return false;
+  }
+  right_span_count = 0
+  if(exit_cursor_loc>=3)
+      right_span_count = exit_cursor_loc%3+1;
+    else
+      right_span_count = exit_cursor_loc%3;
+  if(right_span_count<$(event.parentElement).index() && $(event.parentElement).index()!= -1){
+    if (exit_cursor_loc%3==0)
+      if(show_msg)
+        show_snackbar(null,'Fill previous indicator');
+    if (exit_cursor_loc%3==1)
+      if(show_msg)
+        show_snackbar(null,'Fill previous comparator');
+    return false;
+  }
+  return true;
+}
+
+function custom_click_exit(ev,event){
+  console.log('custom_click');
+  var searched = false;
+  var search_target = null
+  if (ev.target == null)
+    {
+      ev.target = ev.currentTarget;
+      searched = true;
+      search_target = event.target;
+    }
+  var ele_class = ev.target.className;
+  var ele_class_list = ev.target.classList; // ['ti','ti_tags']
+  var data = ev.target; // 'sma'
+  var bool_ti = false
+
+  if (ele_class_list.contains == null)
+    bool_ti = ele_class_list.includes('ti')
+  else
+    bool_ti = ele_class_list.contains('ti')
+
+  if(bool_ti){
+    ti_popup_show5_exit(js_parsing_tree.main.indicator[data.id],ev,data.id,searched,search_target);
+  }
+  else{
+    condition_div = $('.display_condition_exit');
+    right_div = null;
+    right_span = null;
+
+    r = parseInt(Math.random()*100);
+
+    right_div = condition_div[parseInt(exit_cursor_loc/3)];
+    if(exit_cursor_loc>=3)
+      right_span = $(right_div).find("div")[exit_cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[exit_cursor_loc%3];
+    
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    r = parseInt(Math.random()*100);
+
+    try{
+      // $(right_span).find('input').autocomplete("destroy");
+      // $(right_span).find('input').removeData("autocomplete");
+    }
+    catch(e){}
+
+    $(right_span).find('input')[0].id = data.id+'__'+r;
+    // $(right_span).text(data['name']);
+    $(right_span).addClass(data['class']);
+    // $(right_span).html('&nbsp;'+js_parsing_tree.main.comparator[data.id]['name']+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+data.id+'__'+r+'\')">'); 
+    $(right_span).find('input').val(js_parsing_tree.main.comparator[data.id]['syntax']);
+    $(right_span).find('input').attr('data-val-text',js_parsing_tree.main.comparator[data.id]['syntax']);
+    // $(right_span).find('input').attr('readonly','');  
+    // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+    $(right_span).attr('data-params',data.id);
+
+    if(data['function_group']=='Condition')
+      exit_cursor_loc += 3;
+    else
+      exit_cursor_loc += 1;
+
+    // exit_lastest_item.shift();
+    // exit_lastest_item.push(js_parsing_tree.main.comparator[data.id]);
+    refresh_toolbar();
+    if(exit_cursor_loc==0 || exit_cursor_loc%3!=0){
+      show_prompter_text_exit(); 
+    }else{
+      // $('#prompter_text_exit').hide()
+    }
+  }
+  // if(condition_div.length==parseInt(exit_cursor_loc/3))
+  //  {
+  //    $('.another_condition_exit').hide()
+  //    insert_condition2();
+  //    condition_div = $('.display_condition_exit');
+  //  }
+}
+
+function ti_popup_show5_exit(data,ev,id,searched,search_target){
+    $(".indicator_popup").remove();
+
+    r = parseInt(Math.random()*100); // for being able to modify and remove individual elements
+
+    condition_div = $('.display_condition_exit');
+    right_div = null;
+    right_span = null;
+
+    // if(exit_cursor_loc==0){
+    right_div = condition_div[parseInt(exit_cursor_loc/3)];
+    // right_span = $(right_div).find("div")[exit_cursor_loc%3];
+    if(exit_cursor_loc>=3)
+      right_span = $(right_div).find("div")[exit_cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[exit_cursor_loc%3];
+  
+    if (data==undefined)
+      return
+    var ti_name = data['name'];
+
+    if (data['params'].length==0){
+
+      if(exit_third_cleared_loc!=null && exit_third_cleared_flag){
+          exit_third_cleared_loc.addClass(data['class']);   
+          exit_third_cleared_loc.find('input').id = id+'__'+r;
+          dat = data['syntax'].replace('<offset> <interval> ','').replace('<offset> back ','');   
+          exit_third_cleared_loc.find('input').val(dat);    
+          exit_third_cleared_loc.find('input').attr('data-val-text',js_parsing_tree.main.indicator[id]['syntax']);   
+          exit_third_cleared_loc.find('input').attr('readonly','');    
+          // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");   
+          exit_third_cleared_loc.find('input').attr('data-params',id);    
+          // else{    
+          //   $(right_span.parentElement).next('.another_condition_exit').show();   
+          // }    
+          // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');   
+             
+          // $($(right_span).find('span')).click(custom_click_inplace);   
+          // $(right_span).click(custom_click_inplace);   
+          // exit_third_cleared_loc.find('input').attr('onclick', 'custom_click_inplace_exit(event)');    
+          try{    
+          $(exit_third_cleared_loc.find('input')[0]).autocomplete("destroy")   
+          }   
+          catch(e){   
+               
+          }   
+
+          if(!exit_third_cleared_flag)   
+          {   
+           exit_lastest_item.shift();   
+          exit_lastest_item.push(data);    
+          }   
+          refresh_toolbar();    
+          // footer_updater();    
+          exit_third_cleared_loc = null;   
+          exit_third_cleared_flag = false;   
+          exit_third_cleared_item = null;    
+          if (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0 && section_complete(['ip_take_profit','ip_stop_loss'])){    
+           $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");   
+           $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");   
+           $(".indicator_popup").remove();   
+           footer_updater();   
+          }   
+          // if(exit_cursor_loc==0 || exit_cursor_loc%3!=0){    
+          //   show_prompter_text_exit();    
+          // }else{   
+          //   $('.prompter_text').hide()   
+          // }  
+          footer_updater();   
+          return;
+      }
+
+      // $('.ti_popup div').fadeOut();
+      // $('.ti_popup').fadeOut();
+      $(".indicator_popup").remove();
+      if(condition_div.length==parseInt(exit_cursor_loc/3))
+      {
+        $('.another_condition_exit').hide()
+        insert_condition3_exit(search_target);
+        condition_div = $('.display_condition_exit');
+        right_div = condition_div[parseInt(exit_cursor_loc/3)];
+        right_span = $(right_div).find("div")[exit_cursor_loc%3];
+      }
+      try{
+        $(right_span).find('input').autocomplete("destroy");
+        // $(right_span).find('input').removeData("autocomplete");
+      }
+      catch(e){}
+      $(right_span).find('input').id = id+'__'+r;
+      $(right_span).addClass(data['class']);
+          // $(right_span).html('&nbsp;'+js_parsing_tree.main.comparator[data.id]['name']+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+data.id+'__'+r+'\')">');
+      dat = data['syntax'].replace('<offset> <interval> ','').replace('<offset> back ','');
+      $(right_span).find('input').val(dat);
+      $(right_span).find('input').attr('data-val-text',dat);
+      $(right_span).find('input').attr('readonly',''); 
+      // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+      $(right_span).attr('data-params',id);
+
+      if(data['function_group']=='Condition'||data['function_group']=='Candle Pattern')
+        exit_cursor_loc += 3;
+      else
+        exit_cursor_loc += 1;
+
+      refresh_toolbar()
+      if (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0 && section_complete(['ip_take_profit','ip_stop_loss'])){
+        $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+        footer_updater();
+      }
+      if(!exit_third_cleared_flag)
+      {   
+        exit_lastest_item.shift();
+        exit_lastest_item.push(data);
+      }
+    }
+    else{
+      if(searched==true){
+        $(search_target).after("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>");
+      }
+      else{
+        $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>").insertAfter(ev.target);
+      }
+      $('.indicator_popup_body').append("<p id='ti_name'>"+ti_name+"</p>");
+      $('.indicator_popup_body').append("<div id='ti_populate'></div>");
+
+      for(var i=0;i<data['params'].length;i++){
+        row = "<div class='field'>";
+
+        if(data['params'][i][0]=='offset')
+          row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][3].replace(/_/g,' ')+"</p>";
+        else
+          row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][0].replace(/_/g,' ')+"</p>";
+
+        if(data['params'][i][0]=='range_percentage')
+          row += '<input id="'+data['params'][i][0]+r+'" type="number" name="" step="'+data['params'][i][4]+'" min="0" value='+ data['params'][i][1]+'>';
+        else if(data['params'][i][0]=='interval')
+          row += '<input list="intervals" id="'+data['params'][i][0]+r+'"type="text" name="myText" value="'+data['params'][i][1]+'"><datalist id="intervals"><option value="min"><option value="5min"><option value="15min"><option value="30min"><option value="hour"><option value="day"></datalist>';
+        else if(data['params'][i][3]=='dropdown'){
+          row += '<li class="popup_dropdown_li" id="'+data['params'][i][0]+r+'" onclick="popup_dropdown_li_click(event)" data-selected="'+data['params'][i][1]+'"><p style="color: #192024;">'+data['params'][i][1]+'</p><ul>';
+          var candle_type = interval_mapping[$("#ip_interval").val()];
+          for(var d=0;d<data['params'][i][4].length;d++)
+            {
+              if(candle_freq_map[data['params'][i][4][d]]==undefined)
+              {
+                row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+              else
+              {
+                if (candle_freq_map[data['params'][i][4][d]] <= candle_freq_map[candle_type])
+                  row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+            }
+          row += '</ul></li>';
+        }
+        else
+          row += '<input id="' + data['params'][i][0]+r+'" type="number" name="" step="1" min="0" value='+ data['params'][i][1]+' onfocus="this.value = this.value;">';
+
+
+        row += '</div>';
+        $("#ti_populate").append(row);
+        if(i==0)
+          exit_field_to_focus = $("#"+data['params'][i][0]+r)
+      }
+      $('.indicator_popup_body').append("<div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div>");
+      $('.indicator_popup_body').focus();
+
+      $('.done').unbind('click');
+      if(searched==true)
+        $('.done').click(function(event){ti_done3_exit(data,r,ev,id);update_pref(id.toLowerCase());});
+      else
+        $('.done').click(function(event){ti_done3_exit(data,r,ev,id);});
+      $(".ti_cancel").click(function(){
+          $(".indicator_popup").remove();
+      });
+
+    }
+    $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+          $(".indicator_popup").remove();
+      });
+}
+
+function clear_condition_first_exit(e){
+  // $(e.target.previousSibling.parentElement.parentElement.previousSibling).find('.another_condition').show();
+  // $(e.target.previousSibling.parentElement.parentElement).remove();
+  if($(e.target.previousElementSibling).html().indexOf('@')){
+
+  }
+  x = e.target.previousElementSibling.previousElementSibling.previousElementSibling.parentNode;
+  $(x).find('div').each(function(e,obj)
+  {
+    if($(obj).find('input').val()!='Indicator' && $(obj).find('input').val()!='Comparator'){
+      if($(obj).find('input').val().indexOf('in range')!=-1)
+        exit_cursor_loc -= 3;
+      else
+        exit_cursor_loc -= 1;
+    }
+    // update_autcomplete(obj);
+  });
+  if(exit_cursor_loc<0){
+    exit_cursor_loc = 0
+  }
+  $(x).html('<div class="input_divs"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" onclick="custom_click_inplace_exit(event)" readonly="readonly"></div><div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit" placeholder="Comparator ex: higher than"></div><div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA" onclick="custom_click_inplace_exit(event)" readonly="readonly"></div><span class="clear" onclick="clear_condition_first_exit(event)">Clear</span>');
+  // if($('.display_condition').length<1)
+    // $('.another_condition').show();
+  if($('.display_condition_exit').length>1){
+    prev_div = $('#display_condition1_exit');
+    all_displays = $('.display_condition_exit');
+    for(var i=1;i<all_displays.length;i++){
+      // prev_div.find('.input_divs').html($(all_displays[i]).find('.input_divs').html());
+      prev_div_inputs = prev_div.find('.input_divs');
+      for(var j=0;j<prev_div_inputs.length;j++){
+        // if($(all_displays[i]).html().indexOf('@')){
+        //   if(j!=0){
+        //     $(prev_div_inputs[j]).find('input').hide();
+        //   }
+        //   if(j==0){
+        //     $($(prev_div_inputs[j]).find('input').parentElement).width('100%');
+        //   }
+        // }
+        // else{
+        //   $(prev_div_inputs[j]).find('input').show();
+        //   $($(prev_div_inputs[j]).find('input').parentElement).width((100/3).toString()+'%');
+        // }
+        if($($(all_displays[i]).find('.input_divs')[j]).find('input').data('tag')=='chart_pattern'){
+          $(prev_div_inputs[j]).find('input').val($($(all_displays[i]).find('.input_divs')[j]).find('input').val());
+          $(prev_div_inputs[j]).attr("placeholder",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("placeholder"));
+          $(prev_div_inputs[j]).attr("class",$($(all_displays[i]).find('.input_divs')[j]).attr("class"));
+          $(prev_div_inputs[j]).find('input').attr("data-val-text",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-val-text"));
+          $(prev_div_inputs[j]).find('input').attr("data-params",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-params"));
+          $(prev_div_inputs[j]).find('input').attr("data-tag",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-tag"));
+
+          // this will remove readonly is the feild is blank
+          if($($(all_displays[i]).find('.input_divs')[j]).find('input').val()=='')
+            $(prev_div_inputs[j]).find('input').removeAttr('readonly');
+          
+          $(prev_div_inputs[j]).next('div').hide();
+          $(prev_div_inputs[j]).next('div').next('div').hide();
+          $(prev_div_inputs[j]).width('100%');
+          
+          // if(j==0){
+          //   for(var m=j+1;m<prev_div_inputs.length;m++){
+          //     $(prev_div_inputs[m]).find('input').val('');
+          //     $(prev_div_inputs[m]).attr("placeholder",$($(all_displays[i]).find('.input_divs')[m]).find('input').attr("placeholder"));
+          //     $(prev_div_inputs[m]).attr("class",$($(all_displays[i]).find('.input_divs')[m]).attr("class"));
+          //     $(prev_div_inputs[m]).find('input').attr("data-val-text",$($(all_displays[i]).find('.input_divs')[m]).find('input').attr("data-val-text"));
+          //     $(prev_div_inputs[m]).find('input').attr("data-params",$($(all_displays[i]).find('.input_divs')[m]).find('input').attr("data-params"));
+
+          //     // this will remove readonly is the feild is blank
+          //     if($($(all_displays[i]).find('.input_divs')[m]).find('input').val()=='')
+          //       $(prev_div_inputs[m]).find('input').removeAttr('readonly');
+          //   }
+          // }
+          j+=2;
+        }
+        else{
+          $(prev_div_inputs[j]).find('input').val($($(all_displays[i]).find('.input_divs')[j]).find('input').val());
+          $(prev_div_inputs[j]).attr("placeholder",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("placeholder"));
+          $(prev_div_inputs[j]).attr("class",$($(all_displays[i]).find('.input_divs')[j]).attr("class"));
+          $(prev_div_inputs[j]).find('input').attr("data-val-text",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-val-text"));
+          $(prev_div_inputs[j]).find('input').attr("data-params",$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-params"));
+          $(prev_div_inputs[j]).find('input').removeAttr("data-tag");
+            //,$($(all_displays[i]).find('.input_divs')[j]).find('input').attr("data-tag"));
+
+          // this will remove readonly is the feild is blank
+          if($($(all_displays[i]).find('.input_divs')[j]).find('input').val()=='')
+            $(prev_div_inputs[j]).find('input').removeAttr('readonly');
+        }
+      }
+      prev_div = $(all_displays[i]);
+    }
+    
+    if($('.display_condition_exit').length==1)
+      {
+        $('.another_condition_exit').show();
+        $('.another_condition_exit p').show();
+      }
+    // else if($('.display_condition').length==2)
+    //  $('.another_condition').show();
+    else{
+      // prev_div.find('.and_or').remove();
+      prev_div.remove();
+      if($('.display_condition_exit').length==1)
+      {
+        // $('.another_condition').show();
+        // $('.another_condition p').show();
+      }
+      else
+      {
+        $($('.display_condition_exit').last()).find('.another_condition_exit').show();
+        $($('.display_condition_exit').last()).find('.another_condition_exit p').show();
+      } 
+      // prev_div.find('.another_condition').show();
+    }
+    update_autocomplete_all_exit();
+  }
+  else{
+    $(x).html('<div class="input_divs"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA"></div><div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit" placeholder="Comparator ex: higher than"></div><div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA"></div><span class="clear" onclick="clear_condition_first_exit(event)">Clear</span>');
+    $(x).next('.another_condition_exit').show();
+    update_autocomplete_all_exit();
+  }
+  footer_updater();
+  refresh_toolbar();
+  exit_third_cleared_flag=false;
+}
+
+function clear_condition_exit(e){
+  // $(e.target.previousSibling).html("<span>Indicator</span><span>Comparator</span><span>Indicator</span>");
+  console.log('clear addition click');
+  x = e.target.previousElementSibling.previousElementSibling.previousElementSibling.parentNode;
+
+  if($(x).find('.indicator_popup_body')[0]!=undefined){
+    return;
+  }
+  $(x).find('div').each(function(e,obj)
+  {
+    // if($(obj).find('input').val()!='Indicator' && $(obj).find('input').val()!='Comparator' && obj.className!="and_or")
+    if($(obj).find('input').val())
+      if($(obj).find('input').val().indexOf('indicator')==-1 && $(obj).find('input').val().indexOf('comparator')==-1 && obj.className!="and_or")
+      {
+        if($(obj).find('input').val().indexOf('in range')!=-1||$(obj).find('input').val().indexOf('is formed')!=-1)
+          exit_cursor_loc -= 3;
+        else
+          exit_cursor_loc -= 1;
+      }
+  });
+
+  if(exit_cursor_loc/3>1)
+    { $(x).find('.another_condition_exit').show();
+      $(x).remove();
+      if($('.display_condition_exit').length==1)
+        {
+          // $('.another_condition').show();
+          // $('.another_condition p').show();
+        }
+      else
+        {
+          $($('.display_condition_exit').last()).find('.another_condition_exit').show();
+          $($('.display_condition_exit').last()).find('.another_condition_exit p').show();
+        }
+    }
+  else if (exit_cursor_loc/3==1)
+    try
+      {
+      $(x).remove();
+      // $('.another_condition').show()
+      if($('.display_condition_exit').length==1)
+        {
+          // $('.another_condition').show();
+          // $('.another_condition p').show();
+        }
+      else
+        {
+          $($('.display_condition_exit').last()).find('.another_condition_exit').show();
+          $($('.display_condition_exit').last()).find('.another_condition_exit p').show();
+        }
+      }
+    catch(e){
+
+    }
+  else{
+    
+  }
+  if(exit_cursor_loc<0){
+    exit_cursor_loc = 0
+  }
+  footer_updater();
+  refresh_toolbar();
+  exit_third_cleared_flag=false;
+}
+
+function clear_third_indicator_exit(event){
+  console.log(event);
+  if(!exit_third_cleared_flag){
+    exit_third_cleared_flag = true;
+    curr_div = $(event.target).parent().closest('div');
+    curr_input = curr_div.find('input');
+    exit_third_cleared_loc = curr_div;
+    if(curr_input.val()!=''){
+      curr_input.val('');
+      curr_input.removeAttr('data-val-text');
+      curr_input.removeAttr('onclick');
+      curr_input.removeAttr('readonly');
+      update_autocomplete_all_exit();
+      first_item_exit = exit_third_cleared_loc.parent().find('div[class*="input_divs"]')[0].classList[1]
+      if (first_item_exit=='close_')
+        first_item_exit = 'close';
+
+      exit_third_cleared_item = js_parsing_tree.main.indicator[first_item_exit];
+      // cursor_loc = cursor_loc - 1;
+      // if(cursor_loc<0){
+      //   cursor_loc = 0
+      // }
+      footer_updater();
+    }
+  }else{
+    show_snackbar(null,'First Complete the previously cleared field');
+  }
+}
+
+function insert_condition3_exit(event){
+  if(exit_cursor_loc!=0 && exit_cursor_loc%3==0 && $('.display_condition_exit').length<(exit_cursor_loc/3+1) && exit_third_cleared_flag==false)
+  {
+    var max_len_cond = 5;
+    try{
+      if(subscription_status.subscription_plan=='premium')
+        max_len_cond = 7;
+      else if(subscription_status.subscription_plan=='ultimate')
+        max_len_cond = 10;
+      else
+        max_len_cond = 5;
+    }
+    catch(e){
+      max_len_cond = 5;
+    }
+    if($('.display_condition_exit').length<max_len_cond){
+      $(event.target).hide();
+      $(".conditions_exit").append('<div class="display_condition_exit" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div><div class="input_divs"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA"></div> <div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit" placeholder="Comparator ex: higher than"></div> <div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA"></div> <span class="clear" onclick="clear_condition_exit(event)">Remove</span></div><div class="another_condition_exit"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+      show_prompter_text_exit();
+      update_autocomplete_all_exit();
+    }
+    else{
+      show_snackbar(null,'You have reached max number of conditions limit');
+    }
+    // else{
+      // $(".conditions_exit").append('<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div><div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Enter indicator1"></div> <div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div> <div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Enter indicator2"></div> <span class="clear" onclick="clear_condition_exit(event)">Remove</span></div><div class="another_condition" style="display:none"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+    // }
+  }
+  else{
+    show_snackbar(null,'Complete the previous condition');
+  }
+}
+
+// function clear_third_indicator_exit(event){
+//   console.log(event);
+//   if(!third_cleared_flag){
+//     third_cleared_flag = true;
+//     curr_div = $(event.target).parent().closest('div');
+//     curr_input = curr_div.find('input');
+//     exit_third_cleared_loc = curr_div;
+//     if(curr_input.val()!=''){
+//       curr_input.val('');
+//       curr_input.removeAttr('data-val-text');
+//       curr_input.removeAttr('onclick');
+//       curr_input.removeAttr('readonly');
+//       update_autocomplete_all()
+//       exit_third_cleared_item = js_parsing_tree.main.indicator[exit_third_cleared_loc.parent().find('div[class*="input_divs"]')[0].classList[1]];
+//       // cursor_loc = cursor_loc - 1;
+//       // if(cursor_loc<0){
+//       //   cursor_loc = 0
+//       // }
+//       footer_updater();
+//     }
+//   }else{
+//     show_snackbar(null,'First Complete the previously cleared feild');
+//   }
+// }
+
+function ti_done3_exit(data,r,ev,id){
+  txt = '';
+
+  syntax = data['syntax'];
+  // syntax = syntax.split(' ');
+
+  var default_value = false;
+  params = [];
+  // probably more effective approach is to loop though params of the item and replace them in syntax 
+  for(var i=0;i<data['params'].length;i++){
+    // if(data['params'][i][0]=='offset'&&data['params'][i][1] == parseInt($('#'+data['params'][i][0]+r).val()))
+    // {
+    //   syntax = syntax.replace('<offset> <interval> ago','');
+    //   syntax = syntax.replace('<interval> back','');
+    //   syntax = syntax.replace('back','');
+    // }
+    if(data['params'][i][3]=='dropdown'){
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).data('selected')!=""){
+        syntax = syntax.replace(re,$(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.'));
+        var param_to_push = $(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.');
+        params.push(param_to_push);
+        if(candle_freq_map[param_to_push]!=undefined)
+          // if(min_candle_freq>candle_freq_map[param_to_push]){
+            min_candle_freq = candle_freq_map[param_to_push];
+          // }
+        }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+    else{
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).val()!=""){
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax_val = $(field_id).val().replace(/^0+/, '').replace(/^\./,'0.');
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax = syntax.replace(re,syntax_val);
+        params.push(syntax_val);
+        }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+  }
+  txt = syntax.replace(',)',')');
+  // txt trimming
+  // if(txt.endsWith('with ')){
+  //  txt.replace('with ','');
+  // }
+
+  $('.ti_popup').hide();
+  $('.ti_popup div').hide();
+  $('#tim_name').empty();
+  $('#ti_populate').find("tr").remove();
+
+  if(txt!='' && txt!=' '){
+    condition_div = $('.display_condition_exit');
+    right_div = null;
+    right_span = null;
+
+    if(condition_div.length==parseInt(exit_cursor_loc/3) && exit_third_cleared_flag==false)
+    {
+      $('.another_condition_exit').hide()
+      insert_condition3_exit(ev);
+      condition_div = $('.display_condition_exit');
+    }
+      // $(this).hide();
+
+    right_div = condition_div[parseInt(exit_cursor_loc/3)];
+    if(exit_cursor_loc>=3)
+      right_span = $(right_div).find("div")[exit_cursor_loc%3+1];
+    else
+      right_span = $(right_div).find("div")[exit_cursor_loc%3];
+    
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    if(exit_third_cleared_loc!=null && exit_third_cleared_flag){
+      exit_third_cleared_loc.addClass(data['class']);
+      exit_third_cleared_loc.find('input').val(txt);
+      exit_third_cleared_loc.find('input').attr('data-val-text',txt);
+      exit_third_cleared_loc.find('input').attr('readonly','');
+      // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+      exit_third_cleared_loc.find('input').attr('data-params',params.join());
+      // else{
+      //   $(right_span.parentElement).next('.another_condition_exit').show();
+      // }
+      // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');
+      
+      // $($(right_span).find('span')).click(custom_click_inplace);
+      // $(right_span).click(custom_click_inplace);
+      exit_third_cleared_loc.find('input').attr('onclick', 'custom_click_inplace_exit(event)');
+      try{
+      $(exit_third_cleared_loc.find('input')[0]).autocomplete("destroy")
+      }
+      catch(e){
+        
+      }
+
+      if(!exit_third_cleared_flag)
+      {
+        exit_lastest_item.shift();
+        exit_lastest_item.push(data);
+      }
+      refresh_toolbar();
+    // footer_updater();
+      exit_third_cleared_loc = null;
+      exit_third_cleared_flag = false;
+      exit_third_cleared_item = null;
+      if (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0 && section_complete(['ip_take_profit','ip_stop_loss'])){
+        $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+        $(".indicator_popup").remove();
+        footer_updater();
+      }
+      // if(exit_cursor_loc==0 || exit_cursor_loc%3!=0){
+      //   show_prompter_text_exit(); 
+      // }else{
+      //   $('.prompter_text').hide()
+      // }
+      footer_updater();
+      return;
+    }
+    // $(right_span).text(data['name']);
+    try{
+      $(right_span).find('input').autocomplete("destroy");
+      // $(right_span).find('input').removeData("autocomplete");
+    }
+    catch(e){
+
+    }
+    $(right_span).find('input').id = id+'__'+r;
+    $(right_span).addClass(data['class']);
+    $(right_span).find('input').val(txt);
+    $(right_span).find('input').attr('data-val-text',txt);
+    $(right_span).find('input').attr('readonly','');
+    // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+    $(right_span).find('input').attr('data-params',params.join());
+    if(txt.indexOf('@')!=-1){
+      $(right_span).next('div').hide();
+      $($(right_span).next('div')).next('div').hide();
+      $(right_span).width('100%');
+      $(right_span.parentElement).next('.another_condition_exit').hide();
+    }
+    if(data['function_group']=='Candle Pattern'){
+      $(right_span).find('input').attr('data-tag',data['tag']);
+      $(right_span).next('div').hide();
+      $($(right_span).next('div')).next('div').hide();
+      $(right_span).width('100%');
+      // $(right_span.parentElement).next('.another_condition').hide(); 
+    }
+    // else{
+    //   $(right_span.parentElement).next('.another_condition_exit').show();
+    // }
+    // $(right_span).html('&nbsp;'+txt+'<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+id+'__'+r+'\')">');
+    
+    // $($(right_span).find('span')).click(custom_click_inplace);
+    // $(right_span).click(custom_click_inplace);
+    $(right_span).find('input').attr('onclick', 'custom_click_inplace_exit(event)');
+
+    if(data['function_group']=='Condition'||data['function_group']=='Candle Pattern')
+      {
+        // $($(right_div).find("span")[exit_cursor_loc%3+1]).remove();
+        // $($(right_div).find("span")[exit_cursor_loc%3+1]).remove();
+        exit_cursor_loc += 3;
+      }
+    else
+      {
+        exit_cursor_loc += 1;
+      }
+
+    if(!exit_third_cleared_flag)
+      {
+        exit_lastest_item.shift();
+        exit_lastest_item.push(data);
+      }
+    refresh_toolbar();
+    exit_third_cleared_flag = false;
+  // footer_updater();
+    if (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0 && section_complete(['ip_take_profit','ip_stop_loss'])){
+      $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      $(".indicator_popup").remove();
+      footer_updater();
+    }
+    if (exit_cursor_loc/3>=1 && exit_cursor_loc%3==0){
+      show_close();
+    }
+    if(exit_cursor_loc==0 || exit_cursor_loc%3!=0){
+      show_prompter_text_exit(); 
+    }else{
+      // $('#prompter_text_exit').hide()
+    }
+    if(exit_cursor_loc%3!=0 || !section_complete(['ip_take_profit','ip_stop_loss'])){
+      $($('.exit_strategy_section div span')[0]).css("background-color", "#FFFFFF");
+      $($('.exit_strategy_section div span')[0]).css("border-color", "#dee7f1"); 
+    }
+  }
+}
+
+function hide_exit_div(e){
+  if(e.target.tagName=='SPAN'||e.target.tagName=='span'){
+    return;
+  }
+  $(e.target.parentElement).attr('style',"margin-bottom: 0px !important;");
+  $(e.target).attr('onclick',"show_exit_div(event)");
+  $(e.target).html('Click to add exit condition<span>(optional)</span>');
+  $('.display_condition_exit').empty();
+  $('.display_condition_exit').hide();
+  $('.another_condition_exit').hide();
+  $('.display_condition_exit').not(':eq(0)').remove();
+  $('.another_condition_exit').not(':eq(0)').remove();
+  $('.another_condition_exit p').show();
+  exit_cursor_loc = 0;
+  exit_shown = false;
+}
+
+function show_exit_div(e){
+  if(e.target.tagName=='SPAN'||e.target.tagName=='span'){
+    return;
+  }
+  // $(e.target.parentElement).attr('style',"margin-bottom: 35px !important;");
+  $(e.target.parentElement).removeAttr('style');
+  $(e.target).attr('onclick',"hide_exit_div(event)");
+  $(e.target).html('Remove exit condition<span>(optional)</span>');
+  $('.display_condition_exit').html('<div class="input_divs"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA"></div><div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit" placeholder="Comparator ex: higher than"></div><div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA"></div><span class="clear" onclick="clear_condition_first_exit(event)">Clear</span>');
+  $('.display_condition_exit').show();
+  $('.another_condition_exit').show();
+  update_autocomplete_all_exit();
+  exit_shown = true;
+  if(auto_assist && auto_assist_class && exit_cursor_loc==0){
+    fill_assist_exit();
+  }
+}
+
+function show_prompter_text_exit(){
+  // $('#prompter_text_exit').hide();
+  // $('#prompter_text_exit').empty();
+  // $('#prompter_text_exit').show();
+  // if(exit_cursor_loc%3==1){
+  //   $('#prompter_text_exit').html("<p>Add a Comparator<span>(Hint)</span></p>");
+  // }
+  // else{
+  //   $('#prompter_text_exit').html("<p>Add an Indicator<span>(Hint)</span></p>");
+  // }
+}
+
+function custom_click_inplace_exit(ev){
+  // TODO for editing varaible on click
+  var ele_class = ev.currentTarget.className;
+  var ele_class_list = ev.currentTarget.classList; // ['ti','ti_tags']
+  var data = ev.currentTarget.parentElement; // 'sma'
+  var bool_ti = true;
+
+  // if (ele_class_list.contains == null)
+  //  bool_ti = ele_class_list.includes('ti')
+  // else
+  //  bool_ti = ele_class_list.contains('ti')
+
+  if(bool_ti){
+    if (data.classList[data.classList.length-1]=='close_')
+      data.classList[data.classList.length-1] = 'close';
+    ti_popup_show_inplace3_exit(js_parsing_tree.main.indicator[data.classList[data.classList.length-1]],ev,data.id);
+    footer_updater();
+  }
+}
+
+function ti_popup_show_inplace3_exit(data,ev,id){
+
+  $(".indicator_popup").remove();
+
+  condition_div = $(ev.currentTarget);
+  right_div = null;
+  right_span = null;
+
+  [key,r] = ev.currentTarget.id.split('__');
+
+  // if(cursor_loc==0){
+  right_div = $(ev.currentTarget);
+  right_span = $(ev.currentTarget);
+  // }
+  
+  if (data==undefined)
+    return
+  var ti_name = data['name'];
+
+  if (data['params'].length==0){
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    // right_span.id = id+'__'+r;
+    $(right_span).text(data['name']);
+    $(right_span).addClass(data['class']);
+    $(right_span).append('&nbsp;<img width=10px height=10px src="/static/imgs/close.png" onclick="remove_id(\''+key+'__'+r+'\')">');
+    cursor_loc += 1;
+  }
+  else{
+    $("<div class='indicator_popup' id='indicator_popup'><div class='close_indicator_popup'><img src='/static/imgs/new/close.svg'></div><div class='indicator_popup_body'></div></div>").insertAfter(ev.target);
+      $('.indicator_popup_body').append("<p id='ti_name'>"+ti_name+"</p>");
+      $('.indicator_popup_body').append("<div id='ti_populate'></div>");
+
+    $(".close_indicator_popup img, .ti_cancel, .done").click(function(){
+          $(".indicator_popup").remove();
+      });
+    field_to_focus_local = null;
+    for(var i=0;i<data['params'].length;i++){
+      row = "<div class='field'>";
+      if(data['params'][i][0]=='offset')
+        row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][3].replace(/_/g,' ')+"</p>";
+      else
+        row += "<p style=\"text-transform:capitalize;\">"+data['params'][i][0].replace(/_/g,' ')+"</p>";
+      if(data['params'][i][0]=='range_percentage')
+        row += '<input id="'+data['params'][i][0]+r+'" type="number" name="" step="'+data['params'][i][4]+'" min="0" value='+ data['params'][i][1]+'>';
+      else if(data['params'][i][0]=='interval')
+        row += '<input list="intervals" id="'+data['params'][i][0]+r+'"type="text" name="myText" value="'+data['params'][i][1]+'"><datalist id="intervals"><option value="min"><option value="5min"><option value="15min"><option value="30min"><option value="hour"><option value="day"></datalist>';
+      else if(data['params'][i][3]=='dropdown'){
+          row += '<li class="popup_dropdown_li" id="'+data['params'][i][0]+r+'" onclick="popup_dropdown_li_click(event)" data-selected="'+data['params'][i][1]+'"><p style="color: #192024;">'+data['params'][i][1]+'</p><ul>';
+          var candle_type = interval_mapping[$("#ip_interval").val()];
+          for(var d=0;d<data['params'][i][4].length;d++)
+            {
+              if(candle_freq_map[data['params'][i][4][d]]==undefined)
+              {
+                row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+              else
+              {
+                if (candle_freq_map[data['params'][i][4][d]] <= candle_freq_map[candle_type])
+                  row += '<li onclick="popup_dropdown_li_element_click(event)">'+data['params'][i][4][d]+'</li>';
+              }
+            }
+          row += '</ul></li>';
+        }  
+      else
+        row += '<input id="' + data['params'][i][0]+r+'" type="number" name="" step="1" min="0" value='+ data['params'][i][1]+'>';
+
+      row += '</div>';
+      $("#ti_populate").append(row);
+
+      if(i==0)
+        field_to_focus_local = $("#"+data['params'][i][0]+r)
+    }
+    $('.indicator_popup_body').append("<div class='indicator_popup_buttons'><button type='submit' class='done'>Done <img class='fly' src='/static/imgs/fly.png'></button><button type='submit' class='ti_cancel'>Cancel</button></div>");
+    $('.done').unbind('click');
+    $('.done').click(function(event){ti_done_inplace3_exit(data,ev,id);});
+    $(".ti_cancel").click(function(){
+          $(".indicator_popup").remove();
+      });
+    field_to_focus_local.focus(); 
+  }
+}
+
+function ti_done_inplace3_exit(data,ev,id){
+  txt = '';
+
+  syntax = data['syntax'];
+  // syntax = syntax.split(' ');
+  [key,r] = ev.target.id.split('__');
+  var default_value = false;
+  var params = [];
+  // probably more effective approach is to loop though params of the item and replace them in syntax 
+  for(var i=0;i<data['params'].length;i++){
+    // if(data['params'][i][0]=='offset'&&data['params'][i][1] == parseInt($('#'+data['params'][i][0]+r).val()))
+    // {
+    //   syntax = syntax.replace('<offset> <interval> ago','');
+    //   syntax = syntax.replace('<interval> back','');
+    //   syntax = syntax.replace('back','');
+    // }
+    if(data['params'][i][3]=='dropdown'){
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).data('selected')!=""){
+        syntax = syntax.replace(re,$(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.'));
+        var param_to_push = $(field_id).data('selected').replace(/^0+/, '').replace(/^\./,'0.');
+        params.push(param_to_push);
+        if(candle_freq_map[param_to_push]!=undefined)
+          // if(min_candle_freq>candle_freq_map[param_to_push]){
+            min_candle_freq = candle_freq_map[param_to_push];
+          // }
+        }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+    else{
+      replace_str = '<'+data['params'][i][0]+'>';
+      var re = new RegExp(replace_str,"g");
+      var field_id = ('#'+data['params'][i][0]+r).replace('%','\\%');
+      if($(field_id).val()!="")
+      {
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax_val = $(field_id).val().replace(/^0+/, '').replace(/^\./,'0.');
+        // syntax = syntax.replace(re,$('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        // params.push($('#'+data['params'][i][0]+r).val().replace(/^0+/, '').replace(/^\./,'0.'));
+        syntax = syntax.replace(re,syntax_val);
+        params.push(syntax_val);
+      }
+      else{
+        syntax = syntax.replace(re,data['params'][i][1]);
+        params.push(data['params'][i][1]);
+      }
+    }
+  }
+  txt = syntax.replace(',)',')');
+  // txt trimming
+  // if(txt.endsWith('with ')){
+  //  txt.replace('with ','');
+  // }
+
+  $('.indicator_popup').remove();
+
+  if(txt!='' && txt!=' '){
+    condition_div = $(ev.target);
+    right_div = null;
+    right_span = $(ev.target);
+
+    // if(condition_div.length==parseInt(cursor_loc/3))
+    // {
+    //  $('.another_condition_exit').hide()
+    //  insert_condition2();
+    //  condition_div = $('.display_condition_exit');
+    // }
+      // $(this).hide();
+
+    // right_div = condition_div[parseInt(cursor_loc/3)];
+    // right_span = $(right_div).find("span")[cursor_loc%3];
+    
+    $('.ti_popup div').fadeOut();
+    $('.ti_popup').fadeOut();
+
+    // right_span.id = id+'__'+r;
+    // $(right_span).text(data['name']);
+    // $(right_span).addClass(data['class']);
+    $(right_span).val(txt);
+    $(right_span).attr('data-val-text',txt);
+    try
+    {
+      $(right_span).autocomplete("destroy");
+      // $(right_span).find('input').removeData("autocomplete");
+    }
+    catch(e){}
+    $(right_span).attr('readonly','');
+    // $(right_span).attr('style',"color: #192024 !important; font-weight: 400 !important;");
+    $(right_span).attr('data-params',params.join());
+    
+    // $(right_span).click(custom_click_inplace);
+    $(right_span).attr('onclick', 'custom_click_inplace_exit(event)');
+    if(exit_third_cleared_flag && exit_third_cleared_loc.parent().index()==$(ev.target.parentElement.parentElement).index() && third_cleared_loc.index()==$(ev.target.parentElement).index())
+    {
+      exit_third_cleared_flag = false;
+    }
+  }
+  footer_updater();
+}
+
+function is_the_exactly_correct_input_exit(event,show_msg=false){
+  condition_div = $('.display_condition_exit');
+  expected_div = condition_div[parseInt(exit_cursor_loc/3)];
+  // display_condition_count = parseInt(exit_cursor_loc/3)*2+1;
+  if ($(expected_div).index()!=$(event.parentElement.parentElement).index()){
+    if(show_msg)
+      show_snackbar(null,'Fill all previous fields in conditions');
+    return false;
+  }
+  right_span_count = 0
+  if(exit_cursor_loc>=3)
+      right_span_count = exit_cursor_loc%3+1;
+    else
+      right_span_count = exit_cursor_loc%3;
+  if(right_span_count!=$(event.parentElement).index()){
+    if (exit_cursor_loc%3==0)
+      if(show_msg)
+        show_snackbar(null,'Fill previous indicator');
+    if (exit_cursor_loc%3==1)
+      if(show_msg)
+        show_snackbar(null,'Fill previous comparator');
+    return false;
+  }
+  return true;
+}
+
+function show_advanced_section(){
+  var chart_type_maping_rev = {"candlestick":'Candlestick',"heikinAshi":'Heikin-Ashi'};
+  var holding_type_mapping_rev = {'MIS':"MIS","CNC":'CNC/NRML'};
+  $('#ip_holding_type').data('val-text',holding_type_mapping_rev[adv_holding_type]);
+  $('#ip_chart_type').data('val-text',chart_type_maping_rev[adv_chart_type]);
+  $('#trading_start_time').val(adv_trading_start_time);
+  $('#trading_stop_time').val(adv_trading_stop_time);
+  // $("#advanced_options_section").css("display" , "inline-flex");
+  // $('#advanced_options_section').slideToggle('fast', function() {
+  //   if ($(this).is(':visible')){
+  //     alert($(this).is(':visible'));
+  //       $(this).css('display','inline-flex');
+  //   }
+  // });
+  if($("#advanced_options_section").css("display") == "none"){
+      $("#advanced_options_section").css('display','inline-flex');
+      $("#advanced_section").addClass('advanced_section_clicked');
+    }
+ else {
+      $("#advanced_options_section").css('display','none');
+      $("#advanced_section").removeClass('advanced_section_clicked');
+    }
+    // $(".advanced_section_popup").show();
+    // $("body").addClass('body_scroll');
+}

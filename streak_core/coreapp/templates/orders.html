@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Orders {% endblock %}
+{% block page_css1 %} <link href="/static/css/orders.css?v=2.5" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/orders.js?v=2.6"></script> {% endblock %}
+{% block page_js6 %}<script type="text/javascript" src="/static/js/chart.bundle.min.js"></script><script type="text/javascript">
+ $(document).ready(function() {
+});
+	</script> 
+{% endblock %}
+{% block page_js7 %}<script src="/static/js/product_tour_orders.js"></script>{% endblock %}
+{% block body %}
+<div class="warning_box" id="warning_box" style="display: none !important;">
+    <div>
+      <!-- <img src="/static/imgs/subscription-flag.png"> -->
+      <p id="warning_message">We are upgrading our servers for deployed strategies, you might experience some delays on alerts.</p>
+    </div>
+  </div>
+  <div class="orders_main_outer">
+  	<div class="deployed_menu">
+			<div class="deployed_menu_body">
+				<p id="waiting_option" onclick="load_waiting();" class="deployed_menu_selected">Waiting</p>
+				<p id="entered_option" onclick="load_entered();">Entered</p>
+				<p id="stopped_option" onclick="load_stopped();">Stopped</p>
+			</div>
+	</div>
+	<div class="orders_main">
+		<div class="header_bar" id="waiting_bar">
+          <div class="hc_p"><p id="waiting_heading_title">Waiting</p>
+          <span class="loading-dots-container" id="">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+	      </div>
+          <div class="search_refresh_container">
+            <input type="text" name="waiting_search_input" id="waiting_search_input" onkeyup="search_waiting()" placeholder="Search">
+            <p class="refresh_bar" onclick="refresh_waiting();"><span><img src="/static/imgs/new/refresh_blue.svg">Refresh</span></p>
+          </div>
+        </div>
+        <div class="header_bar" id="entered_bar" style="display: none;">
+          <div class="hc_p"><p id="entered_heading_title">Entered</p>
+          <span class="loading-dots-container" id="">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+        </div>
+          <div class="search_refresh_container">
+            <input type="text" name="entered_search_input" id="entered_search_input" onkeyup="search_entered();" placeholder="Search">
+            <p class="refresh_bar" onclick="refresh_entered();"><span><img src="/static/imgs/new/refresh_blue.svg">Refresh</span></p>
+          </div>
+        </div>
+        <div class="header_bar" id="stopped_bar" style="display: none;">
+          <div class="hc_p"><p id="stopped_heading_title">Stopped</p>
+          <span class="loading-dots-container" id="">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+        </div>
+          <div class="search_refresh_container">
+            <input type="text" name="stopped_search_input" id="stopped_search_input" onkeyup="search_stopped()" placeholder="Search">
+            <p class="refresh_bar" onclick="refresh_stopped();"><span><img src="/static/imgs/new/refresh_blue.svg">Refresh</span></p>
+          </div>
+        </div>
+            <div class="stop_all_appear animated fadeInDown" style="display: none;!important;">
+                <div class="stop_all_holder">
+                    <button class="stop_all stop_all_disabled" id="deploy" data-tooltip-top="Select strategies to stop" onclick="stop_all_waiting(event)">Stop</button>
+                </div>
+            </div>
+			<div class="orders_top">
+				<div class="orders_top_inner">
+				<!-- <div class="status_select">
+					<select class="algo_status">
+						<option class="live_strategies" value="0" >(Live)</option>
+						<option value="-1">(Stopped)</option>
+						<option value="1">(Archived)</option>
+					</select>
+				</div> -->
+				<div class="live_indicator_detail_title">
+					<p></p>
+				</div>
+				<div class="algo_row_title">
+					<p>Strategies</p>
+				</div>
+				<!-- <div class="deployed_time_title">
+					<p>Deployed at</p>
+				</div> -->
+				<div class="scrip_row_title">
+					<p>Instrument</p>
+				</div>
+				<div class="status_row_title">
+					<p></p>
+				</div>
+				<div class="ltp_row_title">
+					<p>LTP</p>
+				</div>
+				<div class="new_pnl_div_title">
+					<p>P&L</p>
+				</div>
+				<div class="positions_row_title">
+					<p>Position</p>
+				</div>
+				<div class="target_prices_title">
+					<p>Target</p>
+				</div>
+                <div class="checkbox_title">
+                    <input type="checkbox" name="" class="stop_all_checkbox" id="stop_all_checkbox" onclick="select_all(event,$(this))">
+                </div>
+				<div class="menu_dots_title">
+					<p></p>
+				</div>
+			   </div>
+			</div>
+			<div class="orders_right" id="waiting_orders">
+				<!-- <div class="empty_orders_right" style="display: none;">
+	      			<img src="/static/imgs/new/empty/algos-empty.svg">
+	      			<p><a href="/dashboard">No algos</a></p>
+	    		</div> -->
+			</div>
+			<div class="orders_right" id="entered_orders">
+				<!-- <div class="empty_orders_right" style="display: none;">
+	      			<img src="/static/imgs/new/empty/algos-empty.svg">
+	      			<p><a href="/dashboard">No algos</a></p>
+	    		</div> -->
+			</div>
+			<div class="orders_right" id="stopped_orders">
+				<!-- <div class="empty_orders_right" style="display: none;">
+	      			<img src="/static/imgs/new/empty/algos-empty.svg">
+	      			<p><a href="/dashboard">No algos</a></p>
+	    		</div> -->
+			</div>
+	<div class="show_more_eq" onclick="show_more_click()" style="text-align: center;cursor:pointer;display:none"><p>Show more&nbsp;&nbsp;&nbsp;<img src="/static/imgs/icon-dashboard-show-more.png"></p></div>
+</div>
+<!-- <div class="order_log_popup" style="display: none;">
+      <div class="card animated fadeIn">
+          <div class="close_popup"><img onclick="close_order_log_popup();" src="/static/imgs/new/close.svg"></div>
+          <div class="progress_section">
+              <div class="prompter">
+                  
+              </div>
+              <div class="progress_line"></div>
+          </div>
+      </div>
+</div> -->
+<div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<!-- <div class="close_popup"><img onclick="close_order_details_popup();" src="/static/imgs/new/close.svg"></div> -->
+    	<div class="order_details_header">
+    		<!-- <div class="order_name">
+    			<p>CANBK<span>NSE</span></p>
+    			<p>Buy 500 stocks at INR 243. 39</p>
+    		</div>
+    		<div class="order_avg_price">
+    			<p>Avg. Price</p>
+    			<p>243.90</p>
+    		</div>
+    		<div class="order_filled_qty">
+    			<p>Filled Quantity</p>
+    			<p>21 of 50</p>
+    		</div> -->
+    	</div>
+    	<div class="order_details_body">
+    		<!-- <div class="order_details_row">
+    			<div>
+    				<p>Price</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Trigger Price</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Order placed by</p>
+    				<p>YJ3548</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Order Type</p>
+    				<p>Market</p>
+    			</div>
+    			<div>
+    				<p>Product Validity</p>
+    				<p>CNC/DAY</p>
+    			</div>
+    			<div>
+    				<p>Time</p>
+    				<p>2017-10-04 15:56:19</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Order ID</p>
+    				<p>12345678910</p>
+    			</div>
+    			<div>
+    				<p>Exchange order ID</p>
+    				<p>12345678910</p>
+    			</div>
+    			<div>
+    				<p>Exchange Time</p>
+    				<p>2017-10-04 15:56:19</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div class="status">
+    				<p>Status</p>
+    				<p>Rejected</p>
+    			</div>
+    			<div id="status_message">
+    				<p>Exchange order ID</p>
+    				<p>rms:rule: check holdings ,no holdings present for entity account-yj3548 across exchange across segment across product</p>
+    			</div>
+    		</div>-->
+    	</div>
+   	</div>
+</div>
+</div>
+
+<div class="algo_details_popup">
+  <div class="card animated pulse">
+    <div class="close_algo_details_popup"><img onclick="$('.algo_details_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="algo_details_window" id="">
+        <div class="deploy_summary_heading"><p>AlgoTest</p></div>
+        <div class="algo_summary"><p class="entry_heading"><img src="/static/imgs/new/entry.svg"><span>Entry</span></p> <p class="dashboard_condition_summary"> BUY 10 shares when Opening Range(Open,min) lower than Prev N(Low,-1,day) at 1 minute interval using candlestick chart.<br>Enter trade between 00:00 to 23:59</p> <p class="exit_heading"><img src="/static/imgs/new/exit.svg"><span>Exit</span></p> <p class="dashboard_condition_summary"> SELL 10 shares at Stop loss of 1% or Take profit of 1% at 1 minute interval using candlestick chart.<br></p></div>
+      </div>
+  </div>
+</div>
+
+  {% if request.session.first_time_orders %}
+  <script type="text/javascript">
+    var first_time_orders = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_orders');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_orders = "false";
+  </script>
+  {% endif %}
+{% csrf_token %}
+{% endblock %}
+{% block popup_body %}
+    <div class="deploy_header">
+        <div class="close" onclick="close_popup();"><img src="/static/imgs/new/close.svg"></div>
+        <div class="deploy_heading"><p>Deploy</p></div>
+        <div class="deploy_summary_heading"><p>AlgoTest</p></div>
+    </div>
+    <div class="deploy_container">
+    <div class="deploy_summary">
+        <div class="deploy_summary_body">
+            <p class="entry_heading"><img src="/static/imgs/new/entry.svg"><span>Entry</span></p>
+            <p class="condition_summary" id="entry_condition_summary">Buy 50 shares of CANBK if 20Day SMA is greater than 40Day SMA and RSI is greater than 75.</p>
+            <p class="exit_heading"><img src="/static/imgs/new/exit.svg"><span>Exit</span></p>
+            <p class="condition_summary" id="exit_condition_summary">Sell 50 shares of CANBK at Stop loss of 5% or Take profit of 10%.</p>
+            <!-- <p class="interval_heading">Candle interval</p> -->
+            <!-- <p class="condition_summary" id="interval_condition_summary">1 minute</p> -->
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="deploy_fields">
+        <div class="deploy_body">
+            <!-- <div><p>Broker</p></div> -->
+            <!-- <div><p class="zerodha_heading">Zerodha</p></div> -->
+            <div style="display: none;"><select id="ip_broker"><option value='zerodha'>Zerodha</option></select></div>
+            <!-- <div><p>Select your frequency</p></div>
+            <div><select id="ip_frequency">
+                <option value="1">Once</option>
+                <option value="2">Twice</option>
+                <option value="3">Thrice</option>
+                <option value="4">Four times</option>
+                <option value="5">Five times</option>
+            </select></div> -->
+            <div style="margin-top: 0px;"><p class="mis_disclaimer_deploy" id="mis_disclaimer_deploy">All Intraday (MIS) strategies will expire at 3:20 PM (currency futures at 4:30 PM)</p></div>
+            <div><p>Order type</p></div>
+            <div><input id="ip_live_period" value="Intraday (MIS)" data-val-text="Intraday (MIS)" readonly=""></input></div>
+            <div><p>Product</p></div>
+            <div><input id="ip_variety" value="REGULAR" data-val-text="REGULAR" readonly=""></input></div>
+            <div><p data-tooltip-top="Entry and respective Exit of a Strategy is defined as one strategy cycle">Strategy cycle</p></div>
+            <div><input id="ip_frequency" value="2" data-val-text="2" readonly=""></input></div>
+            <!-- <select id="ip_live_period">
+                <option value="1">Intraday (MIS)</option>
+                <option value="30">Overnight (CNC/NRML)</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5 days</option>
+                <option value="7">1 week</option>
+                <option value="30">1 month</option>
+            </select> -->
+        </div>
+    </div>
+    </div>
+    <div class="deploy_footer">
+    <div class="trading_terms"><!-- style="margin-bottom: -5%;" -->
+    <input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required checked>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" onclick="">Trading Terms</a>
+    </div>
+    <button class="deploy_confirm">Confirm</button>
+    </div>
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

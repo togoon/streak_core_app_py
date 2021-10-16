@@ -1,0 +1,62 @@
+- name: Basic setup
+  hosts: all
+  connection: local
+  tasks:
+    - name: Update cache
+      apt:
+        update_cache: yes
+
+    - name: Install python pip
+      apt:
+        name: python-pip
+        state: present
+
+    - name: Install python-virtualenv
+      apt:
+        name: python-virtualenv
+        state: present
+
+    - name: Install python3
+      apt:
+        name: python3
+        state: present
+
+    - name: Install python3 dev
+      apt:
+        name: python3-dev
+        state: present
+
+    - name: Install build essentials
+      apt:
+        name: build-essential
+        state: present
+
+    - name: Install nginx
+      apt:
+        name: nginx-full
+        state: present
+
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        state: present
+
+    - name: Install unzip
+      apt:
+        name: unzip
+        state: present
+
+    - name: Install uwsgi
+      apt:
+        name: uwsgi
+        state: present
+
+    - name: Ensure nginx started
+      service:
+        name: nginx
+        state: started
+
+    - name: Ensure supervisor started
+      service:
+        name: supervisor
+        state: started

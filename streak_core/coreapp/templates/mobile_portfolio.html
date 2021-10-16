@@ -1,0 +1,360 @@
+{% extends 'mobile_base.html' %}
+
+{% block page_title %} | Positions {% endblock %}
+{% block page_css1 %} <link href="/static/css/portfolio.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/portfolio.js"></script> {% endblock %}
+{% block page_js2 %} <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"> // this is for autocomplete </script> {% endblock %}
+{% block page_js3 %} <script src="/static/js/product_tour_portfolio.js"></script> {% endblock %}
+
+{% block body %}
+<script type="text/javascript">
+    console.log($('.notifications'));
+    $('.menu #notification_details').remove();
+    $('#notification_details').show();
+</script>
+<div class="portfolio_outer">
+	<div class="portfolio">
+		<div class="portfolio_menu">
+			<div class="portfolio_menu_header">
+        <div class="header-holder">
+				  <p>Portfolio </p>
+          <span class="loading-dots-container" id="update_top_performance1">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+          <img title="Refresh" data-tooltip-top="Refresh" onclick="refresh_portfolio()" class="refresh" src="/static/imgs/refresh.png">
+        </div>
+        <div class="positions_details_sub_title">
+            <div>
+              <input id="portfolio_platform" value="Streak" readonly="">
+                <!-- <option>All</option>
+                <option>Streak</option>
+              </select> -->
+            </div>
+        </div>
+			</div>
+			<div class="portfolio_menu_body">
+				<p id="positions_option" class="portfolio_menu_selected">Positions</p>
+				<p id="holdings_option">Holdings</p>
+			</div>
+		</div>
+		<div class="portfolio_body">
+			<div id="positions" class="positions">
+				<div class="positions_body">
+					<div class="positions_details_title">
+						<div class="positions_row_product_title"><p>Product</p></div>
+						<div class="positions_row_instrument_title"><p>Instrument</p></div>
+						<div class="positions_row_quantity_title"><p>Qty</p></div>
+						<div class="positions_row_avg_price_title"><p>Avg. Price</p></div>
+						<div class="positions_row_ltp_title"><p>LTP</p></div>
+						<div class="positions_row_pnl_title"><p>P&L</p></div>
+            <!-- <div class="positions_row_change_title"><p>Chg.</p></div> -->
+						<div class="positions_row_change"><p></p></div>
+						<div class="positions_row_order_details_title"><p></p></div>
+					</div>
+					<!-- <div class="positions_details_row">
+						<div class="positions_row_product"><p>NRML</p></div>
+						<div class="positions_row_instrument"><p>CANBK<span>&nbsp;NSE</span><span data-tooltip-top="Looks like you have taken manual positions through Kite" class="exclamatory_mark">!</span></p></div>
+						<div class="positions_row_quantity"><p>+10000</p></div>
+						<div class="positions_row_avg_price"><p>234.56</p></div>
+						<div class="positions_row_ltp"><p>235.73</p></div>
+						<div class="positions_row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="positions_row_change"><p><span class="exit_all" id="exit_all" style="display: none;" onclick="$('.exit_all_popup').show();$('body').addClass('body_scroll');">Exit</span></p></div>
+						<div class="positions_row_order_details"><p onclick="$('.order_details_popup').show();$('body').addClass('body_scroll');">Details<span><img src="/static/imgs/icon-right-grey.png"></span></p></div>
+					</div> -->
+					<div class="positions_total_row">
+						<div class="positions_total">
+							<p>Total&nbsp;</p>
+							<p class="positions_total_pnl" style="color: #bfc7d1;font-weight: 400;">NA</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="empty_positions" style="display: none;">
+      			<img src="/static/imgs/empty-positions.png">
+      			<p>No positions.</p>
+    	</div>
+      <div id="app_positions" class="app_positions">
+        <div class="holdings_body">
+          <!-- <div class="positions_details_row">
+            <div class="positions_row_product"><p>NRML</p></div>
+            <div class="positions_row_instrument"><p>CANBK<span>&nbsp;NSE</span><span data-tooltip-top="Looks like you have taken manual positions through Kite" class="exclamatory_mark">!</span></p></div>
+            <div class="positions_row_quantity"><p>+10000</p></div>
+            <div class="positions_row_avg_price"><p>234.56</p></div>
+            <div class="positions_row_ltp"><p>235.73</p></div>
+            <div class="positions_row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+            <div class="positions_row_change"><p><span class="exit_all" id="exit_all" style="display: none;" onclick="$('.exit_all_popup').show();$('body').addClass('body_scroll');">Exit</span></p></div>
+            <div class="positions_row_order_details"><p onclick="$('.order_details_popup').show();$('body').addClass('body_scroll');">Details<span><img src="/static/imgs/icon-right-grey.png"></span></p></div>
+          </div> -->
+          <div class="positions_total_row">
+            <div class="positions_total">
+              <p>Total&nbsp;</p>
+              <p class="positions_total_pnl" style="color: #bfc7d1;font-weight: 400;">NA</p>
+            </div>
+          </div>
+        </div>
+      </div>
+			<div id="holdings" class="holdings" style="display: none;">
+				<div class="holdings_header">
+					<div class="total_investment">
+						<div class="header_icon">
+							<div><img src="/static/imgs/total_investment.png"></div>
+						</div>
+						<div class="header_content">
+							<p>Total Investment</p>
+							<p>Rs&nbsp;0</p>
+						</div>
+					</div>
+					<div class="current_value">
+						<div class="header_icon">
+							<div><img src="/static/imgs/current_value.png"></div>
+						</div>
+						<div class="header_content">
+							<p>Current Value</p>
+							<p>Rs&nbsp;0</p>
+						</div>
+					</div>
+					<div class="profit_and_loss">
+						<div class="header_icon">
+							<div><img src="/static/imgs/pnl.png"></div>
+						</div>
+						<div class="header_content">
+							<p>Profit / Loss</p>
+							<p class="profit_and_loss_value">Rs&nbsp;0<span></span></p>
+						</div>
+					</div>
+				</div>
+				<div class="holdings_body">
+					<div class="holding_details_title">
+						<div class="row_instrument_title"><p>Instrument</p></div>
+            <!-- <div class="row_quantity_title"><p></p></div> -->
+						<div class="row_quantity_title"><p>Qty</p></div>
+						<div class="row_avg_cost_title"><p>Avg. Cost</p></div>
+						<div class="row_ltp_title"><p>LTP</p></div>
+						<div class="row_current_value_title"><p>Current Val</p></div>
+						<div class="row_pnl_title"><p>P&L</p></div>
+						<div class="row_net_change_title"><p></p></div>
+						<div class="positions_row_change"><p></p></div>
+					</div>
+					<!-- <div class="holding_details_row">
+						<div class="row_instrument"><p>CANBK<span>&nbsp;NSE</span></p></div>
+						<div class="row_quantity"><p>10000</p></div>
+						<div class="row_avg_cost"><p>234.56</p></div>
+						<div class="row_ltp"><p>235.73</p></div>
+						<div class="row_current_value"><p>2357300.00</p></div>
+						<div class="row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="row_net_change"><p>0.02%</p></div>
+						<div class="row_day_change"><p>0.05%</p></div>
+					</div>
+					<div class="holding_details_row">
+						<div class="row_instrument"><p>HDFC_OCT_FUT<span>&nbsp;NSE</span></p></div>
+						<div class="row_quantity"><p>10000</p></div>
+						<div class="row_avg_cost"><p>234.56</p></div>
+						<div class="row_ltp"><p>235.73</p></div>
+						<div class="row_current_value"><p>2357300.00</p></div>
+						<div class="row_pnl"><p class="loss">-15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="row_net_change"><p>0.02%</p></div>
+						<div class="row_day_change"><p>0.05%</p></div>
+					</div>
+					<div class="holding_details_row">
+						<div class="row_instrument"><p>NIFTYFIFTY<span>&nbsp;NSE</span></p></div>
+						<div class="row_quantity"><p>10000</p></div>
+						<div class="row_avg_cost"><p>234.56</p></div>
+						<div class="row_ltp"><p>235.73</p></div>
+						<div class="row_current_value"><p>2357300.00</p></div>
+						<div class="row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="row_net_change"><p>0.02%</p></div>
+						<div class="row_day_change"><p>0.05%</p></div>
+					</div> -->
+				</div>
+			</div>
+			<div class="empty_holdings" style="display: none;">
+      			<img src="/static/imgs/empty-holdings.png">
+      			<p>No current holdings.</p>
+    	</div>
+      <div id="app_holdings" class="app_holdings">
+        <div class="holdings_body">
+        </div>
+        <div class="holdings_header">
+          <div class="total_investment">
+            <div class="header_icon">
+              <div><img src="/static/imgs/total_investment.png"></div>
+            </div>
+            <div class="header_content">
+              <p>Total Investment</p>
+              <p>Rs&nbsp;0</p>
+            </div>
+          </div>
+          <div class="current_value">
+            <div class="header_icon">
+              <div><img src="/static/imgs/current_value.png"></div>
+            </div>
+            <div class="header_content">
+              <p>Current Value</p>
+              <p>Rs&nbsp;0</p>
+            </div>
+          </div>
+          <div class="profit_and_loss">
+            <div class="header_icon">
+              <div><img src="/static/imgs/pnl.png"></div>
+            </div>
+            <div class="header_content">
+              <p>Profit / Loss</p>
+              <p class="profit_and_loss_value">Rs&nbsp;0<span></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+		</div>
+	</div>
+</div>
+<div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<div class="close_popup"><img onclick="close_order_details_popup();" src="/static/imgs/icon-deploy-close.png"></div>
+    	<div class="order_details_header">
+    		<!-- <div class="order_name">
+    			<p>CANBK17OCTFUT</p>
+    			<p>NRML/NFO</p>
+    		</div>
+    		<div class="order_net_qty">
+    			<p>Net Qty</p>
+    			<p>45000</p>
+    		</div>
+    		<div class="order_avg_price">
+    			<p>Avg. Price</p>
+    			<p>243.90</p>
+    		</div>
+    		<div class="order_pnl">
+    			<p>P&L</p>
+    			<p class="profit">+&nbsp;23417.98</p>
+    		</div> -->
+    	</div>
+    	<div class="order_details_body">
+    		<!-- <div class="order_details_row">
+    			<div>
+    				<p>Previous Close</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>LTP</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Day's P&L</p>
+    				<p class="profit">+&nbsp;23543.87</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Buy Qty.</p>
+    				<p>21000</p>
+    			</div>
+    			<div>
+    				<p>Buy Price</p>
+    				<p>234.98</p>
+    			</div>
+    			<div>
+    				<p>Buy Value</p>
+    				<p>6313563.89</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Sell Qty.</p>
+    				<p>-</p>
+    			</div>
+    			<div>
+    				<p>Sell Price</p>
+    				<p>-</p>
+    			</div>
+    			<div>
+    				<p>Sell Value</p>
+    				<p>-</p>
+    			</div>
+    		</div> -->
+    	</div>
+   	</div>
+</div>
+<div class="exit_all_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<div class="close_popup"><img onclick="close_exit_all_popup();" src="/static/imgs/icon-deploy-close.png"></div>
+    	<div class="exit_position animated fadeIn">
+              <p class="stop_heading">Exit now at market</p>
+              <p class="stop_sub_heading">This will terminate all live algos connected to this instrument.</p>
+              <p class="stop_sub_heading" id="exit_algo_names"><span><span></span>&nbsp;Algo 1</span><span><span></span>&nbsp;Algo 1</span>
+              <span><span></span>&nbsp;Algo 1</span></p>
+              <div class="exit_position_section">
+                  <!-- <div class="back">
+                      <p><span onclick="$('.exit_position, .algo_stopped').hide();$('.stop_options').show();"><img src="/static/imgs/icon-back.png">Back</span></p>
+                  </div> -->
+                  <div>
+                      <div class="exit_window">
+                          <div class="exit_header">
+                              <p>Buy 500 stocks at 243.39</p>
+                          </div>
+                          <div class="exit_body">
+                              <div class="exit_options">
+                                  <div>
+                                      <div class="radio_options">
+                                          <div>
+                                              <span id="buy_radio_option"></span>
+                                              <p id="option_selected">CNC</p>
+                                          </div>
+                                          <div>
+                                              <span></span>
+                                              <p>MIS</p>
+                                          </div>
+                                      </div>
+                                      <div class="exit_qty">
+                                          <p>Quantity</p>
+                                          <input type="number" name="">
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <div class="radio_options">
+                                          <div>
+                                              <span></span>
+                                              <p>MKT</p>
+                                          </div>
+                                          <div>
+                                              <span id="buy_radio_option"></span>
+                                              <p id="option_selected">LMT</p>
+                                          </div>
+                                      </div>
+                                      <div class="exit_price">
+                                          <p>Price</p>
+                                          <input type="number" name="">
+                                      </div>
+                                  </div>
+                              </div>
+                              <div>
+                                  <button id="buy" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Buy</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- <div class="algo_stopped animated tada" style="display: none;">
+              <img src="/static/imgs/new/algo_stopped.gif">
+              <p class="stop_heading">Algo stopped</p>
+              <p class="stop_sub_heading">This algo is no longer active.<br><!-- You exited at market price. --></p>
+          </div> -->
+   	</div>
+</div>
+{% if request.session.first_time_portfolio %}
+  <script type="text/javascript">
+    var first_time_portfolio = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_portfolio');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_portfolio = "false";
+  </script>
+{% endif %}
+{% csrf_token %}
+{% endblock %}

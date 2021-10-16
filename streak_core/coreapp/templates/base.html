@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><!-- , user-scalable=no -->
+    {% if 'streak.tech' in request.build_absolute_uri %}
+    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+    {% else %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    {% endif %}
+    <title>Streak{% block page_title %} {% endblock %}</title>
+    {% block meta_keywords %} 
+    <meta name="keywords" content="Streak, Streak Tech, Zerodha Streak, Streak Zerodha, streak.tech, Streak AI, algo trade, algo trade without coding, Streek, Straek, day trading, Zerodha, Kite, backtest, algorithmic trading, trading strategy, trading, investments, trading tool, trading paltform, trading engine,  backtesting tool, backtest on NSE, Live trade NSE, Live algorithmic trading, stock market trading, AI trading, strategizing investments, Streak.ai, Streak, Everyone can algo">
+    {% endblock %}
+    {% block meta_desc %} 
+    <meta name="description" content="Streak is a platform to Algo trade, without coding. You can create, backtest and deploy trading algorithms live in the stock market in a minute.
+    Streak is an extension to Kite - Zerodha's exchange approved platform. Streak enables traders and investors implement their trading strategies written in plain English into executable algorithms that can be backtested on historical data. These algorithms can be deployed to track markets for the trader.">
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@StreakTech">
+    <meta name="twitter:title" content="Streak">
+    <meta name="twitter:description" content="Algo trade, without coding">
+    <!-- <meta name="twitter:creator" content="@author_handle"> -->
+    <meta name="twitter:image" content="https://www.streak.tech/static/imgs/social-logo.png">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Streak" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.streak.tech/static/imgs/social-logo.png" />
+    <meta property="og:description" content="Algo trade, without coding" /> 
+    <meta property="og:url" content="https://www.streak.tech/"/>
+    <!-- <meta property="og:site_name" content="Site Name, i.e. Moz" /> -->
+    <!-- <meta property="fb:admins" content="Facebook numeric ID" /> -->
+    {% endblock %}  
+    <meta name="author" content="Streak AI Technologies Private Limited">
+    
+    <link rel="icon" href="/static/imgs/logo3.ico" type="image" sizes="16x16">
+    <link rel="manifest" href="/static/manifest.json"></link>
+    <script src="/static/js/jquery.min.js"></script>
+    <!-- <script src="/static/js/sweetalert.min.js"></script> -->
+    <link href="/static/css/style.css?v=2.0.9" rel="stylesheet">
+    <!-- <link href="/static/css/sweetalert.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/static/css/jquery-ui.css">
+    <link href="/static/css/Roboto-fonts.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Assistant" rel="stylesheet">
+    <link href="/static/css/animate.min.css" rel="stylesheet">
+    <link href="/static/css/hopscotch.min.css" rel="stylesheet">
+    <script src="/static/js/jquery-ui.min.js"></script>
+    {% block page_css1 %} {% endblock %}
+    {% block page_css2 %} {% endblock %}
+    <script src="/static/js/ticker.js?v=2.2"></script>
+    <script src="/static/js/style_new.js?v=2.8"></script>
+    <script src="/static/js/web_push.js?v=2.3"></script>
+    {% block page_js1 %} {% endblock %}
+    {% block page_js2 %} {% endblock %}
+    {% block page_js3 %} {% endblock %}
+    {% block page_js4 %} {% endblock %}
+    {% block page_js5 %} {% endblock %}
+    {% block page_js6 %} {% endblock %}
+    {% block page_js7 %} {% endblock %}
+    <script src="/static/js/moment.js"></script>
+   <link rel="stylesheet" href="/static/css/jquery-ui.css">
+   <script src="/static/js/hopscotch.min.js"></script>
+   <!-- <script src="/static/js/product_tour.js"></script> -->
+    <script>
+      var uid = "{{request.session.user_uuid}}";
+    </script>
+<!-- Google Analytics -->
+<script>
+var user_is_auth = "{{request.session.user_is_auth|default:False}}";
+var url = window.location;
+var page_location = url.href.split("?").slice(0)[0];
+var page_path = url.pathname;
+var page_title = document.title.split(" ").slice(-1)[0];
+
+// $(document).ready(function(){
+  if ((window.location.hostname != '127.0.0.1') && (window.location.hostname != 'www.streak.ninja') && (window.location.hostname != 'streak.ninja')){
+  window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+  ga('create', 'UA-110056397-1', 'auto', {allowLinker: true});
+  ga('require', 'linker');
+  ga('linker:autoLink', ['streak.tech', 'zerodha.com'], false, true);
+  ga('send', {
+  hitType: 'pageview',
+  page: page_path,
+  location: page_location
+  });
+
+{% if request.session.user_is_auth is True and request.session.user_is_auth  %}
+// adding push notificcation initialization
+initializeUI();
+{% endif %}
+}
+// });
+</script>
+<!-- <script async src='https://www.google-analytics.com/analytics.js'></script> -->
+<script async src='/static/js/analytics.js'></script>
+<!-- End Google Analytics -->
+
+<!-- "" -->
+<script>
+  </script>
+</head>
+{% load name_to_avatar %}
+{% load first_name %}
+<body>
+  {% if request.session.first_time_login %}
+  <script type="text/javascript">
+    var first_time_login = "true";
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_login = "false";
+  </script>
+  {% endif %}
+<div class="block main">
+  {% if request.session.user_is_auth is True and request.session.user_is_auth  %}
+  <div class="flex header">
+    <div class="menu_mobile_show">
+      <ul class="menu">
+        <li class="user_icon" id="mobile_menu_icon"><p>{{request.session.user_name|title}}</p><img src="/static/imgs/new/menu/hamburger4.svg">
+        <ul id="mobile_acc_menu" class="card" style="display: none;">
+        <li id="menu_item_dashboard" class="menu_mobile_show"><a href="/dashboard_metrics" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Dashboard', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/dashboard.svg">Dashboard</a></li>
+        <li id="menu_item_algos" class="menu_mobile_show"><a href="/dashboard" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Algos', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/algos.svg">Strategies</a></li>
+        <li id="menu_item_strategy" class="menu_mobile_show"><a href="/strategy" onclick="ga('send', {hitType: 'event', eventCategory: 'Create/Edit/Create similar', eventAction: 'Create algo', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/create.svg">Create</a></li>
+        <li id="menu_item_backtests" class="menu_mobile_show"><a href="/backtests" onclick="ga('send', {hitType: 'event', eventCategory: 'Backtests', eventAction: 'Backtests', eventLabel: 'Navigation'});"><span><img src="/static/imgs/new/menu/backtests.svg">Backtests</span></a></li>
+        <li id="menu_item_orderlog" class="menu_mobile_show"><a href="/order_log" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Deployed', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/deployed.svg">Deployed</a></li>
+        <li id="menu_item_orderbook" class="menu_mobile_show"><a href="/orderbook" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Orderbook', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/orderbook.svg">Orderbook</a></li>
+        <li id="menu_item_portfolio" class="menu_mobile_show"><a href="/portfolio" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Positions', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/positions.svg">Positions</a></li>
+         <!-- <li class="menu_mobile_show"><a href="/dashboard" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'More icon', eventLabel: 'Navigation'});">More</a></li> -->
+        <li id="my_baskets" style="border-top: 1px solid #f3f3f3;" onclick="my_baskets_load();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Baskets', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/baskets.svg">Baskets</li>
+        <li style="border-top: 1px solid #f3f3f3;"><a href="/myaccount" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Profile', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/profile.svg">Profile</a></li>
+        <li><a id="billing" href="/myaccount#billing" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Billing', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/billing.svg">Billing</a></li>
+        <li id="take_tour_mobile" style="border-top: 1px solid #f3f3f3;" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Take tour', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/take_tour.svg">Take tour</li>
+        <li id="menu_item_videos" class="menu_mobile_show"><a href="https://www.youtube.com/watch?v=fY6UsssNXIU&index=1&list=PLYiYmYGb65i58tAeOaHvA9nQ7IUfkBInT" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Playlist link', eventAction: 'Videos', eventLabel: 'Dropdown menu'});"><img src="/static/imgs/new/menu/videos.svg">Videos</a></li>
+        <!-- <li class="menu_mobile_show"><a href="/help" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Methodology</a></li> -->
+        <!-- <li id="menu_item_help" class="menu_mobile_show"><a href="/help" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Methodology</a></li> -->
+        <li id="menu_item_help" class="menu_mobile_show"><a href="https://help.streak.tech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Manual', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/manual.svg">Manual</a></li>
+        <li id="menu_item_pricing" class="menu_mobile_show"><a href="https://streak.tech/#pricing" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Pricing'});"><img src="/static/imgs/new/menu/pricing.svg">Pricing</a></li>
+        <li id="menu_item_feedback" class="menu_mobile_show" onclick="send_feedback();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Feedback'});"><img src="/static/imgs/new/menu/feedback.svg">Feedback</li>
+        <li><a style="border-top: 1px solid #f3f3f3;" onclick="logout();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Logout', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/logout.svg">Logout</a></li>
+        </ul>
+      </li>
+      </ul>
+    </div>
+  <div class="flex logo">
+  <a id="logo_link" href="/dashboard_metrics" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Home icon', eventLabel: 'Navigation'});">
+    <div class="logo_crisp"><img src="/static/imgs/new/logo.svg"><span id="sub_white" style="">&nbsp;Beta</span></div>
+    <div><p>STREAK<!-- <span>AI</span> <span id="sub">&nbsp;Beta</span> --></p></div>
+  </a>
+  <p id="renewal" style="display: none;"><span><img src="/static/imgs/new/renew.svg"></span>Renews in 3 hours</p>
+  <p id="counter" style="display: none;" data-tooltip-bottom="Daily limits renews in 8 hours"><span></span>45&nbsp;/&nbsp;200 Backtests &nbsp;&nbsp; 5&nbsp;/&nbsp;50 Deploys </p>
+    <p id="trail_period" style="display: none;"><span></span>4 days left - Subscribe</p>
+  </div>
+  <div class="block menu_row">
+   <ul class="menu">
+    <!-- <li id="counter" data-tooltip-bottom="Renews in 3 hours" style="display: none;"><span></span>45 backtests &amp;&nbsp; 5 deploys </li>
+    <li id="trail_period" style="display: none;"><span></span>4 days left - Subscribe</li> -->
+    <li id="menu_item_dashboard" class="menu_mobile_hide"><a href="/dashboard_metrics" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Dashboard', eventLabel: 'Navigation'});">Dashboard</a></li>
+    <li id="menu_item_algos" class="menu_mobile_hide"><a href="/dashboard" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Algos', eventLabel: 'Navigation'});">Strategies</a></li>
+    <li id="menu_item_strategy" class="menu_mobile_hide"><a href="/strategy" onclick="ga('send', {hitType: 'event', eventCategory: 'Create/Edit/Create similar', eventAction: 'Create algo', eventLabel: 'Navigation'});">Create</a></li>
+    <li id="menu_item_backtests" class="menu_mobile_hide"><a href="/backtests" onclick="ga('send', {hitType: 'event', eventCategory: 'Backtests', eventAction: 'Backtests', eventLabel: 'Navigation'});">Backtests</a></li>
+    <li id="menu_item_orderlog" class="menu_mobile_hide"><a href="/order_log" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Deployed', eventLabel: 'Navigation'});">Deployed</a></li>
+    <li id="menu_item_orderbook" class="menu_mobile_hide"><a href="/orderbook" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Orderbook', eventLabel: 'Navigation'});">Orderbook</a></li>
+    <li id="menu_item_portfolio" class="menu_mobile_hide"><a href="/portfolio" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Positions', eventLabel: 'Navigation'});">Positions</a></li>
+    <!-- <li id="menu_item_alerts"><a href="/alerts" class="menu_mobile_hide" onclick="">Alerts</a></li> -->
+    <!-- <li class="more menu_mobile_hide" id="more">More<img src="/static/imgs/icon-more-white.png">
+      <ul id="more_menu" class="card">
+        <li id="saved_bt_screens" onclick="$('.saved_bt_popup').fadeIn();$('body').addClass('body_scroll');">Saved Backtest Screens</li>
+         <li id="my_baskets" onclick="my_baskets_load();">My Baskets</li>
+         <li><a href="/portfolio" onclick="">Positions</a></li>
+         <li><a href="/portfolio" onclick="">Holdings</a></li>
+        <li><a href="/help" onclick="">Help</a></li>
+         <li><a href="/help" onclick="">FAQs</a></li>
+      </ul>
+    </li> --><!-- icon-notification-white -->
+    <li class="notifications" id="notifications"><a href="/alerts"><img src="/static/imgs/new/notification.svg"><span id='notif_count' style="display: none;"></span></a>
+      <ul class="notification_details" id="notification_details" class="card" style="display: none;">
+        <!-- <li>
+          <div class="notif">
+            <div class="notif_first_line">
+              <p class="notif_time_stamp">10:24:09 am</p>
+              <p class="notif_algo_name">Golden crossover</p>
+              <p class="notif_desc">Buy 500 shares of CANBK at 243.39</p>
+            </div>
+            <div class="notif_second_line">
+              <p class="notif_tag">Buy alert</p>
+              <p class="notif_desc">Buy 500 shares of CANBK at 243.39</p>
+            </div>
+          </div>
+          <div class="notif_window">
+            <div class="notif_header">
+              <p>Buy 500 stocks at 243.39</p>
+            </div>
+            <div class="notif_body">
+              <div class="notif_options">
+                <div>
+                  <div class="radio_options">
+                    <div>
+                      <span id="buy_radio_option"></span>
+                      <p id="option_selected">CNC</p>
+                    </div>
+                    <div>
+                      <span></span>
+                      <p>MIS</p>
+                    </div>
+                  </div>
+                  <div class="notif_qty">
+                    <p>Quantity</p>
+                    <input type="number" name="">
+                  </div>
+                </div>
+                <div>
+                  <div class="radio_options">
+                    <div>
+                      <span></span>
+                      <p>MKT</p>
+                    </div>
+                    <div>
+                      <span id="buy_radio_option"></span>
+                      <p id="option_selected">LMT</p>
+                    </div>
+                  </div>
+                  <div class="notif_price">
+                    <p>Price</p>
+                    <input type="number" name="">
+                  </div>
+                </div>
+              </div>
+              <div id="notif_actions">
+                <button id="buy">Buy</button>
+                <button id="cancel">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="notif">
+          <p>10:24 on 24/04/2017</p>
+          <p>Order sent to the exchange&nbsp;<span>Buy 500 stocks at 243.39</span></p>
+          </div>
+        </li>
+        <li>
+          <div class="notif">
+          <p>10:24 on 24/04/2017</p>
+          <p>Order complete partial.&nbsp;<span class="bought">Buy 250 stocks at 244.39</span></p>
+        </div>
+        </li>
+        <li>
+          <div class="notif">
+          <p>10:24 on 24/04/2017</p>
+          <p>Exited position.&nbsp;<span class="sold">Sell 500 stocks at 243.39</span></p>
+          </div>
+        </li> -->
+      </ul>
+    </li>
+      <li class="user_icon menu_mobile_hide" id="user_icon"><p>{{request.session.user_name|first_name|title}}</p>
+      <!-- <img src="/static/imgs/new/profile.svg"> -->
+      <div class="avatar"><span>{{request.session.user_name|name_to_avatar|title}}</span></div>
+        <ul id="acc_menu" class="card" style="display: none;">
+        <li class="menu_mobile_show"><a href="/dashboard" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Algos', eventLabel: 'Navigation'});">Strategies</a></li>
+        <li class="menu_mobile_show"><a href="/order_log" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Deployed', eventLabel: 'Navigation'});">Deployed</a></li>
+         <li class="menu_mobile_show"><a href="/strategy" onclick="ga('send', {hitType: 'event', eventCategory: 'Create/Edit/Create similar', eventAction: 'Create algo', eventLabel: 'Navigation'});">Create</a></li>
+         <!-- <li class="menu_mobile_show"><a href="/dashboard" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'More icon', eventLabel: 'Navigation'});">More</a></li> -->
+         <div class="menu_top_section">
+          <a href="/myaccount">
+           <div style="display: none;"><p><img src="/static/imgs/new/kite.svg">{{request.session.user_broker_id}}</p></div>
+           <div><p>{{request.session.user_email}}</p></div>
+           </a>
+         </div>
+        <li id="my_baskets" style="border-top: 1px solid #f3f3f3;" onclick="my_baskets_load();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Baskets', eventLabel: 'Navigation'});"><span><img src="/static/imgs/new/menu/baskets.svg">Baskets</span></li>
+        <li style="border-top: 1px solid #f3f3f3;"><a href="/myaccount" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Profile', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/profile.svg">Profile</a></li>
+        <li><a id="billing" href="/myaccount#billing" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Billing', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/billing.svg">Billing</a></li>
+        <li id="take_tour" style="border-top: 1px solid #f3f3f3;" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Take tour', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/take_tour.svg">Take tour</li>
+        <!-- <li id="menu_item_help" class="menu_mobile_hide"><a href="/help" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Methodology</a></li> -->
+        <li id="menu_item_videos" class="menu_mobile_hide"><a href="https://www.youtube.com/watch?v=fY6UsssNXIU&index=1&list=PLYiYmYGb65i58tAeOaHvA9nQ7IUfkBInT" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Playlist link', eventAction: 'Videos', eventLabel: 'Dropdown menu'});"><img src="/static/imgs/new/menu/videos.svg">Videos</a></li>
+        <li id="menu_item_help" class="menu_mobile_hide"><a href="https://help.streak.tech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Manual', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/manual.svg">Manual</a></li>
+        <li id="menu_item_pricing" class="menu_mobile_hide"><a href="https://streak.tech/#pricing" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Pricing'});"><img src="/static/imgs/new/menu/pricing.svg">Pricing</a></li>
+        <li id="menu_item_feedback" class="menu_mobile_hide" onclick="send_feedback();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Feedback'});"><img src="/static/imgs/new/menu/feedback.svg">Feedback</li>
+        <li style="border-top: 1px solid #f3f3f3;"><a onclick="logout();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Logout', eventLabel: 'Navigation'});"><img src="/static/imgs/new/menu/logout.svg">Logout</a></li>
+        </ul>
+    </li>
+    <div class="is_auth" style="display: none">{% csrf_token %}</div>
+    <!-- <li class="menu_mobile_hide"><a href="/login" onclick="">Login</a></li>
+    <li class="menu_mobile_hide"><a href="/signup" onclick="">Signup</a></li>
+    <li class="menu_mobile_hide"><a href="/help" onclick="">Help</a></li>
+    <li class="menu_icon menu_mobile_show"><a href="">&nbsp;&nbsp;&nbsp;FirstName</a><img id="menu_icon" class="noSelect" src="/static/imgs/menu.png">
+        <ul id="new_menu" class="card">
+        <li><a href="/login" onclick="">Login</a></li>
+        <li><a href="/signup" onclick="">Signup</a></li>
+        <li><a href="/help" onclick="">Help</a></li>
+        </ul>
+    </li> -->
+   </ul>
+  </div>
+  </div>
+  {% else %}
+  <div class="home_header">
+    <div class="flex home_header_container">
+    <div class="flex home_logo">
+      <a id="home_logo_link" href="/" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Home icon', eventLabel: 'Home Navigation'});">
+        <div><img src="/static/imgs/new/logo.png"><span id="sub">&nbsp;&nbsp;&nbsp;Beta</span><!-- <p>Streak<sub>&nbsp;Beta</sub></p> --></div>
+        <!-- <div><p>STREAK</p></div> -->
+      </a>
+      <a id="home_logo_mobile_link" href="/mobile_landing" onclick="ga('send', {hitType: 'event', eventCategory: 'App_Header', eventAction: 'Home icon', eventLabel: 'Home Navigation'});">
+        <div><img src="/static/imgs/logosvg.svg"><span id="sub" style="">&nbsp;Beta alert app</span></div>
+        <!-- <div><p>STREAK</p></div> -->
+      </a>
+    </div>
+    <div class="block">
+      <ul class="home_menu">
+        <!-- <li><a href="#features" id="feature_option" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Features', eventLabel: 'Home Navigation'});">Features</a></li> -->
+        <li><a href="https://help.streak.tech/" target="_blank" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Home Navigation'});">Help</a></li>
+        <li><a href="https://streak.tech/#pricing" id="feature_pricing" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Pricing', eventLabel: 'Home Navigation'});">Pricing</a></li>
+        <li><a href="/signup" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Home Navigation'});">Sign up</a></li>
+        <!-- <li><a href="/dashboard" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Log in', eventLabel: 'Home Navigation'});">Log In</a></li> -->
+        <!-- <li id="start_free_trial" class="menu_mobile_hide" onclick="log_in_kite();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Start free trial', eventLabel: 'Home Navigation'});">Start Free Trial</li> -->
+        <li class="menu_mobile_hide">
+        <a href="https://streak.tech/broker_login/" class="log_in_kite" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Log in', eventLabel: 'Home Navigation'});"><span><img src="/static/imgs/new/logo.svg"></span><span>Log in to Streak</span></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  {% endif %}
+  <div class="error_box" id="error_box" style="display: none;">
+    <div><p id="error_message">We are experiencing technical difficulties during order placement. You orders might not get tracked today. Do not deploy strategies until we notify you further. We apologize for the inconvenience.</p></div>
+    <div id="error_close" onclick=""><p>Close</p><img src="/static/imgs/close_white.png"></div>
+  </div>
+   <div class="trial_box" id="trial_box" style="display: none;">
+    <div>
+      <img src="/static/imgs/subscription-flag.png">
+      <p id="trial_message">Your free trial is over. Please subscribe to continue using the services.</p>
+      <!-- <p id="trial_message">Your 7 day free trial is over. Please subscribe to continue using the services.</p> -->
+      <button class='start_subscription_popup_btn' onclick="start_subscription_free_popup();">Subscribe</button>
+    </div>
+    <!-- <div id="trial_close" onclick=""><p>Close</p><img src="/static/imgs/close_white.png"></div> -->
+  </div>
+  <!-- <div class="warning_box" id="warning_box" style="display: none;"t>
+    <div>
+      <img src="/static/imgs/subscription-flag.png">
+      <p id="warning_message">We are upgrading our servers for deployment algos, you might experience some delays on alerts.</p>
+    </div>
+  </div> -->
+  <div class="snackbar animated bounceInUp" style="display: none;">
+    <p class="">Your Strategy is live!</p>
+  </div>
+  <div class="block body">
+
+{% block body %}
+{% endblock %}
+<div class="order_log_popup" style="display: none;">
+      <div class="card animated fadeIn">
+          <div class="close_popup"><img onclick="$('.order_log_popup').fadeOut();
+    $('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+          <div class="progress_section_orderlog">
+              <div class="prompter_orderlog">
+                  
+              </div>
+              <div class="progress_line"></div>
+          </div>
+      </div>
+</div>
+<div class="force_stop_popup" style="display: none;">
+      <div class="card animated pulse">
+        <div class="close_popup"><img id="close_orders_popup_div" onclick="close_orders_popup();" src="/static/imgs/new/close.svg"/></div>
+        <div class="stop_options animated fadeIn" style="display: none;">
+          <p class="stop_heading">Stop Strategy</p>
+          <p class="stop_sub_heading">You can choose to close your position at market or exit manually later</p>
+          <div class="options_section">
+            <div>
+              <!-- <button id="keep_positions_open" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Keep positions open</button> -->
+              <button id="keep_positions_open">Keep positions open</button>
+              <p>Stop the strategy and close position manually</p>
+            </div>
+            <div>
+              <button id="exit_positions_now" onclick="$('.stop_options, .algo_stopped').hide();$('.exit_position').show();">Exit positions now</button>
+              <p>Stop the strategy and exit position now at market</p>
+            </div>
+          </div>
+        </div>
+        <div class="exit_position animated fadeIn" style="display: none;">
+          <p class="stop_heading">Stop strategy</p>
+          <p class="stop_sub_heading">Exit now at market</p>
+          <div class="exit_position_section">
+            <div class="back">
+              <p><span onclick="$('.exit_position, .algo_stopped').hide();$('.stop_options').show();"><img src="/static/imgs/icon-back.png">Back</span></p>
+            </div>
+            <div>
+              <div class="exit_window">
+                  <div class="exit_header">
+                      <!-- <p>Buy 500 stocks at 243.39</p> -->
+                  </div>
+                  <div class="exit_body">
+                      <!-- <div class="exit_options">
+                        <div>
+                          <div class="radio_options">
+                              <div>
+                                  <span id="buy_radio_option"></span>
+                                  <p id="option_selected">CNC</p>
+                              </div>
+                              <div>
+                                  <span></span>
+                                  <p>MIS</p>
+                              </div>
+                            </div>
+                            <div class="exit_qty">
+                              <p>Quantity</p>
+                              <input type="number" name="">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="radio_options">
+                              <div>
+                                  <span></span>
+                                  <p>MKT</p>
+                              </div>
+                              <div>
+                                  <span id="buy_radio_option"></span>
+                                  <p id="option_selected">LMT</p>
+                              </div>
+                            </div>
+                            <div class="exit_price">
+                              <p>Price</p>
+                              <input type="number" name="">
+                            </div>
+                        </div>
+                      </div> 
+                      <div>
+                        <button id="buy" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Buy</button>
+                      </div> -->
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="algo_stopped animated" style="display: none;">
+          <img src="/static/imgs/new/algo_stopped.gif">
+          <p class="stop_heading">Strategy stopped</p>
+          <p class="stop_sub_heading">This strategy is no longer active<br><!-- You exited at market price. --></p>
+        </div>
+      </div>
+</div>
+<div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+      <div class="order_details_header">
+      </div>
+      <div class="order_details_body">
+      </div>
+    </div>
+</div>
+  </div>
+<div class="footer_home">
+    <div class="footer_container">
+      <div class="footer_left">
+        <div class="about_streak">
+          <p class="streak_title"><a href="/"><img src="/static/imgs/new/logo.svg"></a></p>
+          <p class="streak_description">Streak
+            <sup>TM</sup></p>
+        </div>
+        <div class="contact_streak">
+          <!-- <p><span><img src="/static/imgs/footer-phone.png"></span>&nbsp;+91 123 456 7891</p> -->
+          <p><span><img src="/static/imgs/footer-mail.png"></span>&nbsp;support@streak.world</p>
+        </div>
+        <!-- <div class="social_streak">
+          <span><a href="https://www.linkedin.com/company/streaktech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Linkedin', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/linkedin.svg"></a></span>
+          <span><a href="https://twitter.com/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Twitter', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/twitter.svg"></a></span>
+          <span><a href="https://www.facebook.com/pg/StreakAI/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Facebook', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/facebook.svg"></a></span>
+          <span><a href="https://www.youtube.com/c/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Youtube', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/youtube.svg" id="youtube"></a></span>
+        </div> -->
+      </div>
+      <div class="footer_right">
+        <div class="footer_terms">
+          <p>
+              <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Terms of use', eventLabel: 'Home Footer'});">Terms of Use</a></span>
+              <span><a href="/privacy" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Privacy policy', eventLabel: 'Home Footer'});">Privacy Policy</a></span>
+              <span><a href="/disclosure" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Risk Disclosure', eventLabel: 'Home Footer'});">Risk Disclosure</a></span>
+            </p>
+        </div>
+        <div class="nse_member">
+          <!-- <p>Zerodha: Member of NSE​ &​ BSE – SEBI Registration no.: INZ000031633 CDSL: Depository services through Zerodha Securities Pvt. Ltd. – SEBI Registration no.: IN-DP-100-2015 Commodity Trading through Zerodha Commodities Pvt. Ltd. MCX: 46025 | NCDEX: 1138 – SEBI Registration no.: INZ000038238</p> -->
+          <div class="social_streak">
+          <span><a href="https://www.linkedin.com/company/streaktech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Linkedin', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/linkedin.svg"></a></span>
+          <span><a href="https://twitter.com/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Twitter', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/twitter.svg"></a></span>
+          <span><a href="https://www.facebook.com/pg/StreakAI/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Facebook', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/facebook.svg"></a></span>
+          <span><a href="https://www.youtube.com/c/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Youtube', eventLabel: 'Home Footer'});"><img src="/static/imgs/new/home/youtube.svg" id="youtube"></a></span>
+        </div>
+        </div>
+        <div class="footer_copyright">
+          <span><a href="/terms#copyright" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Copyright', eventLabel: 'Home Footer'});">© 2019 Streak. All rights reserved.</a></span>
+        </div>
+      </div>
+    </div>
+ <!--  <div class="footer">
+  <p>
+     <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Copyright', eventLabel: 'Footer'});">© 2017 Streak</a></span>
+    <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Terms of use', eventLabel: 'Footer'});">Terms of Use</a></span>
+    <span><a href="/privacy" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Privacy policy', eventLabel: 'Footer'});">Privacy Policy</a></span>
+    <span><a href="/disclosure" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Risk Disclosure', eventLabel: 'Footer'});">Risk Disclosure</a></span>
+  </p>
+</div> -->
+</div>
+</div>
+
+<div class="popup" style="display: none;">
+      <div class="card">
+       <!--  <div class="close" onclick="close_popup();"><img src="/static/imgs/close.png"></div>
+        <div class="popup_body"> -->
+        {% block popup_body%}
+        <!-- <p>Do you want to submit changes to Algorithm?</p> -->
+        {% endblock %}
+         <!--  <video class="card" width="400" controls>
+  <source src="imgs/videos/etnow.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+<video class="card" width="400" controls>
+  <source src="imgs/videos/bloomberg.mp4" type="video/mp4">
+
+  Your browser does not support HTML5 video.
+</video> -->
+        <!-- </div> -->
+        <!-- <div class="popup_buttons">
+          <button type="submit" class="cancel" onclick="close_popup();">Cancel</button>
+          <button type="submit" class="confirm" onclick="{% block onconfirm %}{% endblock %}">{% block confirm %}Confirm{% endblock %}</button>
+        </div> -->
+      </div>
+</div>
+<div class="update_phone_popup" 
+{% if show_phone_popup|default:False %}
+style="display: block;"
+{% else %}
+style="display: none;"
+{% endif %}
+>
+      <div class="card">
+        <div class="close"><img onclick="$('.update_phone_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="update_phone_container">
+    <div class="update_phone_summary">
+    </div>
+    <div class="update_phone_fields">
+        <div class="update_phone_body">
+             <div class="update_phone_heading"><p>Enter your phone number</p></div>
+        <div class="update_phone_summary_heading"><p>Help us serve you better.<br><br>Update your contact number in order for us to reach you.</p></div>
+            <div><input id="update_phone_button" placeholder="Enter 10 digit phone number" maxlength="10" minlength="10"></input></div>
+            <button class="update_phone_button">Submit</button>
+        </div>
+    </div>
+    </div>
+      </div>
+</div>
+<div class="feedback_popup">
+  <div class="card animated pulse">
+    <div class="close_feedback_popup"><img onclick="$('.feedback_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <h1>Feedback</h1>
+    <div class="feedback_details">
+      <p>Describe your issues</p>
+    <textarea onkeyup="validate_feedback();" placeholder="" id="feedback_details_text"></textarea>
+    <button class="send_feedback" data-event="not-clicked" onclick="submit_feedback(event)">Send</button>
+    </div>
+  </div>
+</div>
+<div class="advanced_section_popup">
+  <div class="card animated pulse">
+    <div class="close_advanced_section_popup"><img onclick="$('.advanced_section_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <!-- <p>Advanced</p> -->
+    <div class="advanced_header">
+        <p>Advanced</p>
+        <!-- <p>Customized collections of instruments</p> -->
+    </div>
+    <div class="advanced_options_container">
+      <div class="advanced_row">
+      <div id="labels_for_advanced"><p>Chart type</p><p id='ip_holding_type_title'>Order type</p></div>
+      <div class="advanced_details_row">
+          <!-- <select id="ip_chart_type">
+            <option value="candlestick" selected>Candlestick chart</option>
+            <option value="heikinAshi">Heikin-Ashi chart</option>
+            <option value="renko">Renko chart</option>
+          </select>
+          <select id="ip_holding_type">
+            <option value="MIS" selected>MIS</option>
+            <option value="CNC">CNC/NRML</option>
+          </select> -->
+      </div>          
+    </div>
+    <div class="advanced_row">
+      <div id="labels_for_advanced"><p>Enter trade between</p></div>
+      <div class="advanced_details_row">
+        <input type="time" name="start_time" id="trading_start_time" value="00:00">     
+        <input type="time" name="stop_time" id="trading_stop_time" value="23:59">
+      </div>
+    </div>
+    </div>
+    <div class="advanced_footer">
+        <button onclick="apply_advanced_options();">Apply</button>
+    </div>
+  </div>
+</div>
+<div class="login_required_popup">
+  <div class="card animated pulse">
+    <div class="signup_logo"><img src="/static/imgs/new/logo.svg"></div>
+    <h1>Login to continue</h1>
+    <button class="log_in_kite" onclick="log_in_kite();"><span><img src="/static/imgs/home-kite-logo.png"></span><span>Log in with Kite</span></button>
+    <h1><span class="session_expired">Session expired</span></h1>
+  </div>
+</div>
+<div class="my_baskets_popup" style="display: none;">
+  <div class="card animated pulse">
+    <div class="close_baskets_popup"><img onclick="$('.my_baskets_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="baskets_body">
+      <div class="baskets_header">
+        <p>Baskets</p>
+        <!-- <p>Customized collections of instruments</p> -->
+      </div>
+      <div class="baskets_list">
+        <!-- <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div> -->
+      </div>
+    </div>
+    <div class="baskets_footer">
+        <button onclick="create_basket();">Create basket</button>
+    </div>
+    <div class="create_baskets_body" style="display: none;">
+      <!-- <div class="baskets_header">
+        <p>Create a new basket</p>
+        <p>A collection of my favorite stocks.</p>
+      </div>
+      <div class="create_basket_body">
+        <p>Enter a name</p>
+        <input type="text" name="" id="create_basket_name">
+        <p>Add stocks</p>
+        <input type="text" name="search_eq" id="create_basket_equities_input" placeholder="Add equities to backtest">
+        <div class="equities_list">
+        <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span class="basket_instrument">ICICIBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        </div>
+      </div> -->
+    </div>
+    <div class="create_baskets_footer" style="display: none;">
+        <button class="go_back" onclick="$('.create_baskets_body, .create_baskets_footer').hide();$('.baskets_body, .baskets_footer').fadeIn();">Back</button>
+        <button class="save_basket" onclick="save_basket();">Save</button>
+    </div>
+  </div>
+</div>
+<div class="saved_bt_popup" style="display: none;">
+  <div class="card animated pulse">
+    <div class="close_saved_bt_popup"><img onclick="$('.saved_bt_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+  </div>
+</div>
+<!-- <div class="ti_msg_popup" style="display: none;text-align: center;">    
+  <div class="" style="left: 0px;">    
+    <div class="close" onclick="close_popup();"><img src="/static/imgs/close.png"></div>   
+    <div class="ti_popup_body">   
+    <p class="ti_msg"></p>   
+    </div>    
+    <div class="ti_popup_buttons">    
+      <button type="submit" class="ti_cancel" onclick="close_popup();">Okay</button>    
+    </div>    
+  </div>    --> 
+</div>
+<!-- <div class="ti_popup" style="display: none;">
+      <div class="">
+        <div class="close" onclick="close_popup();"><img src="/static/imgs/close.png"></div>
+        <div class="ti_popup_body">
+        {% block ti_popup%}
+        <p id="ti_name"></p>
+        <table id="ti_populate">
+          <tr>
+            <th>Period</th>
+            <th><input type="number" name=""></th>
+          </tr>
+          <tr>
+            <th>Frequency</th>
+            <th><input type="number" name=""></th>
+          </tr>
+        </table>
+        {% endblock %}
+        </div>
+        <div class="ti_popup_buttons">
+          <button type="submit" class="ti_cancel" onclick="close_popup();">Cancel</button>
+          <button type="submit" class="done" onclick="">Done</button>
+        </div>
+      </div>
+</div> -->
+<div class="welcome_popup" {% if request.session.first_time_login %} 
+  style="display: block;" 
+  {% elif request.session.terms_accepted is False %}
+    style="display: block;"
+  {% else %} 
+    {% if subscription_start_before_login|default:False %} 
+    style="display: block;" 
+    {% endif %}
+  {% endif %}
+>
+  <div class="welcome_message">
+    <!-- <img src="/static/imgs/flame-icon-big.png"> -->
+    <!-- <div class="pricing_plan_image pricing_plan_image0">
+      <img src="/static/imgs/new/home/plan0.svg">
+    </div> -->
+    <!-- <h1>Welcome to Streak</h1> -->
+    <!-- <p>Algo trade, without coding.<br> Create, backtest and deploy algos.</p> -->
+    {% if subscription_start_before_login|default:False and subscription_start_before_login_subscription_plan_id is not -1 %}
+      {% if request.session.terms_accepted is True %}
+        <div class="close_subscription_popup"><img onclick="$('.welcome_popup, .subscription_popup, .subscription_popup_premium, .subscription_popup_ultimate, #cancel_subscription_popup, .pricing_popup, .subscription_successful_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+      {% endif %}
+      <h1>Welcome to Streak</h1>
+      <div class="pricing_plan_image pricing_plan_image{{subscription_start_before_login_subscription_plan_id}}">
+        <img src="/static/imgs/new/home/plan{{subscription_start_before_login_subscription_plan_id}}.svg">
+      </div>
+      <h2>Congratulations, you are now on {{subscription_start_before_login_subscription_plan|title}} monthly plan.</h2>  <!--<h2>Your 7 day trial begins today</h2>--> 
+      <!-- <button onclick="skip_tour();">Jump in!</button> 
+      <p class="skip_tour" onclick="skip_tour();">Jump in!</p> -->
+      {% if request.session.terms_accepted is False %}
+      <p class="read_terms">Kindly read the following Terms of Service carefully. By clicking on "Accept", you acknowledge that you have read, understood and agree to all the terms and conditions set forth below.</p>
+      <div class="terms_of_service">
+       {% include "trading_terms_partial.html" %}
+      </div>
+      <div class="terms_acceptance">
+         <button class="reject_terms" onclick="logout();">Reject</button>
+         <button class="accept_terms" onclick="start_subscription('{{subscription_start_before_login_subscription_plan|default:"basic"}}','first','False',false);accept_terms();">Accept</button>
+       </div>
+      {% else %}
+        <script type="text/javascript">
+        $(document).ready(function(){
+          start_subscription('{{subscription_start_before_login_subscription_plan|default:"basic"}}','first','False');
+        });</script>
+      {% endif %}
+      <!-- <button onclick="start_first_tour();">Start tour</button> -->
+      <!-- <p class="skip_tour" onclick="skip_tour();">Skip tour</p> -->
+    {% elif subscription_start_before_login|default:False is False and request.session.terms_accepted == False and request.session.first_time_login|default:False is False %}
+      <h1>Welcome to Streak</h1>
+      <div class="pricing_plan_image">
+        <img src="/static/imgs/new/logo.svg">
+      </div>
+      <h2>Accept the terms to continue</h2>  <!--<h2>Your 7 day trial begins today</h2>--> 
+      <!-- <button onclick="skip_tour();">Jump in!</button> 
+      <p class="skip_tour" onclick="skip_tour();">Jump in!</p> -->
+      <p class="read_terms">Kindly read the following Terms of Service carefully. By clicking on "Accept", you acknowledge that you have read, understood and agree to all the terms and conditions set forth below.</p>
+      <div class="terms_of_service">
+       {% include "trading_terms_partial.html" %}
+      </div>
+      <div class="terms_acceptance">
+         <button class="reject_terms" onclick="logout();">Reject</button>
+         <button class="accept_terms" onclick="accept_terms();">Accept</button>
+       </div>
+      <!-- <script type="text/javascript">
+      $(document).ready(function(){
+        start_subscription('{{subscription_start_before_login_subscription_plan|default:"None"}}','first','False');
+      });</script> -->
+    {% else %}
+      <h1>Welcome to Streak</h1>
+      <div class="pricing_plan_image pricing_plan_image0">
+        <img src="/static/imgs/new/home/plan0.svg">
+      </div>
+      <h2>Your 7 day free trial begins today</h2>
+      {% if request.session.terms_accepted is False %}
+      <p class="read_terms">Kindly read the following Terms of Service carefully. By clicking on "Accept", you acknowledge that you have read, understood and agree to all the terms and conditions set forth below.</p>
+      <div class="terms_of_service">
+       {% include "trading_terms_partial.html" %}
+      </div>
+      <div class="terms_acceptance">
+         <button class="reject_terms" onclick="logout();">Reject</button>
+         <button class="accept_terms" onclick="accept_terms();">Accept</button>
+       </div>
+      {% endif %}
+      <!-- <button onclick="start_first_tour();">Start tour</button> -->
+      <!-- <p class="skip_tour" onclick="skip_tour();">Skip tour</p> -->
+    {% endif %}
+  </div>
+</div>
+<!-- <div class="subscription_successful_popup">
+  <div class="subscription_successful_popup_message">
+    <div class="close_subscription_successful_popup"><img onclick="$('.subscription_successful_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="pricing_plan_image pricing_plan_image{{subscription_start_before_login_subscription_plan_id}}">
+      <img src="/static/imgs/new/home/plan{{subscription_start_before_login_subscription_plan_id}}.svg">
+    </div>
+    <h1>Congratulations, you subscribed to Premium monthly plan.</h1>
+    <p></p>
+    </div>
+</div> -->
+<!-- <div class="welcome_popup" {% if blocked_login is True %}
+  style="display: block;"
+{% else %}
+  style="display: none;"
+{% endif %}
+>
+  <div class="welcome_message">
+    <img src="/static/imgs/flame-icon-big.png">
+      <h1>Welcome to Streak</h1>
+      <h2>Currently we are in closed beta, we will launch soon.</h2>
+      <button onclick="window.location.href='https://goo.gl/forms/llnIXYHYLDsyShWf2'">Join beta</button>
+      <p class="skip_tour" onclick="skip_tour();">Cancel</p>
+  </div>
+</div> -->
+<div class="subscription_popup">
+  <div class="subscription_message">
+    <div class="close_subscription_popup"><img onclick="$('.subscription_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="pricing_plan_image pricing_plan_image1">
+      <img src="/static/imgs/new/home/plan1.svg">
+    </div>
+    <h1>Why Basic?</h1>
+    <!-- <p>Streak gives <strong>200 backtests and 50 live deployments everyday</strong> for &#8377; 500/- (+ GST) a month <strong>(Free till 30th June 2018)</strong>.</p> -->
+    <div class="subscription_details">
+      <div class="subscription_row">
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs1.svg">
+          <h2>Create strategies in a minute</h2>
+          <div class="subscription_description"><p>Use upto 60 technical indicators to create strategies for any instrument, with zero coding.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs2.svg">
+          <h2>Run upto 200 backtests a day</h2>
+          <div class="subscription_description"><p>Generate performance metrics such as maximum drawdown, average gains, average losses, before risking actual capital.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs3.svg">
+          <h2>Deploy 25 strategies live in the market</h2>
+          <div class="subscription_description"><p>Be it Intraday or Overnight strategies, deploy them all live in the market. <!-- Make use of algo cycles, re-deploy, and stop algo features to stay in control. --></p></div>
+        </div>
+      </div>
+       <div class="subscription_row">
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs4.svg">
+          <h2>Get actionable notifications</h2>
+          <div class="subscription_description"><p>Track multiple instruments based on your strategy's conditions. Take action on notifications with a click, from anywhere.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs5.svg">
+          <h2>Track positions and exit anytime</h2>
+          <div class="subscription_description"><p>Stay in control of all your open positions and deployed strategies, with the flexibility of exiting positions at anytime.</p></div>
+        </div>
+        <div class="subscription_block">
+          <!-- <img src="/static/imgs/new/home/subs6.svg">
+          <h2>Speak to our experts</h2>
+          <div class="subscription_description"><p>Schedule a one on one call for 30 minutes, and get all your questions answered.</p></div> -->
+        </div>
+      </div>
+    </div>
+    <!-- <h2>Your 7 day trial begins today</h2> -->
+    <p class="disclaimer_subscribe" style="margin-bottom: 0px;">&#8377; 500/- (+ GST) per month will be charged from your Zerodha account. <strong> This plan is on autorenew mode, you can cancel anytime.</strong><br>
+    Note: The subscription amount is charged on a monthly basis, not on a pro rata basis and is non-refundable. If you cancel subscription in between the billing cycle, you will not be refunded, however you can continue using the services till the end of the billing cycle.</p>
+    <p class="sub-title"><input type="checkbox" id="start_subscription_checkbox" class="start_subscription_checkbox_class" name="cancel_subscription_checkbox">&nbsp;&nbsp;&nbsp;I have read and agree to the <a href="/terms" target="_blank">Terms</a>.</p>
+    <button class="start_subscription_btn_class" id="start_subscription_btn" data-plan="basic" data-instance="first" data-change="False" onclick="start_subscription('basic','first','False');">Confirm</button>
+    <!-- <p class="skip_tour">Skip tour</p> -->
+  </div>
+</div>
+<div class="subscription_popup_premium" style="display: none;">
+  <div class="subscription_message">
+    <div class="close_subscription_popup_premium"><img onclick="$('.subscription_popup_premium').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="pricing_plan_image pricing_plan_image2">
+      <img src="/static/imgs/new/home/plan2.svg">
+    </div>
+    <h1>Why Premium?</h1>
+    <!-- <p>Streak gives <strong>200 backtests and 50 live deployments everyday</strong> for &#8377; 500/- (+ GST) a month <strong>(Free till 30th June 2018)</strong>.</p> -->
+    <div class="subscription_details">
+      <div class="subscription_row">
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs1.svg">
+          <h2>Create strategies in a minute</h2>
+          <div class="subscription_description"><p>Use upto 60 technical indicators to create strategies for any instrument, with zero coding.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs2.svg">
+          <h2>Run upto 500 backtests a day</h2>
+          <div class="subscription_description"><p>Generate performance metrics such as maximum drawdown, average gains, average losses, before risking actual capital.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs3.svg">
+          <h2>Deploy 50 strategies live in the market</h2>
+          <div class="subscription_description"><p>Be it Intraday or Overnight strategies, deploy them all live in the market. <!-- Make use of algo cycles, re-deploy, and stop algo features to stay in control. --></p></div>
+        </div>
+      </div>
+       <div class="subscription_row">
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs4.svg">
+          <h2>Get actionable notifications</h2>
+          <div class="subscription_description"><p>Track multiple instruments based on your strategy's conditions. Take action on notifications with a click, from anywhere.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs5.svg">
+          <h2>Track positions and exit anytime</h2>
+          <div class="subscription_description"><p>Stay in control of all your open positions and deployed strategies, with the flexibility of exiting positions at anytime.</p></div>
+        </div>
+        <div class="subscription_block">
+          <!-- <img src="/static/imgs/new/home/subs6.svg">
+          <h2>Speak to our experts</h2>
+          <div class="subscription_description"><p>Schedule a one on one call for 30 minutes, and get all your questions answered.</p></div> -->
+        </div>
+      </div>
+    </div>
+    <!-- <h2>Your 7 day trial begins today</h2> -->
+    <p class="disclaimer_subscribe" style="margin-bottom: 0px;">&#8377; 900/- (+ GST) per month will be charged from your Zerodha account.<strong> This plan is on autorenew mode, you can cancel anytime.</strong><br>
+    Note: The subscription amount is charged on a monthly basis, not on a pro rata basis and is non-refundable. If you cancel subscription in between the billing cycle, you will not be refunded, however you can continue using the services till the end of the billing cycle.</p>
+    <p class="sub-title"><input type="checkbox" id="start_subscription_checkbox" class="start_subscription_checkbox_class" name="cancel_subscription_checkbox">&nbsp;&nbsp;&nbsp;I have read and agree to the <a href="/terms" target="_blank">Terms</a>.</p>
+    <button class="start_subscription_btn_class" id="start_subscription_btn" data-plan="premium" data-instance="first" data-change="False" onclick="start_subscription('premium','first','False');">Confirm</button>
+    <!-- <p class="skip_tour">Skip tour</p> -->
+  </div>
+</div>
+<div class="subscription_popup_ultimate" style="display: none;">
+  <div class="subscription_message">
+    <div class="close_subscription_popup_ultimate"><img onclick="$('.subscription_popup_ultimate').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="pricing_plan_image pricing_plan_image3">
+      <img src="/static/imgs/new/home/plan3.svg">
+    </div>
+    <h1>Why Ultimate?</h1>
+    <!-- <p>Streak gives <strong>200 backtests and 50 live deployments everyday</strong> for &#8377; 500/- (+ GST) a month <strong>(Free till 30th June 2018)</strong>.</p> -->
+    <div class="subscription_details">
+      <div class="subscription_row">
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs1.svg">
+          <h2>Create strategies in a minute</h2>
+          <div class="subscription_description"><p>Use upto 60 technical indicators to create strategies for any instrument, with zero coding.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs2.svg">
+          <h2>Run upto 1000 backtests a day</h2>
+          <div class="subscription_description"><p>Generate performance metrics such as maximum drawdown, average gains, average losses, before risking actual capital.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs3.svg">
+          <h2>Deploy 100 strategies live in the market</h2>
+          <div class="subscription_description"><p>Be it Intraday or Overnight strategies, deploy them all live in the market. <!-- Make use of algo cycles, re-deploy, and stop algo features to stay in control. --></p></div>
+        </div>
+      </div>
+       <div class="subscription_row">
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs4.svg">
+          <h2>Get actionable notifications</h2>
+          <div class="subscription_description"><p>Track multiple instruments based on your strategy's conditions. Take action on notifications with a click, from anywhere.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs5.svg">
+          <h2>Track positions and exit anytime</h2>
+          <div class="subscription_description"><p>Stay in control of all your open positions and deployed strategies, with the flexibility of exiting positions at anytime.</p></div>
+        </div>
+        <div class="subscription_block">
+          <img src="/static/imgs/new/home/subs6.svg">
+          <h2>Speak to our experts</h2>
+          <div class="subscription_description"><p>Schedule a one on one call for 30 minutes, and get all your questions answered.</p></div>
+        </div>
+      </div>
+    </div>
+    <!-- <h2>Your 7 day trial begins today</h2> -->
+    <p class="disclaimer_subscribe" style="margin-bottom: 0px;">&#8377; 1400/- (+ GST) per month will be charged from your Zerodha account.<strong> This plan is on autorenew mode, you can cancel anytime.</strong><br>
+    Note: The subscription amount is charged on a monthly basis, not on a pro rata basis and is non-refundable. If you cancel subscription in between the billing cycle, you will not be refunded, however you can continue using the services till the end of the billing cycle.</p>
+    <p class="sub-title"><input type="checkbox" id="start_subscription_checkbox" class="start_subscription_checkbox_class" name="cancel_subscription_checkbox">&nbsp;&nbsp;&nbsp;I have read and agree to the <a href="/terms" target="_blank">Terms</a>.</p>
+    <button class="start_subscription_btn_class" id="start_subscription_btn" data-plan="ultimate" data-instance="first" data-change="False" onclick="start_subscription('ultimate','first','False');">Confirm</button>
+    <!-- <p class="skip_tour">Skip tour</p> -->
+  </div>
+</div>
+<div class="pricing_popup" style="display: none;">
+  <div>
+    <div class="close_pricing_popup"><img onclick="$('.pricing_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="new_pricing">
+    <h1 class="animated fadeInUp">Pricing</h1>
+    <p class="sub_heading animated fadeInUp">We strive to keep our pricing affordable by using state of the art technology to cut costs. You can pick a plan that suits you best.</p>
+    <div class="pricing_container">
+      <div class="pricing_block pricing_block1 animated fadeInRight">
+        <!-- <div class="basic_free"><img src="/static/imgs/new/home/plan_extra1.png"></div> -->
+        <div class="current_plan_selected" style="display: none;"><img src="/static/imgs/new/home/current_plan1.png"></div>
+        <div class="pricing_header">
+        <div class="pricing_image">
+          <img src="/static/imgs/new/home/plan1.svg">
+        </div>
+        <p>Basic</p>
+        </div>
+        <div class="pricing_body">
+          <p><span class="bullet_points"></span><b>200</b> Backtests per day</p>
+          <p><span class="bullet_points"></span><b>25</b> Live deployments at a time</p>
+          <p>-</p>
+          <!-- <h2>Exclusive Features</h2>
+          <p><b><span class="bullet_points"></span>Heikin-Ashi</b></p>
+          <p>-</p>
+          <p>-</p> -->
+          <h1><span><sup>&#8377;</sup></span> 500 <br><span>+GST / month</span></h1>
+          <button onclick="start_subscription_popup();">Subscribe</button>
+          <h2>Exclusive Features</h2>
+          <p><b><span class="bullet_points"></span>Heikin-Ashi</b></p>
+          <p><span class="bullet_points"></span><b>5</b> entry and exit conditions</p>
+          <p>-</p>
+          <p>-</p>
+        </div>
+      </div>
+      <div class="pricing_block pricing_block2 animated fadeInUp">
+        <!-- <div class="basic_free"><img src="/static/imgs/new/home/plan_extra2.png"></div> -->
+        <div class="current_plan_selected" style="display: none;"><img src="/static/imgs/new/home/current_plan2.png"></div>
+        <div class="pricing_header">
+        <div class="pricing_image">
+          <img src="/static/imgs/new/home/plan2.svg">
+        </div>
+        <p>Premium</p>
+        </div>
+        <div class="pricing_body">
+          <p><span class="bullet_points"></span><b>500</b> Backtests per day</p>
+          <p><span class="bullet_points"></span><b>50</b> Live deployments at a time</p>
+          <p>-</p>
+          <!-- <h2>Exclusive Features</h2>
+          <p><span class="bullet_points"></span><b>Heikin-Ashi</b></p>
+          <p><span class="bullet_points"></span><b>7</b> entry and exit conditions</p>
+          <p>-</p> -->
+          <h1><span><sup>&#8377;</sup></span> 900 <br><span>+GST / month</span></h1>
+          <button onclick="start_subscription_popup_premium();">Subscribe</button>
+          <h2>Exclusive Features</h2>
+          <p><span class="bullet_points"></span><b>Heikin-Ashi</b></p>
+          <p><span class="bullet_points"></span><b>7</b> entry and exit conditions</p>
+          <p>-</p>
+          <p>-</p>
+        </div>
+      </div>
+      <div class="pricing_block pricing_block3 animated fadeInLeft">
+        <!-- <div class="basic_free"><img src="/static/imgs/new/home/plan_extra3.png"></div> -->
+        <div class="current_plan_selected" style="display: none;"><img src="/static/imgs/new/home/current_plan3.png"></div>
+        <div class="pricing_header">
+        <div class="pricing_image">
+          <img src="/static/imgs/new/home/plan3.svg">
+        </div>
+        <p>Ultimate</p>
+        </div>
+        <div class="pricing_body">
+          <p><span class="bullet_points"></span><b>1000</b> Backtests per day</p>
+          <p><span class="bullet_points"></span><b>100</b> Live deployments at a time</p>
+          <p><span class="bullet_points"></span><b>30 minutes</b> call with experts</p>
+          <!-- <h2>Exclusive Features</h2>
+          <p><span class="bullet_points"></span><b>Heikin-Ashi</b></p>
+          <p><span class="bullet_points"></span><b>Renko</b></p>
+          <p><span class="bullet_points"></span><b>10</b> entry and exit conditions</p> -->
+          <h1><span><sup>&#8377;</sup></span> 1400 <br><span>+GST / month</span></h1>
+          <button onclick="start_subscription_popup_ultimate();">Subscribe</button>
+          <h2>Exclusive Features</h2>
+          <p><span class="bullet_points"></span><b>MCX (Commodities)</b></p>
+          <p><span class="bullet_points"></span><b>Renko</b></p>
+          <p><span class="bullet_points"></span><b>Heikin-Ashi</b></p>
+          <p><span class="bullet_points"></span><b>10</b> entry and exit conditions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+{% if request.session.first_time_deploy %}
+<script type="text/javascript">
+  var first_time_deploy = "true";
+  ss_d = '{{request.session.session_secret}}';
+    first_login_complete(ss_d,'first_time_deploy');
+</script>
+{% else %}
+<script type="text/javascript">
+  var first_time_deploy = "false";
+</script>
+{% endif %}
+{% block loader_popup %}
+<div class="loader_parent">
+  <!-- <div class="loader-wrap">
+    <div class="loader">
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+    </div>
+  </div> -->
+  <!-- <div class="loader_logo_container"></div> -->
+  <div class="loader_new_gif_container">
+    <img class="loader_logo" src="/static/imgs/new/logo.svg">
+    <img src="/static/imgs/new/line.gif">
+  </div>
+</div>
+<!-- <div class="order_log_popup" style="display: none;">
+          <div class="card animated fadeIn">
+              <div class="close_popup"><img onclick="close_order_log_popup();" src="/static/imgs/new/close.svg"></div>
+              <div class="progress_section">
+                  <div class="prompter">
+                      
+                  </div>
+                  <div class="progress_line"></div>
+              </div>
+          </div>
+      </div> -->
+<script type="text/javascript">
+  $(document).ready(function(){
+      ss = '{{request.session.session_secret}}';
+      first_login_complete(ss,'first_time_login');
+
+      $(".update_phone_button").click(function(){
+        var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+        // full_name = $('#account_name').val()
+        phone_number = $('#update_phone_button').val()
+        // email = $('#account_email').val()
+        if(phone_number.length!=10){
+          show_snackbar(null,'Kindly enter a valid 10 digit phone number');
+          return 0;
+        }
+          var params = {
+          // 'deployment_uuid':dep_id,
+          'csrfmiddlewaretoken':csrfmiddlewaretoken,
+          // 'full_name':full_name,
+          'phone_number':phone_number,
+          // 'email':email
+            };
+          var settings = {
+              "async": true,
+              "crossDomain": true,
+              "url": '/save_profile_change/',
+              "method": "POST",
+              "headers": {
+              },
+              "data":params,
+              "timeout": 10000,//40 sec timeout
+            };
+          $.ajax(settings).done(function (msg){
+            if(msg.status=='success')
+              {
+                $('.update_phone_popup').fadeOut();$('body').removeClass('body_scroll');
+                show_snackbar(null,'Profile updated',type='success');
+              }
+            else if(msg.status=='error'){
+                show_snackbar(null,msg.msg);
+            }else{
+                show_snackbar(null,'Error occured while saving, try again');
+            }
+          });
+      });
+    }
+  );
+</script>
+{% endblock %}
+</body>
+
+</html>
+{% block errorblock %}
+{% endblock %}
+
+
+
+
+
+<!-- <ul class="notification_details" id="notification_details" style="">
+
+  <li>
+    <div class="notif"><div class="notif_first_line"><div class="notif_second_line_desc_container"> <span><img src="/static/imgs/new/orderlog/entry_buy_alert.svg"></span> <p class="notif_tag buy_alert_tag">BUY alert</p><span><img src="/static/imgs/new/alert_blue.gif"></span> </div><div class="notif_second_line_algoname_container"><p class="notif_algo_name">SBIN<span class="sub_exc">NSE</span></p></div></div> <div class="notif_second_line">  <div class="notif_second_line_desc_container"><p class="notif_algo_name">Momentum Indicator</p><p class="notif_take_act notif_take_act_entry">Entry</p></div><div class="notif_second_line_algoname_container"><p class="notif_desc">₹ 1000.00</p><p class="notif_desc"><span>Qty:</span>1000</p><p class="notif_time_stamp notif_desc">2:16:57 pm</p></div> </div></div><div class="notif_window"><div class="notif_header notif_header_buy"><p>BUY&nbsp;SBIN&nbsp;x1&nbsp;Qty<br><span>₹10.00&nbsp;on&nbsp;NSE</span></p><p class="view_history view_history_buy">View History</p></div><div class="notif_body"><div class="notif_options"><div><div class="radio_options"><div><span id="buy_radio_option" class="radio_outer"><span class="radio_inner"></span></span><p id="option_selected">MIS</p></div><div><span class="radio_outer"><span class="radio_inner"></span></span><p>CNC</p></div></div><div class="notif_left"><div class="notif_qty"><p>Qty.</p><input type="number" id="position_qty" name="" value="1" readonly=""></div><div class="notif_qty"><p>Price</p><input type="number" name="" id="position_price" value="0" readonly=""></div></div></div><div class="notif_options_price"><div class="radio_options"><div><span id="buy_radio_option" class="radio_outer"><span class="radio_inner"></span></span><p id="option_selected">MARKET</p></div><div><span class="radio_outer"><span class="radio_inner"></span></span><p>LIMIT</p></div><div><span class="radio_outer"><span class="radio_inner"></span></span><p>SL</p></div><div><span class="radio_outer"><span class="radio_inner"></span></span><p>SL-M</p></div></div><div class="notif_right"><div class="notif_price"><p>Trigger price</p><input type="number" class="bg-stripe" id="position_trigger_price" name="" value="0" readonly=""></div><div class="notif_price"><p>Disclosed qty.</p><input type="number" class="bg-stripe" id="position_disclosed_qty" name="" value="0" readonly=""></div></div></div></div><div id="notif_actions"><button onclick="place_order_tpsl(event,'4d3fa3fe-1cc4-4f26-b25e-247f2e19e448','8c25f9d8-3fbb-4423-ae45-07d47d2f973d','b7ad0ea7-6c73-477e-9f28-b0cbb48f9b18','7795211','1','MARKET','BUY','MIS','DAY','eff87bd6-bbec-4db5-809c-740b0a828253:8c25f9d8-3fbb-4423-ae45-07d47d2f973d:PRICETRIGGER:7795211:IR1:10:0.5:0.0:Test 301:BUY:1:b7ad0ea7-6c73-477e-9f28-b0cbb48f9b18:MIS:SBIN:NSE','Test 301','489449')" id="buy">Buy</button><button id="cancel" onclick="cancel_notifications(event,'8c25f9d8-3fbb-4423-ae45-07d47d2f973d','4d3fa3fe-1cc4-4f26-b25e-247f2e19e448','Entry')">Cancel</button></div></div></div>
+  </li>
+</ul> -->

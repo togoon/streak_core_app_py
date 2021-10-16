@@ -1,0 +1,5 @@
+[program:coreapp]
+command=uwsgi --ini /etc/uwsgi/apps-enabled/uwsgi_config_prod.ini
+autostart=true
+autorestart=true
+user=ubuntu

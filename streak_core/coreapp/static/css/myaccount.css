@@ -1,0 +1,1504 @@
+.footer_home{
+  display: none;
+}
+.myaccount_outer{
+	width: 100%;
+	height: auto;
+	min-height: 500px;
+	background-color: #FFFFFF;
+  padding: 30px;
+	display: block;
+}
+.myaccount{
+	width: 100%;
+	height: auto;
+	display: flex;
+}
+.myaccount_menu{
+	width: 20%;
+	height: auto;
+	display: block;
+	background-color: #FFFFFF;
+	position: absolute;
+  padding-bottom: 30px;
+}
+.myaccount_body{
+	left: 20%;
+	width: 80%;
+  padding-left: 30px;
+	height: auto;
+	display: block;
+  border-left: 1px solid #f3f3f3;
+	/*background-color: #fafbfb;*/
+  /*box-shadow: 0 4px 8px 0 rgba(3, 95, 154, 0.1);*/
+
+}
+.billing, .profile{
+	width: 100%;
+	/*padding-left: 30px;*/
+	height: auto;
+	display: block;
+	background-color: transparent;
+}
+.myaccount_menu p{
+	font-family: Open Sans,sans-serif;
+	font-size: 14px;
+  font-weight: 400;
+  padding: 10px 0px 10px 30px;
+  margin: 15px 0px;
+  color: #383838;
+  cursor: pointer;
+}
+.myaccount_menu_header{
+	border-bottom: 1px solid #f3f3f3;
+}
+.myaccount_menu_header p{
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: 500;
+	letter-spacing: 1px;
+}
+.myaccount_menu_body p{
+	font-size: 14px;
+	font-weight: 400;
+  padding: 10px 0px 10px 30px;
+  margin: 15px 0px;
+  cursor: pointer;
+  color: #383838;
+}
+.myaccount_menu_body p:hover{
+  color: #0088ff;
+}
+.myaccount_menu_selected{
+	color: #0088ff !important;
+  font-weight: 500 !important;
+  border-left: 3px solid #0088ff;
+  padding-left: 27px !important;
+}
+.billing_body, .profile_body{
+	width: 100%;
+	height: auto;
+	background-color: #FFFFFF;
+	border-radius: 2px;
+	display: block;
+	min-height: 600px;
+}
+.billing_section_title, .your_plan, .payment_method{
+	width: 100%;
+  margin: 0px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  font-weight: 500;
+  /* text-transform: uppercase; */
+  font-size: 16px;
+  color: #383838;
+  /* letter-spacing: 1px; */
+  border-bottom: 1px solid #f3f3f3;
+  padding-bottom: 15px;
+}
+.billing_section_title{
+	padding: 50px 0px 10px 20px;
+  border-bottom: none;
+}
+.myaccount_footer{
+  /*border-top: 1px solid #f3f3f3;*/
+  margin-top: 50px;
+  padding-top: 30px;
+}
+.myaccount_footer p, .myaccount_footer a{
+  text-align: center;
+  color: #6e6e6e;
+  font-size: 14px;
+}
+.footer_terms a:hover, .footer_terms a:focus{
+  border-bottom: 1px solid #6e6e6e;
+}
+.note_invoices{
+  width: 100%;
+  margin: 0px;
+  padding: 15px 0px 30px 20px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  color: #f5b533;
+}
+.billing_section_subtitle{
+	width: 100%;
+	margin: 0px;
+	padding: 15px 0px 30px 20px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 400;
+	font-size: 14px;
+	color: #6e6e6e;
+  border-bottom: 1px solid #f3f3f3;
+}
+.billing_details_title, .billing_details_row{
+	width: 100%;
+	padding: 20px;
+	height: auto;
+	display: flex;
+	border-bottom: 1px solid #f3f3f3;
+}
+.billing_details_title p{
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 300;
+	font-size: 12px;
+	color: #9ea1a4;
+}
+.billing_details_row p{
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	padding-top: 5px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 400;
+	font-size: 13px;
+	color: #383838;
+}
+.billing_row_method span{
+	float: left;
+}
+/*.billing_row_method img{
+	height: 20px;
+  width: auto;
+  margin-right: 5px;
+  margin-top: -3px;
+}*/
+.billing_row_method img {
+    display: none;
+}
+.billing_row_subtotal p{
+	color: #4a4a4a;
+}
+.tax{
+	color: #9b9b9b;
+}
+.billing_row_date, .billing_row_date_title{
+	width: 100%;
+}
+.billing_row_description, .billing_row_description_title{
+	width: 150%;
+}
+.billing_row_period, .billing_row_period_title{
+	width: 200%;
+}
+.billing_row_method, .billing_row_method_title{
+	width: 150%;
+}
+.billing_row_subtotal, .billing_row_subtotal_title{
+	width: 200%;
+  display: none;
+}
+.billing_row_total, .billing_row_total_title{
+	width: 100%;
+  display: none;
+}
+.billing_row_download, .billing_row_download_title{
+	width: auto;
+  display: none;
+}
+.billing_row_download_title p{
+	width: 15px;
+	height: 13px;
+}
+.billing_row_description p{
+  text-transform: capitalize;
+}
+.billing_row_download img{
+	width: 15px;
+	height: 13px;
+	cursor: pointer;
+}
+.plan_section{
+	width: 100%;
+	display: flex;
+	height: auto;
+	border-bottom: 1px solid #f3f3f3;
+}
+.plan, .payment{
+	width: 50%;
+	box-sizing: border-box;
+	height: auto;
+	display: block;
+	padding: 20px;
+}
+.plan{
+	border-right: 1px solid #f3f3f3;
+}
+.plan>div{
+	width: 100%;
+	height: auto;
+	display: flex;
+	padding: 0px;
+	margin-top: 30px;
+	border-radius: 2px;
+}
+.payment>div{
+  width: 100%;
+  height: auto;
+  display: block;
+  padding: 0px;
+  margin-top: 30px;
+  border-radius: 2px;
+}
+.plan_icon{
+	display: block;
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  padding-top: 20px;
+  margin: 0px;
+  margin-right: 30px;
+}
+.plan_icon0{
+  background-color: #f2f8fe;
+}
+.plan_icon1{
+  background-color: #f1fcfa;
+}
+.plan_icon2{
+  background-color: #fbfaf7;
+}
+.plan_icon3{
+  background-color: #f2f8fe;
+}
+/*.plan_icon span{
+	height: 100%;
+	width: 100%;
+	display: block;
+	padding-top: 7px;
+}*/
+.plan_descriptions{
+  width: 100%;
+  display: block;
+}
+.plan_left{
+  /*width: calc(50% - 70px);*/
+  width: auto;
+}
+.plan_title, .payment_description{
+  display: flex;
+  margin: 18px 0px;
+  padding: 0px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  font-weight: 400;
+  font-size: 18px;
+  color: #383838;
+}
+.plan_title>span{
+  margin-left: 30px;
+  font-size: 12px;
+  margin-top: 7px;
+}
+.plan_sub_desc{
+  display: flex;
+  margin: 20px 0px;
+  padding: 0px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  color: #6e6e6e;
+}
+.plan_sub_desc span{
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #4adabc;
+  margin-top: 3px;
+  margin-right: 15px;
+}
+.plan_sub_desc0 span{
+  background-color: #3ab3ff;
+}
+.plan_sub_desc1 span{
+  background-color: #4adabc;
+}
+.plan_sub_desc2 span{
+  background-color: #f9c85f;
+}
+.plan_sub_desc3 span{
+  background-color: #3ab3ff;
+}
+.plan_icon img{
+	height: 30px;
+  width: auto;
+	margin: auto;
+	display: block;
+}
+.plan_description p{
+	margin: 0px;
+	padding: 5px 0px 5px 10px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 500;
+	font-size: 14px;
+	color: #383838;
+}
+.plan_description span{
+	color: #9b9b9b;
+	font-weight: 400;
+}
+.plan_details, .plan_options{
+  width: 100%;
+}
+.plan_options>div{
+  width: 50%;
+}
+.action_subscription, .change_plan, .change_payment_method{
+  margin: 0px;
+  margin-top: 10px;
+  padding: 0px;
+}
+.action_subscription p, .change_plan p, .change_payment_method p{
+  width: fit-content;
+  margin: 0px;
+  cursor: pointer;
+  padding: 0px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  color: #0088ff;
+  text-decoration: none;
+}
+.change_payment_method_p{
+  width: fit-content;
+  /*margin: 15px 0px 15px 20px;*/
+  cursor: pointer;
+  padding: 0px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  color: #0088ff;
+  margin: auto;
+  margin-right: 0px;
+  text-decoration: none;
+}
+.change_plan p{
+  float: right;
+  /*display: none;*/
+}
+.payment_details{
+  width: 100%;
+  display: flex;
+}
+.payment_details img{
+  height: 40px;
+  margin-top: 9px;
+  margin-right: 10px;
+}
+.add_payment_method{
+  /*display: flex;*/
+  margin: 30px 0px;
+  display: none;
+}
+.add_payment_method button{
+  background-color: #f3f3f3;
+  padding: 15px;
+  border-radius: 2px;
+  border: none;
+  outline: none;font-size: 14px;
+  font-family: Open Sans,sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.add_payment_method button:hover, .add_payment_method button:focus{
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.payment_icon{
+	height: 30px;
+	width: 30px;
+}
+.payment_icon span{
+	height: 100%;
+	width: 100%;
+	display: block;
+	padding-top: 7px;
+}
+.payment_icon img{
+	width: 31px;
+	height: 21px;
+	margin: auto;
+	display: block;
+}
+.payment_description p{
+	margin: 0px;
+	padding: 7px 0px 5px 20px;
+	font-family: Open Sans,sans-serif;
+	text-transform: uppercase;
+	text-align: left;
+	font-weight: 400;
+	font-size: 18px;
+	color: #4a4a4a;
+}
+.forgot_password{
+	width: auto;
+	margin: 0px;
+	margin-top: 10px;
+	cursor: pointer;
+	padding: 0px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 400;
+	font-size: 14px;
+	color: #9b9b9b;
+	text-decoration: underline;
+}
+.account_details_section, .change_password_section{
+	width: 100%;
+	height: auto;
+	padding-left: 30px;
+	display: block;
+}
+.change_password_section{
+	 padding-bottom: 30px; 
+   display: none;
+}
+.account_details_section{
+	/*border-bottom: 1px solid #f3f3f3;*/
+}
+.profile_container{
+  width: 100%;
+  display: flex;
+  margin-bottom: 50px;
+}
+.profile_container>div:first-child{
+  margin-right: 30px;
+}
+.profile_avatar{
+  border-radius: 50%;
+  background-color: #ebf5fa;
+  height: 100px;
+  width: 100px;
+  margin-top: -10px;
+}
+.profile_avatar span{
+  font-family: Open Sans,sans-serif;
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 0.25px;
+  padding-top: 2px;
+  color: #00b6ff;
+  display: block;
+  text-align: center;
+  letter-spacing: 1px;
+  line-height: 100px;
+}
+.account_details_title, .change_password_title{
+	width: 100%;
+	margin: 0px;
+	padding: 25px 0px 15px 0px;
+  margin-bottom: 30px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 400;
+	font-size: 16px;
+	color: #383838;
+  letter-spacing: 0.25px;
+  border-bottom: 1px solid #f3f3f3;
+}
+.account_details_row{
+	display: flex;
+	width: 100%;
+	height: auto;
+	margin-bottom: 30px;
+}
+.account_details_row>div{
+	width: 35%;
+	height: auto;
+	padding-right: 5%;
+	display: block;
+}
+.change_password_row{
+	display: block;
+	width: 100%;
+	height: auto;
+  padding-bottom: 30px;
+	margin-bottom: 30px;
+  border-bottom: 1px solid #f3f3f3;
+}
+.account_details_row p, .change_password_row p{
+	width: auto;
+	margin: 0px;
+	margin-bottom: 15px;
+	padding: 0px;
+	font-family: Open Sans,sans-serif;
+	text-align: left;
+	font-weight: 400;
+	font-size: 13px;
+	color: #6e6e6e;
+}
+.account_details_row input, .account_details_row select, .change_password_row input{
+	width: 300px;
+	border-bottom: 1px solid #e2e2e2;
+  padding: 15px !important;
+  padding-left: 0px !important;
+  margin-bottom: 10px;
+  outline: none;
+  font-family: Open Sans,sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  background-color: #FFF;
+  color: #383838;
+  box-sizing: border-box;
+}
+.account_details_row select{
+	height: 50px;
+  padding: 0px !important;
+  padding-left: 0px !important;
+  border: none;
+  border-bottom: 1px solid #e2e2e2;
+  border-radius: 0px !important;
+}
+.account_details_section button, .change_password_section button{
+	width: auto;
+  padding: 10px 20px;
+  text-align: center;
+  font-family: Open Sans,sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 25px;;
+  border: none;
+  margin: 0px;
+  margin-top: 30px;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  background-color: #0088ff;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.account_details_section button:hover, .change_password_section button:hover{
+  box-shadow: 0px 6px 9.2px 0.8px rgba(195, 195, 195, 0.24);
+  border: none;
+}
+.account_details_section button:focus, .change_password_section button:focus{
+  box-shadow: 0px 6px 9.2px 0.8px rgba(195, 195, 195, 0.24);
+  outline: none;
+  border: none;
+}
+.empty_billing{
+  height: 100%;
+  width: 100%;
+  padding-top: 130px;
+  display: block;
+}
+.empty_billing img{
+  width: 57px;
+  height: 59px;
+  margin: auto;
+  display: block;
+}
+.empty_billing p{
+  width: 100%;
+  margin: 0px;
+  padding-top: 30px;
+  text-align: center;
+  font-family: Open Sans,sans-serif;
+  line-height: 2.5;
+  letter-spacing: 0.25px;
+  font-weight: 400;
+  font-size: 20px;
+  color: #bfc7d1;
+}
+.cancel_subscription_popup{
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  /*background-color: #FFFFFF !important;*/
+  /*background-image: url(../imgs/bg-welcome-screen.png);
+  background-position-y: bottom;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;*/
+  display: none;
+  z-index: 1000000000 !important;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+.cancel_subscription_message{
+  /*width: 600px;
+  height: auto;*/
+  width: 60%;
+  max-width: 650px;
+  height: auto;
+  max-height: 85%;
+  margin:auto;
+  margin-top: 30px;
+  display: block;
+  /*flex-wrap: wrap;*/
+  position: relative;  
+  background-color: #FFF;
+  padding: 15px 25px;
+ border-radius: 2px;
+  /*box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.3);*/
+}
+.close_cancel_subscription_popup img{
+  height: 20px;
+  float: right;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.cancel_subscription_popup h1{
+  text-align: left;
+  font-family: Open Sans,sans-serif !important;
+  color: #383838;
+  margin: 0px;
+  font-weight: 600;
+  font-size: 18px;
+  margin-top: 2%;
+  padding-left: 15px;
+}
+.cancel_subscription_popup p{
+  text-align: left;
+  font-family: Open Sans,sans-serif !important;
+  font-weight: 400;
+  color: #383838;
+  margin: 10px 0px;
+  font-weight: 400;
+  font-size: 14px;
+  display: flex;
+}
+.sub-title{
+  color: #6e6e6e !important;
+  padding-left: 13px;
+}
+.cancel_subscription_description{
+  width: 100%;
+  display: block;
+  height: auto;
+  padding: 15px;
+}
+.cancel_subscription_description>div{
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid #f3f3f3;
+  padding: 10px 0px;
+}
+.cancel_subscription_description span{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-top: 5px;
+  background-color: #d8d8d8;
+  display: block;
+}
+.cancel_subscription_message button{
+  width: 100%;
+  padding: 15px 30px;
+  text-align: center;
+  font-family: Open Sans,sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 2px;;
+  margin: auto;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  background-color: #ff4343;
+  color: #FFFFFF;
+  border: 1px solid #ff4343;
+  /*box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.2);*/
+  margin-top: 35px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.cancel_subscription_message button:hover{
+  background-color: #fb4343;
+  border: 1px solid #fb4343;
+}
+.cancel_subscription_message button:focus{
+  background-color: #f14040;
+  border-color: #f14040;
+}
+.user_name{
+  font-family: Open Sans,sans-serif;
+  font-size: 22px;
+  font-weight: 300;
+  padding: 10px;
+  margin: 0px;
+  background-color: #FFF;
+  color: #383838;
+}
+.broker_id{
+  font-family: Open Sans,sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  padding-top: 0px;
+  margin: 0px;
+  background-color: #FFF;
+  color: #9ea1a4;
+}
+@media only screen and (max-width: 1024px){
+	  /*.myaccount_menu{
+		width: 17%;
+	}
+	.myaccount_body{
+		left: 21%;
+        width: 79%;
+	}*/
+  .account_details_row input, .account_details_row select, .change_password_row input{
+  	font-size: 14px;
+  	padding: 12px !important;
+  }
+  .account_details_row select{
+  	padding: 0px !important;
+  	padding-left: 12px !important;
+  	height: 40px;
+  }
+  .billing_details_title p{
+  	font-size: 10px;
+  }
+  .billing_section_subtitle, .billing_section_title, .your_plan, .payment_method, .note_invoices{
+    font-size: 14px;
+  }
+  .billing_details_row p{
+    font-size: 12px;
+  }
+  .billing_row_method img {
+    height: 17px;
+  }
+  .payment_description p{
+  	font-size: 13px;
+  	padding: 7px 0px 5px 10px;
+  }
+  .payment_icon img {
+    width: 21px;
+    height: 16px;
+  }
+  .plan_description p{
+  	font-size: 12px;
+  	padding: 8px 0px 5px 10px;
+  }
+  .cancel_subscription, .forgot_password{
+  	font-size: 12px;
+  }
+  .account_details_title, .change_password_title{
+  	font-size: 14px;
+  }
+  .account_details_row p, .change_password_row p{
+  	font-size: 12px;
+  }
+  .myaccount_menu_header p{
+  	font-size: 10px;
+  }
+  /*.myaccount_menu_body p{
+  	padding: 7px 0px 7px 30px;
+  	font-size: 12px;
+  }*/
+  /*.plan>div, .payment>div{
+  	padding: 13px;
+  }*/
+  .billing_section_title{
+  	padding-top: 40px;
+  }
+  .account_details_section button, .change_password_section button{
+  	font-size: 12px;
+  	margin-top: 20px;
+  }
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 13px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 11px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+    margin-top: 25px;
+  }
+  .close_cancel_subscription_popup img{
+    height: 20px
+  }
+  .cancel_subscription_description>div{
+    padding: 7px 0px;
+  }
+  .plan_icon{
+    height: 40px;
+    width: 40px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .plan_icon img{
+    height: 20px;
+  }
+  .plan_title, .payment_description{
+    font-size: 14px;
+  }
+  .plan_title>span{
+    margin-top: 3px;
+  }
+  .payment_details img{
+    height: 30px;
+    margin-top: 12px;
+  }
+  .action_subscription p, .change_plan p, .change_payment_method p, .change_payment_method_p, .add_payment_method button{
+    font-size: 13px;
+  }
+  .profile_avatar{
+    height: 70px;
+    width: 70px;
+  }
+  .profile_avatar span{
+    font-size: 26px;
+    line-height: 70px;
+  }
+  .payment>div, .plan>div{
+    margin-top: 15px;
+  }
+  .plan_sub_desc{
+    font-size: 13px;
+  }
+  .plan_sub_desc span{
+    width: 7px;
+    height: 7px;
+    margin-top: 4px;
+  }
+  .action_subscription, .change_plan, .change_payment_method{
+    margin-top: 0px;
+  }
+  .user_name{
+    margin-top: -10px;
+  }
+  .account_details_row>div{
+    width: 45%;
+  }
+  .account_details_section button, .change_password_section button{
+    font-size: 11px;
+  }
+  .plan_section{
+    display: block;
+  }
+  .plan{
+    border-right: none;
+    border-bottom: 1px solid #f3f3f3;
+  }
+  .plan, .payment{
+    width: 90%;
+  }
+  .myaccount_outer{
+    padding: 15px 15px 30px 15px;
+  }
+}
+@media screen and (max-width: 1100px) and (min-width: 1025px){
+  /*.myaccount_menu{
+		width: 17%;
+	}
+	.myaccount_body{
+		left: 21%;
+        width: 79%;
+	}*/
+  .account_details_row input, .account_details_row select, .change_password_row input{
+  	font-size: 14px;
+  	padding: 12px !important;
+  }
+  .account_details_row select{
+  	padding: 0px !important;
+  	padding-left: 12px !important;
+  	height: 40px;
+  }
+  .billing_details_title p{
+  	font-size: 10px;
+  }
+  .billing_section_subtitle, .billing_section_title, .your_plan, .payment_method, .note_invoices{
+    font-size: 14px;
+  }
+  .billing_details_row p{
+    font-size: 12px;
+  }
+  .billing_row_method img {
+    height: 17px;
+  }
+  .payment_description p{
+  	font-size: 13px;
+  	padding: 7px 0px 5px 10px;
+  }
+  .payment_icon img {
+    width: 21px;
+    height: 16px;
+  }
+  .plan_description p{
+  	font-size: 12px;
+  	padding: 8px 0px 5px 10px;
+  }
+  .cancel_subscription, .forgot_password{
+  	font-size: 12px;
+  }
+  .account_details_title, .change_password_title{
+  	font-size: 14px;
+  }
+  .account_details_row p, .change_password_row p{
+  	font-size: 12px;
+  }
+  .myaccount_menu_header p{
+  	font-size: 10px;
+  }
+  /*.myaccount_menu_body p{
+  	padding: 7px 0px 7px 30px;
+  	font-size: 12px;
+  }*/
+  /*.plan>div, .payment>div{
+  	padding: 13px;
+  }*/
+  .billing_section_title{
+  	padding-top: 40px;
+  }
+  .account_details_section button, .change_password_section button{
+  	font-size: 12px;
+  	margin-top: 20px;
+  }
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 13px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 11px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+    margin-top: 25px;
+  }
+  .close_cancel_subscription_popup img{
+    height: 20px
+  }
+  .cancel_subscription_description>div{
+    padding: 7px 0px;
+  }
+  .plan_icon{
+    height: 40px;
+    width: 40px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .plan_icon img{
+    height: 20px;
+  }
+  .plan_title, .payment_description{
+    font-size: 14px;
+  }
+  .plan_title>span{
+    margin-top: 3px;
+  }
+  .payment_details img{
+    height: 30px;
+    margin-top: 12px;
+  }
+  .action_subscription p, .change_plan p, .change_payment_method p, .change_payment_method_p, .add_payment_method button{
+    font-size: 13px;
+  }
+  .profile_avatar{
+    height: 70px;
+    width: 70px;
+  }
+  .profile_avatar span{
+    font-size: 26px;
+    line-height: 70px;
+  }
+  .payment>div, .plan>div{
+    margin-top: 15px;
+  }
+  .plan_sub_desc{
+    font-size: 13px;
+  }
+  .plan_sub_desc span{
+    width: 7px;
+    height: 7px;
+    margin-top: 4px;
+  }
+  .action_subscription, .change_plan, .change_payment_method{
+    margin-top: 0px;
+  }
+  .user_name{
+    margin-top: -10px;
+  }
+  .account_details_row>div{
+    width: 45%;
+  }
+  .account_details_section button, .change_password_section button{
+    font-size: 11px;
+  }
+  .plan_section{
+    display: block;
+  }
+  .plan{
+    border-right: none;
+    border-bottom: 1px solid #f3f3f3;
+  }
+  .plan, .payment{
+    width: 90%;
+  }
+  .myaccount_outer{
+    padding: 15px 0px 30px 0px;
+  }
+}
+@media screen and (max-width: 1280px) and (min-width: 1101px){
+	/*.myaccount_menu{
+		width: 17%;
+	}
+	.myaccount_body{
+		left: 21%;
+        width: 79%;
+	}*/
+  .account_details_row input, .account_details_row select, .change_password_row input{
+  	font-size: 14px;
+  	padding: 12px !important;
+  }
+  .account_details_row select{
+  	padding: 0px !important;
+  	padding-left: 12px !important;
+  	height: 40px;
+  }
+  .billing_details_title p{
+  	font-size: 10px;
+  }
+  .billing_section_subtitle, .billing_section_title, .your_plan, .payment_method, .note_invoices{
+    font-size: 14px;
+  }
+  .billing_details_row p{
+    font-size: 12px;
+  }
+  .billing_row_method img {
+    height: 17px;
+  }
+  .payment_description p{
+  	font-size: 14px;
+  	padding: 7px 0px 5px 10px;
+  }
+  .payment_icon img {
+    width: 21px;
+    height: 16px;
+  }
+  .plan_description p{
+  	font-size: 12px;
+  	padding: 8px 0px 5px 10px;
+  }
+  .cancel_subscription, .forgot_password{
+  	font-size: 12px;
+  }
+  .account_details_title, .change_password_title{
+  	font-size: 14px;
+  }
+  .account_details_row p, .change_password_row p{
+  	font-size: 12px;
+  }
+  .myaccount_menu_header p{
+  	font-size: 10px;
+  }
+  /*.myaccount_menu_body p{
+  	padding: 7px 0px 7px 30px;
+  	font-size: 12px;
+  }*/
+  /*.plan>div, .payment>div{
+  	padding: 20px;
+  }*/
+  .billing_section_title{
+  	padding-top: 40px;
+  }
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 13px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 11px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+    margin-top: 25px;
+  }
+  .close_cancel_subscription_popup img{
+    height: 20px
+  }
+  .cancel_subscription_description>div{
+    padding: 7px 0px;
+  }
+  .plan_icon{
+    height: 40px;
+    width: 40px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .plan_icon img{
+    height: 20px;
+  }
+  .plan_title, .payment_description{
+    font-size: 14px;
+  }
+  .plan_title>span{
+    margin-top: 3px;
+  }
+  .payment_details img{
+    height: 30px;
+    margin-top: 12px;
+  }
+  .action_subscription p, .change_plan p, .change_payment_method p, .change_payment_method_p, .add_payment_method button{
+    font-size: 13px;
+  }
+  .profile_avatar{
+    height: 70px;
+    width: 70px;
+  }
+  .profile_avatar span{
+    font-size: 26px;
+    line-height: 70px;
+  }
+  .payment>div, .plan>div{
+    margin-top: 15px;
+  }
+  .plan_sub_desc{
+    font-size: 13px;
+  }
+  .plan_sub_desc span{
+    width: 7px;
+    height: 7px;
+    margin-top: 4px;
+  }
+  .action_subscription, .change_plan, .change_payment_method{
+    margin-top: 0px;
+  }
+  .user_name{
+    margin-top: -10px;
+  }
+  .account_details_row>div{
+    width: 45%;
+  }
+  .account_details_section button, .change_password_section button{
+    font-size: 11px;
+  }
+  .myaccount_outer{
+    padding: 15px 0px 30px 0px;
+  }
+}
+@media screen and (max-width: 1365px) and (min-width: 1281px){
+  .account_details_row input, .account_details_row select, .change_password_row input{
+  	font-size: 14px;
+  	padding: 12px !important;
+  }
+  .account_details_row select{
+  	padding: 0px !important;
+  	padding-left: 12px !important;
+  	height: 40px;
+  }
+  /*.billing_details_title p{
+  	font-size: 10px;
+  }*/
+  .billing_section_subtitle, .billing_section_title, .your_plan, .payment_method, .note_invoices{
+  	font-size: 14px;
+  }
+  .billing_details_row p{
+    font-size: 12px;
+  }
+  /*.billing_row_method img {
+    width: 18px;
+    height: 14px;
+    margin-right: 10px;
+  }*/
+  .payment_description p{
+  	font-size: 14px;
+  	padding: 7px 0px 5px 10px;
+  }
+  .payment_icon img {
+    width: 21px;
+    height: 16px;
+  }
+  .plan_description p{
+  	font-size: 12px;
+  	padding: 8px 0px 5px 10px;
+  }
+  .cancel_subscription, .forgot_password{
+  	font-size: 12px;
+  }
+  .account_details_title, .change_password_title{
+  	font-size: 14px;
+  }
+  .account_details_row p, .change_password_row p{
+  	font-size: 12px;
+  }
+  /*.myaccount_menu_body p{
+  	font-size: 13px;
+  }*/
+  /*.plan>div, .payment>div{
+  	padding: 20px;
+  }*/
+  .billing_section_title{
+  	padding-top: 40px;
+  }
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 14px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 12px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+  }
+  .plan_icon{
+    height: 40px;
+    width: 40px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .plan_icon img{
+    height: 20px;
+  }
+  .plan_title, .payment_description{
+    font-size: 14px;
+  }
+  .plan_title>span{
+    margin-top: 3px;
+  }
+  .payment_details img{
+    height: 30px;
+    margin-top: 12px;
+  }
+  .action_subscription p, .change_plan p, .change_payment_method p, .change_payment_method_p, .add_payment_method button{
+    font-size: 13px;
+  }
+  .profile_avatar{
+    height: 70px;
+    width: 70px;
+  }
+  .profile_avatar span{
+    font-size: 26px;
+    line-height: 70px;
+  }
+  .payment>div, .plan>div{
+    margin-top: 15px;
+  }
+  .plan_sub_desc{
+    font-size: 13px;
+  }
+  .plan_sub_desc span{
+    width: 7px;
+    height: 7px;
+    margin-top: 4px;
+  }
+  .action_subscription, .change_plan, .change_payment_method{
+    margin-top: 0px;
+  }
+  .user_name{
+    margin-top: -10px;
+  }
+  .myaccount_outer{
+    padding: 15px 0px 30px 0px;
+  }
+}
+@media screen and (max-width: 1440px) and (min-width: 1366px){
+  .account_details_row input, .account_details_row select, .change_password_row input{
+  	font-size: 14px;
+  	padding: 13px !important;
+  }
+  .account_details_row select{
+  	height: 45px;
+  	padding: 0px !important;
+  	padding-left: 13px !important;
+  }
+  /*.billing_details_title p{
+  	font-size: 10px;
+  }*/
+  /*.billing_details_row p, .billing_section_subtitle, .billing_section_title, .your_plan, .payment_method{
+  	font-size: 12px;
+  }*/
+  /*.billing_row_method img {
+    width: 18px;
+    height: 14px;
+    margin-right: 10px;
+  }*/
+  .payment_description p{
+  	font-size: 16px;
+  	padding: 7px 0px 5px 15px;
+  }
+  .payment_icon img {
+    width: 27px;
+    height: 19px;
+  }
+  .plan_description p{
+  	font-size: 13px;
+  	padding: 8px 0px 5px 10px;
+  }
+  .cancel_subscription, .forgot_password{
+  	font-size: 12px;
+  }
+  /*.account_details_title, .change_password_title{
+  	padding: 40px 0px 30px 0px;
+  	font-size: 13px;
+  }*/
+  /*.account_details_row p, .change_password_row p{
+  	font-size: 12px;
+  }*/
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 14px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 12px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+  }
+  .plan_icon{
+    height: 55px;
+    width: 55px;
+    padding-top: 15px;
+  }
+  .plan_icon img{
+    height: 25px;
+  }
+  .plan_title, .payment_description{
+    font-size: 16px;
+  }
+  .plan_title>span{
+    margin-top: 3px;
+  }
+  .payment_details img{
+    height: 35px;
+  }
+  .action_subscription p, .change_plan p, .change_payment_method p, .change_payment_method_p, .add_payment_method button{
+    font-size: 13px;
+  }
+  .profile_avatar{
+    height: 80px;
+    width: 80px;
+  }
+  .profile_avatar span{
+    font-size: 30px;
+    line-height: 80px;
+  }
+  .myaccount_outer{
+    padding: 15px 0px 30px 0px;
+  }
+}
+@media screen and (max-width: 1500px) and (min-width: 1441px){
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 14px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 12px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+  }
+  .plan_icon{
+    height: 55px;
+    width: 55px;
+    padding-top: 15px;
+  }
+  .plan_icon img{
+    height: 25px;
+  }
+  .plan_title, .payment_description{
+    font-size: 16px;
+  }
+  .plan_title>span{
+    margin-top: 3px;
+  }
+  .payment_details img{
+    height: 35px;
+  }
+  .profile_avatar{
+    height: 80px;
+    width: 80px;
+  }
+  .profile_avatar span{
+    font-size: 30px;
+    line-height: 80px;
+  }
+}
+@media screen and (max-width: 1600px) and (min-width: 1501px){
+  .cancel_subscription_message{
+    max-width: 550px;
+  }
+  .cancel_subscription_popup h1{
+    font-size: 14px;
+  }
+  .cancel_subscription_popup p{
+    font-size: 12px;
+    margin: 5px 0px;
+  }
+  .cancel_subscription_description span{
+    width: 5px;
+    height: 5px;
+  }
+  .cancel_subscription_message button{
+    font-size: 12px;
+    padding: 9px 30px;
+  }
+}
+@media screen and (max-width: 1920px) and (min-width: 1601px){
+
+}
+/*Changing colors for non-retina*/
+@media only screen and (max-resolution: 270dpi){
+  .myaccount_menu, .myaccount_menu_header, .billing_body, .profile_body, .billing_details_title, .billing_details_row, .plan_section, .plan, .plan>div, .payment>div, .account_details_section{
+    /*instead of f3f3f3*/
+    /*border-color: #dedfe0;*/
+  }
+  .myaccount_menu_header p, .myaccount_menu_body p{
+    /*color: #53565a;*/
+  }
+}
+/*Changing colors for non-retina ends*/

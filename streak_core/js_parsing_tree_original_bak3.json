@@ -1,0 +1,596 @@
+{
+	"main":
+	{
+		"indicator":{
+			"sma":{
+				"name":"SMA",
+				"description":"Simple moving average",
+				"syntax":"<period> SMA",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",20,true]],
+				"class":"sma",
+				"classtype":"sma",
+				"tooltip":"Simple Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Math operators","Numbers","Price"]
+			},
+			"ema":{
+				"name":"EMA",
+				"description":"Exponential moving average",
+				"syntax":"<period> EMA",
+				"examples":[
+					"2 min ago 20 min ema",
+					"20 min ema"
+				],
+				"params":[["period",20,true]],
+				"class":"ema",
+				"classtype":"ema",
+				"tooltip":"Exponetial Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Math operators","Numbers","Price"]
+			},
+			"rsi":{
+				"name":"RSI",
+				"description":"Relative strength index",
+				"syntax":"<period> RSI",
+				"examples":[
+					"5 min backs 15 min RSI",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"rsi",
+				"classtype":"rsi",
+				"tooltip":"Relative Strength Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"RSI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers"]
+			},
+			"macd":{
+				"name":"MACD",
+				"description":"Moving Average Convergence/Divergence",
+				"syntax":"MACD(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>)",
+				"examples":[
+					"2 days ago 5min MACD(12,26,9)"
+				],
+				"params":[["Fast_MA_period",12,true],["Slow_MA_period",26,true],["Signal_period",9,true]],
+				"class":"macd",
+				"classtype":"macd",
+				"tooltip":"Moving Average Convergence / Divergence Oscillator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"MACD",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","MACD"]
+			},
+			"macd_signal":{
+				"name":"MACD-signal",
+				"description":"MACD signal",
+				"syntax":"MACD signal(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>)",
+				"examples":[
+					"2 days ago 5min MACDsignal(12,26,9)"
+				],
+				"params":[["Fast_MA_period",12,true],["Slow_MA_period",26,true],["Signal_period",9,true]],
+				"class":"macd_signal",
+				"classtype":"macd_signal",
+				"tooltip":"MACD signal",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"MACD",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","MACD"]
+			},
+			"parabolic_sar":{
+				"name":"Parabolic SAR",
+				"description":"Parabolic SAR",
+				"syntax":"Parabolic SAR(<Minimum_AF>,<Maximum_AF>)",
+				"examples":[
+					"2 days ago 5min Parabolic SAR(0.02,0.2)"
+				],
+				"params":[["Minimum_AF",0.02,true],["Maximum_AF",0.2,true]],
+				"class":"parabolic_sar",
+				"classtype":"parabolic_sar",
+				"tooltip":"Parabolic SAR",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Overlap Studies",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Math operators","Numbers","Price"]
+			},
+			"cci":{
+				"name":"Commodity Channel Index",
+				"description":"Commodity Channel Index",
+				"syntax":"<period> CCI",
+				"examples":[
+					"20 CCI"
+				],
+				"params":[["period",20,true]],
+				"class":"cci",
+				"classtype":"cci",
+				"tooltip":"Commodity Channel Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers"]
+			},
+			"obv":{
+				"name":"OBV",
+				"description":"On balance Volume",
+				"syntax":"<offset> back OBV",
+				"examples":[
+					"5 min backs 15 min RSI",
+					"9 day RSI"
+				],
+				"params":[],
+				"class":"obv",
+				"classtype":"obv",
+				"tooltip":"On Balance Volume",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volume Indicators","Volume"]
+			},
+			"atr":{
+				"name":"ATR",
+				"description":"Average true range",
+				"syntax":"<period> ATR",
+				"examples":[
+					"5 min backs 15 min ATR(14)",
+					"9 day ATR"
+				],
+				"params":[["period",14,true]],
+				"class":"atr",
+				"classtype":"atr",
+				"tooltip":"Average True Range",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volatility Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volatility Indicators"]	
+			},
+			"supertrend":{
+				"name":"Supertrend",
+				"description":"Supertrend",
+				"syntax":"Supertrend(<period>,<multiplier>)",
+				"examples":[
+					"Supertrend(7,3)"
+				],
+				"params":[["period",7,true],["multiplier",3,true]],
+				"class":"supertrend",
+				"classtype":"supertrend",
+				"tooltip":"Supertrend",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Supertrend",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price"]	
+			},
+			"ubb":{
+				"name":"UBB",
+				"description":"Upper Bollinger Band",
+				"syntax":"UBB(<period>,<standard_deviations>)",
+				"examples":[
+					"UBB(7,3)"
+				],
+				"params":[["period",20,true],["standard_deviations",2,true]],
+				"class":"ubb",
+				"classtype":"ubb",
+				"tooltip":"Upper Bollinger Band",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"BollingerBand",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","BollingerBand"]	
+			},
+			"mbb":{
+				"name":"MBB",
+				"description":"Middle Bollinger Band",
+				"syntax":"MBB(<period>,<standard_deviations>)",
+				"examples":[
+					"MBB(7,3)"
+				],
+				"params":[["period",20,true],["standard_deviations",2,true]],
+				"class":"mbb",
+				"classtype":"mbb",
+				"tooltip":"Middle Bollinger Band",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"BollingerBand",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","BollingerBand"]	
+			},
+			"lbb":{
+				"name":"LBB",
+				"description":"Lower Bollinger Band",
+				"syntax":"LBB(<period>,<standard_deviations>)",
+				"examples":[
+					"LBB(7,3)"
+				],
+				"params":[["period",20,true],["standard_deviations",2,true]],
+				"class":"lbb",
+				"classtype":"lbb",
+				"tooltip":"Lower Bollinger Band",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"BollingerBand",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","BollingerBand"]	
+			},
+			"adx":{
+				"name":"ADX",
+				"description":"Average Directional Index",
+				"syntax":"ADX(<period>,<smoothing_period>)",
+				"examples":[
+					"5 min backs 15 min ADX(14)"
+				],
+				"params":[["period",14,true],["smoothing_period",14,true]],
+				"class":"adx",
+				"classtype":"adx",
+				"tooltip":"Average Directional Movement Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators ADX",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators +DI","Momentum Indicators -DI"]	
+			},
+			"plus_di":{
+				"name":"+DI",
+				"description":"+DI, Plus Directional Index",
+				"syntax":"+DI(<period>,<smoothing_period>)",
+				"examples":[
+					"5 min backs 15 min +DI(14)"				],
+				"params":[["period",14,true],["smoothing_period",14,true]],
+				"class":"plus_di",
+				"classtype":"plus_di",
+				"tooltip":"Plus Directional Indicators",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators +DI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators -DI","Momentum Indicators ADX"]	
+			},
+			"minus_di":{
+				"name":"-DI",
+				"description":"-DI, Minus Directional Index",
+				"syntax":"-DI(<period>,<smoothing_period>)",
+				"examples":[
+					"5 min backs 15 min -DI(14)"
+				],
+				"params":[["period",14,true],["smoothing_period",14,true]],
+				"class":"minus_di",
+				"classtype":"minus_di",
+				"tooltip":"Minus Directional Indicators",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators -DI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators +DI","Momentum Indicators ADX"]	
+			},
+			"willr":{
+				"name":"Williams %R",
+				"description":"Williams %R",
+				"syntax":"<period> Williams %R",
+				"examples":[
+					"5 min backs 15 min Williams %R(14)",
+					"9 day Williams %R"
+				],
+				"params":[["period",14,true]],
+				"class":"willr",
+				"classtype":"willr",
+				"tooltip":"Williams %R",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers"]	
+			},
+			"aroon_up":{
+				"name":"Aroon-Up",
+				"description":"Aroon up",
+				"syntax":"<period> Aroon-Up",
+				"examples":[
+					"5 min backs 15 min Aroon-Up(14)",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"aroon_up",
+				"classtype":"aroon_up",
+				"tooltip":"Aroon-Up",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators"]	
+			},
+			"aroon_down":{
+				"name":"Aroon-Down",
+				"description":"Aroon down",
+				"syntax":"<period> Aroon-Down",
+				"examples":[
+					"5 min backs 15 min Aroon-Up(14)",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"aroon_down",
+				"classtype":"aroon_down",
+				"tooltip":"Aroon-Down",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators"]	
+			},
+			"number":{
+				"name":"Number",
+				"description":"Number",
+				"syntax":"<number>",
+				"examples":["120000"],
+				"params":[["number",0,true]],
+				"class":"number",
+				"classtype":"enter_float",
+				"tooltip":"Number",
+				"html_tags":"field_tags",
+				"tag":"constants",
+				"function_group":"Numbers",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Volume Indicators","Volume","Numbers"]
+			},
+			"open":{
+				"name":"Open",
+				"description":"Open price",
+				"syntax":"Open",
+				"examples":["1 mins back open"],
+				"params":[],
+				"class":"open",
+				"classtype":"enter_float",
+				"tooltip":"Open price",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand"]
+			},
+			"high":{
+				"name":"High",
+				"description":"High price",
+				"syntax":"High",
+				"examples":["1 mins back high"],
+				"params":[],
+				"class":"high",
+				"classtype":"enter_float",
+				"tooltip":"High",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand"]
+			},
+			"low":{
+				"name":"Low",
+				"description":"Low price",
+				"syntax":"Low",
+				"examples":["1 mins back low"],
+				"params":[],
+				"class":"low",
+				"classtype":"enter_float",
+				"tooltip":"Low",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand"]
+			},
+			"close":{
+				"name":"Close",
+				"description":"Close price",
+				"syntax":"Close",
+				"examples":["1 mins back close"],
+				"params":[],
+				"class":"close_",
+				"classtype":"enter_float",
+				"tooltip":"Close",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand"]
+			},
+			"prev_open":{
+				"name":"previous Open",
+				"description":"Previous candle's open price",
+				"syntax":"previous Open",
+				"examples":["1 mins back open"],
+				"params":[],
+				"class":"open",
+				"classtype":"enter_float",
+				"tooltip":"Open price",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend"]
+			},
+			"prev_high":{
+				"name":"previous High",
+				"description":"Previous candle's high price",
+				"syntax":"previous High",
+				"examples":["1 mins back high"],
+				"params":[],
+				"class":"high",
+				"classtype":"enter_float",
+				"tooltip":"High",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend"]
+			},
+			"prev_low":{
+				"name":"previous Low",
+				"description":"Previous candle's low price",
+				"syntax":"previous Low",
+				"examples":["1 mins back low"],
+				"params":[],
+				"class":"low",
+				"classtype":"enter_float",
+				"tooltip":"Low",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend"]
+			},
+			"prev_close":{
+				"name":"previous Close",
+				"description":"Previous candle's close price",
+				"syntax":"previous Close",
+				"examples":["1 mins back close"],
+				"params":[],
+				"class":"close_",
+				"classtype":"enter_float",
+				"tooltip":"Close",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend"]
+			},
+			"volume":{
+				"name":"Volume",
+				"description":"Volume of a candle",
+				"syntax":"<offset> <interval> Volume",
+				"examples":["1 mins back volume"],
+				"params":[],
+				"class":"volume",
+				"classtype":"enter_float",
+				"tooltip":"Number",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Volume",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Indicators","Numbers"]
+			},
+			"at_price":{
+				"name":"Trade At Price",
+				"description":"Buy at a price in a given range",
+				"syntax":"Price @ <price> in range of <range_percentage>%",
+				"examples":["Last trading price @ 100 in range of 0.1%"],
+				"params":[["price",0.0],["range_percentage","0.5",false,"","0.01"]],
+				"class":"at_price",
+				"classtype":"at_price",
+				"tooltip":"Buy at a specific price in range",
+				"html_tags":"special_tags",
+				"tag":"condition",
+				"function_group":"Condition",
+				"suffix":[],
+				"allowed_comparision":[]
+			}
+		},
+		"comparator":{
+			"higher_than":{
+				"name":"higher than",
+				"description":"higher than",
+				"syntax":"higher than",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"lower_than":{
+				"name":"lower than",
+				"description":"lower than",
+				"syntax":"lower than",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"higher_than_equal_to":{
+				"name":"higher than equal",
+				"description":"higer than or equal to",
+				"syntax":"greater than equal to",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"lower_than_equal_to":{
+				"name":"lower than equal",
+				"description":"lower than or equal to",
+				"syntax":"less than equal to",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"crosses_above":{
+				"name":"crosses above",
+				"description":"crosses above",
+				"syntax":"crosses above",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"crosses_below":{
+				"name":"crosses below",
+				"description":"crosses below",
+				"syntax":"crosses below",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"equal_to":{
+				"name":"equal to",
+				"description":"equal to",
+				"syntax":"is equal to",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			}
+		},
+		"fundamentals":{
+
+		}
+	}
+}

@@ -1,0 +1,164 @@
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+  <style>
+    .chart-container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="file:///android_asset/javascript/chart.js">
+  </script>
+  <script src="file:///android_asset/javascript/jquery.js"></script>
+  </script>
+  <div class="chart-container">
+    <canvas id="chart"></canvas>
+  </div>
+  <script>
+    var ctx = $("#chart")[0].getContext("2d");
+    var chart = undefined;
+    var stroke = '#06d092';
+    var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(6,208,146, 0.35)');
+    gradient.addColorStop(0.5, 'rgba(6,208,146, 0)');
+
+    function processListToXYList(packedList) {
+      var xyList = [];
+      for (var i = 0; i < packedList.length; i++) {
+        xyList.push({
+          x: new Date(packedList[i][0].split('T')[0]),
+          y: packedList[i][5].toFixed(2)
+        });
+      }
+      return xyList;
+    }
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      scaleSteps: 4,
+      data: {
+        datasets: [{
+          label: 'P&L',
+          backgroundColor: gradient,
+          borderColor: stroke,
+          hoverRadius: 3,
+          borderWidth: 2,
+          lineTension: 0,
+          strokeColor: stroke,
+          data: []
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            gridLines: {
+              color: '#ecf0f1',
+              zeroLineBorderDash: [5, 5],
+              zeroLineColor: '#ecf0f1'
+            },
+            ticks: {
+              fontColor: '#7f8fa4',
+              beginAtZero: true,
+              fontSize: 10,
+              fontFamily: 'Roboto'
+            }
+          }],
+          xAxes: [{
+            type: 'time',
+            position: 'bottom',
+            gridLines: {
+              display: false,
+              color: '#ecf0f1',
+              zeroLineBorderDash: [5, 5],
+              zeroLineColor: '#ecf0f1'
+            },
+            ticks: {
+              fontColor: '#7f8fa4',
+              fontSize: 10,
+              maxRotation: 0,
+              autoSkip: true,
+              fontFamily: 'Roboto'
+            },
+            time: {
+              displayFormats: {
+                'month': 'DD MMM YY',
+                'unit': 'month'
+              }
+            }
+          }],
+        },
+        legend: {
+          display: false,
+        },
+        elements: { point: { radius: 0 } },
+      }
+    });
+
+    document.onload = window.ReactNativeWebView.postMessage('loaded')
+
+
+    document.addEventListener('message', function (e) {
+      window.ReactNativeWebView.postMessage('got msg on webview')
+      var graphData = JSON.parse(e.data);
+      stroke = graphData.stroke;
+      var addColor1 = 'rgba(6,208,146, 0.35)';
+      var addColor2 = 'rgba(255,255,255, 0)';
+      if (stroke !== '#06d092') {
+        addColor1 = 'rgba(255,66,88, 0)';
+        addColor2 = 'rgba(255,66,88, 0.35)';
+      }
+
+      display_format_unit = 'month';
+      try {
+        if (graphData.dataPoints != undefined)
+          if (graphData.dataPoints.length != 0) {
+            var d1 = new Date(graphData.dataPoints[0].split('T')[0]);
+            var d2 = new Date(graphData.dataPoints[graphData.dataPoints.length - 1].split('T')[0]);
+            date_range = d2 - d1;
+            var DaysDiff = timeDiff / (1000 * 3600 * 24);
+            if (date_range > (1000 * 3600 * 24 * 365)) {
+              display_format_unit = 'year';
+            } else if (date_range > (1000 * 3600 * 24 * 150)) {
+              display_format_unit = 'quarter';
+            } else if (date_range > (1000 * 3600 * 24 * 40) && date_range <= (1000 * 3600 * 24 * 150)) {
+              display_format_unit = 'month';
+            } else if (date_range > (1000 * 3600 * 24 * 10) && date_range <= (1000 * 3600 * 24 * 40)) {
+              display_format_unit = 'week';
+            } else if (date_range <= (1000 * 3600 * 24 * 10)) {
+              display_format_unit = 'day';
+            } else {
+              display_format_unit = 'month';
+            }
+          }
+        window.ReactNativeWebView.postMessage(graphData)
+      } catch (e) {
+        // error getting plotting
+      }
+
+      gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      if (stroke === '#06d092') {
+        gradient.addColorStop(0, addColor1);
+        gradient.addColorStop(0.5, addColor2);
+      } else {
+        gradient.addColorStop(0, addColor1);
+        gradient.addColorStop(0.5, addColor2);
+      }
+      chart.data.datasets[0].borderColor = stroke;
+      chart.data.datasets[0].strokeColor = stroke;
+      chart.data.datasets[0].backgroundColor = gradient;
+      var pnl_data = processListToXYList(graphData.dataPoints);
+      chart.options.scales.xAxes[0].time.displayFormats.unit = display_format_unit;
+      chart.data.datasets[0].data = pnl_data;
+      chart.update({
+        duration: 0
+      });
+    });
+
+  </script>
+</body>
+
+</html>

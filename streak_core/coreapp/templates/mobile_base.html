@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><!-- , user-scalable=no -->
+    {% if 'streak.tech' in request.build_absolute_uri %}
+    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+    {% else %}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    {% endif %}
+    <title>Streak{% block page_title %} {% endblock %}</title>
+    {% block meta_keywords %} 
+    <meta name="keywords" content="Streak, Streak Tech, Zerodha Streak, Streak Zerodha, streak.tech, Streak AI, algo trade, algo trade without coding, Streek, Straek, day trading, Zerodha, Kite, backtest, algorithmic trading, trading strategy, trading, investments, trading tool, trading paltform, trading engine,  backtesting tool, backtest on NSE, Live trade NSE, Live algorithmic trading, stock market trading, AI trading, strategizing investments, Streak.ai, Streak, Everyone can algo">
+    {% endblock %}
+    {% block meta_desc %} 
+    <meta name="description" content="Streak is a platform to Algo trade, without coding. You can create, backtest and deploy trading algorithms live in the stock market in a minute.
+    Streak is an extension to Kite - Zerodha's exchange approved platform. Streak enables traders and investors implement their trading strategies written in plain English into executable algorithms that can be backtested on historical data. These algorithms can be deployed to track markets for the trader.">
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@StreakTech">
+    <meta name="twitter:title" content="Streak">
+    <meta name="twitter:description" content="Algo trade, without coding">
+    <!-- <meta name="twitter:creator" content="@author_handle"> -->
+    <meta name="twitter:image" content="https://www.streak.tech/static/imgs/social-logo.png">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Streak" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.streak.tech/static/imgs/social-logo.png" />
+    <meta property="og:description" content="Algo trade, without coding" /> 
+    <meta property="og:url" content="https://www.streak.tech/"/>
+    <!-- <meta property="og:site_name" content="Site Name, i.e. Moz" /> -->
+    <!-- <meta property="fb:admins" content="Facebook numeric ID" /> -->
+    {% endblock %}  
+    <meta name="author" content="Streak AI Technologies Private Limited">
+    
+    <link rel="icon" href="/static/imgs/logo.ico" type="image" sizes="16x16">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- <script src="/static/js/sweetalert.min.js"></script> -->
+    <link href="/static/css/mobile_style.css" rel="stylesheet">
+    <!-- <link href="/static/css/sweetalert.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700" rel="stylesheet">
+    <link href="/static/css/animate.min.css" rel="stylesheet">
+    <link href="/static/css/hopscotch.min.css" rel="stylesheet">
+    {% block page_css1 %} {% endblock %}
+    {% block page_css2 %} {% endblock %}
+    <script src="/static/js/ticker.js"></script>
+    <script src="/static/js/style.js"></script>
+    <script src="/static/js/web_push.js?v=1.1"></script>
+    {% block page_js1 %} {% endblock %}
+    {% block page_js2 %} {% endblock %}
+    {% block page_js3 %} {% endblock %}
+    {% block page_js4 %} {% endblock %}
+    {% block page_js5 %} {% endblock %}
+    {% block page_js6 %} {% endblock %}
+    {% block page_js7 %} {% endblock %}
+    <script src="/static/js/moment.js"></script>
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+   <script src="/static/js/hopscotch.min.js"></script>
+   <!-- <script src="/static/js/product_tour.js"></script> -->
+    <script>
+      var uid = "{{request.session.user_uuid}}"
+    </script>
+<!-- Google Analytics -->
+<script>
+var user_is_auth = "{{request.session.user_is_auth|default:False}}";
+var url = window.location;
+var page_location = url.href.split("?").slice(0)[0];
+var page_path = url.pathname;
+var page_title = document.title.split(" ").slice(-1)[0];
+
+// $(document).ready(function(){
+  if ((window.location.hostname != '127.0.0.1') && (window.location.hostname != 'www.streak.ninja') && (window.location.hostname != 'streak.ninja')){
+  window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+  ga('create', 'UA-110056397-1', 'auto', {allowLinker: true});
+  ga('require', 'linker');
+  ga('linker:autoLink', ['streak.tech', 'zerodha.com'], false, true);
+  ga('send', {
+  hitType: 'pageview',
+  page: page_path,
+  location: page_location
+  });
+
+{% if request.session.user_is_auth is True and request.session.user_is_auth  %}
+// adding push notificcation initialization
+initializeUI();
+{% endif %}
+}
+// });
+</script>
+<!-- <script async src='https://www.google-analytics.com/analytics.js'></script> -->
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+<!-- "" -->
+<script>
+  </script>
+</head>
+
+<body>
+  {% if request.session.first_time_login %}
+  <script type="text/javascript">
+    var first_time_login = "true";
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_login = "false";
+  </script>
+  {% endif %}
+<div class="block main">
+  {% if request.session.user_is_auth is True and request.session.user_is_auth  %}
+  <div class="flex header">
+    <div class="menu_mobile_show">
+      <ul class="menu">
+        <li class="user_icon" id="mobile_menu_icon"><p>{{request.session.user_name|title}}</p><img src="/static/imgs/menu.svg">
+        <ul id="mobile_acc_menu" class="card" style="display: none;">
+        <!-- <li id="menu_item_dashboard" class="menu_mobile_show"><a href="/dashboard_metrics" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Dashboard', eventLabel: 'Navigation'});">Dashboard</a></li>
+        <li id="menu_item_strategy" class="menu_mobile_show"><a href="/strategy" onclick="ga('send', {hitType: 'event', eventCategory: 'Create/Edit/Create similar', eventAction: 'Create algo', eventLabel: 'Navigation'});">Create</a></li>
+        <li id="menu_item_algos" class="menu_mobile_show"><a href="/dashboard" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Algos', eventLabel: 'Navigation'});">Algos</a></li>
+        <li id="menu_item_orderlog" class="menu_mobile_show"><a href="/order_log" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Deployed', eventLabel: 'Navigation'});">Deployed</a></li> -->
+        <li id="menu_item_alerts" class="menu_mobile_show"><a href="/mobile_alerts" onclick="ga('send', {hitType: 'event', eventCategory: 'App_Header', eventAction: 'App_Alerts', eventLabel: 'Navigation'});">Alerts</a></li>
+        <li id="menu_item_orderbook" class="menu_mobile_show"><a href="/mobile_orderbook" onclick="ga('send', {hitType: 'event', eventCategory: 'App_Header', eventAction: 'App_Orderbook', eventLabel: 'Navigation'});">Orderbook</a></li>
+        <li id="menu_item_portfolio" class="menu_mobile_show"><a href="/mobile_portfolio" onclick="ga('send', {hitType: 'event', eventCategory: 'App_Header', eventAction: 'App_Positions', eventLabel: 'Navigation'});">Positions</a></li>
+         <!-- <li class="menu_mobile_show"><a href="/dashboard" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'More icon', eventLabel: 'Navigation'});">More</a></li>
+        <li><a href="/myaccount" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Profile', eventLabel: 'Navigation'});">My Profile</a></li>
+        <li><a id="billing" href="/myaccount#billing" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Billing', eventLabel: 'Navigation'});">Billing</a></li>
+        <li id="take_tour_mobile" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Take tour', eventLabel: 'Navigation'});">Take tour</li> -->
+        <!-- <li class="menu_mobile_show"><a href="/help" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Methodology</a></li> -->
+        <!-- <li id="menu_item_help" class="menu_mobile_show"><a href="/help" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Methodology</a></li> -->
+        <!-- <li id="menu_item_help" class="menu_mobile_show"><a href="https://help.streak.tech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Help</a></li>
+        <li id="menu_item_videos" class="menu_mobile_show"><a href="https://www.youtube.com/watch?v=oP2fSrVJL2g&list=PLYiYmYGb65i58tAeOaHvA9nQ7IUfkBInT" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Playlist link', eventAction: 'Videos', eventLabel: 'Dropdown menu'});">Videos</a></li>
+        <li id="menu_item_feedback" class="menu_mobile_show"><a href="https://goo.gl/forms/iqca2Ikkt7ZNtn5G2" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Feedback'});">Feedback</a></li>
+        <li id="menu_item_pricing" class="menu_mobile_show"><a href="https://www.streak.tech/#pricing" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Pricing'});">Pricing</a></li> -->
+        <li><a href="/logout" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Logout', eventLabel: 'Navigation'});">Logout</a></li>
+        </ul>
+      </li>
+      </ul>
+    </div>
+  <div class="flex logo">
+  <a id="logo_link" href="/dashboard_metrics" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Home icon', eventLabel: 'Navigation'});">
+    <div><img src="/static/imgs/whitelogo.svg"><span id="sub_white" style="">&nbsp;Beta</span></div>
+    <div><p>STREAK<!-- <span>AI</span> <span id="sub">&nbsp;Beta</span> --></p></div>
+  </a>
+  </div>
+  <div class="block menu_row">
+   <ul class="menu">
+    <!-- <li id="counter" data-tooltip-bottom="Renews in 3 hours" style="display: none;"><span></span>45 backtests &amp;&nbsp; 5 deploys </li> -->
+    <li id="trail_period" style="display: none;"><span></span>4 days left - Subscribe</li>
+    <!-- <li id="menu_item_dashboard" class="menu_mobile_hide"><a href="/dashboard_metrics" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Dashboard', eventLabel: 'Navigation'});">Dashboard</a></li>
+    <li id="menu_item_strategy" class="menu_mobile_hide"><a href="/strategy" onclick="ga('send', {hitType: 'event', eventCategory: 'Create/Edit/Create similar', eventAction: 'Create algo', eventLabel: 'Navigation'});">Create</a></li>
+    <li id="menu_item_algos" class="menu_mobile_hide"><a href="/dashboard" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Algos', eventLabel: 'Navigation'});">Algos</a></li>
+    <li id="menu_item_orderlog" class="menu_mobile_hide"><a href="/order_log" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Deployed', eventLabel: 'Navigation'});">Deployed</a></li>
+    <li id="menu_item_orderbook" class="menu_mobile_hide"><a href="/orderbook" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Orderbook', eventLabel: 'Navigation'});">Orderbook</a></li>
+    <li id="menu_item_portfolio" class="menu_mobile_hide"><a href="/portfolio" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Positions', eventLabel: 'Navigation'});">Positions</a></li> -->
+    <!-- <li id="menu_item_alerts"><a href="/alerts" class="menu_mobile_hide" onclick="">Alerts</a></li> -->
+    <!-- <li class="more menu_mobile_hide" id="more">More<img src="/static/imgs/icon-more-white.png">
+      <ul id="more_menu" class="card">
+        <li id="saved_bt_screens" onclick="$('.saved_bt_popup').fadeIn();$('body').addClass('body_scroll');">Saved Backtest Screens</li>
+         <li id="my_baskets" onclick="$('.create_baskets_body, .create_baskets_footer').hide();$('.my_baskets_popup').fadeIn();$('.baskets_body, .baskets_footer').show();$('body').addClass('body_scroll');">My Baskets</li>
+         <li><a href="/portfolio" onclick="">Positions</a></li>
+         <li><a href="/portfolio" onclick="">Holdings</a></li>
+        <li><a href="/help" onclick="">Help</a></li>
+         <li><a href="/help" onclick="">FAQs</a></li>
+      </ul>
+    </li> --><!-- icon-notification-white -->
+    <li class="notifications" id="notifications"><a href="/mobile_alerts"><img src="/static/imgs/alert_white.svg"><span id='notif_count' style="display: none;"></span></a>
+      <ul class="notification_details" id="notification_details" class="card" style="display: none;">
+        <!-- <li>
+          <div class="notif">
+            <div class="notif_first_line">
+              <p class="notif_time_stamp">10:24:09 am</p>
+              <p class="notif_algo_name">Golden crossover</p>
+              <p class="notif_desc">Buy 500 shares of CANBK at 243.39</p>
+            </div>
+            <div class="notif_second_line">
+              <p class="notif_tag">Buy alert</p>
+              <p class="notif_desc">Buy 500 shares of CANBK at 243.39</p>
+            </div>
+          </div>
+          <div class="notif_window">
+            <div class="notif_header">
+              <p>Buy 500 stocks at 243.39</p>
+            </div>
+            <div class="notif_body">
+              <div class="notif_options">
+                <div>
+                  <div class="radio_options">
+                    <div>
+                      <span id="buy_radio_option"></span>
+                      <p id="option_selected">CNC</p>
+                    </div>
+                    <div>
+                      <span></span>
+                      <p>MIS</p>
+                    </div>
+                  </div>
+                  <div class="notif_qty">
+                    <p>Quantity</p>
+                    <input type="number" name="">
+                  </div>
+                </div>
+                <div>
+                  <div class="radio_options">
+                    <div>
+                      <span></span>
+                      <p>MKT</p>
+                    </div>
+                    <div>
+                      <span id="buy_radio_option"></span>
+                      <p id="option_selected">LMT</p>
+                    </div>
+                  </div>
+                  <div class="notif_price">
+                    <p>Price</p>
+                    <input type="number" name="">
+                  </div>
+                </div>
+              </div>
+              <div id="notif_actions">
+                <button id="buy">Buy</button>
+                <button id="cancel">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="notif">
+          <p>10:24 on 24/04/2017</p>
+          <p>Order sent to the exchange&nbsp;<span>Buy 500 stocks at 243.39</span></p>
+          </div>
+        </li>
+        <li>
+          <div class="notif">
+          <p>10:24 on 24/04/2017</p>
+          <p>Order complete partial.&nbsp;<span class="bought">Buy 250 stocks at 244.39</span></p>
+        </div>
+        </li>
+        <li>
+          <div class="notif">
+          <p>10:24 on 24/04/2017</p>
+          <p>Exited position.&nbsp;<span class="sold">Sell 500 stocks at 243.39</span></p>
+          </div>
+        </li> -->
+      </ul>
+    </li>
+    <!-- <li class="user_icon menu_mobile_hide" id="user_icon"><p>{{request.session.user_name|title}}</p><img src="/static/imgs/profile.svg">
+        <ul id="acc_menu" class="card" style="display: none;">
+        <li class="menu_mobile_show"><a href="/dashboard" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Algos', eventLabel: 'Navigation'});">Algos</a></li>
+        <li class="menu_mobile_show"><a href="/order_log" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Deployed', eventLabel: 'Navigation'});">Deployed</a></li>
+         <li class="menu_mobile_show"><a href="/strategy" onclick="ga('send', {hitType: 'event', eventCategory: 'Create/Edit/Create similar', eventAction: 'Create algo', eventLabel: 'Navigation'});">Create</a></li>
+         <li class="menu_mobile_show"><a href="/dashboard" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'More icon', eventLabel: 'Navigation'});">More</a></li>
+        <li><a href="/myaccount" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Profile', eventLabel: 'Navigation'});">My Profile</a></li>
+        <li><a id="billing" href="/myaccount#billing" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Billing', eventLabel: 'Navigation'});">Billing</a></li>
+        <li id="take_tour" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Take tour', eventLabel: 'Navigation'});">Take tour</li>
+        <li id="menu_item_help" class="menu_mobile_hide"><a href="https://help.streak.tech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Navigation'});">Help</a></li>
+        <li id="menu_item_videos" class="menu_mobile_hide"><a href="https://www.youtube.com/watch?v=oP2fSrVJL2g&list=PLYiYmYGb65i58tAeOaHvA9nQ7IUfkBInT" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Playlist link', eventAction: 'Videos', eventLabel: 'Dropdown menu'});">Videos</a></li>
+        <li id="menu_item_feedback" class="menu_mobile_hide"><a href="https://goo.gl/forms/iqca2Ikkt7ZNtn5G2" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Feedback'});">Feedback</a></li>
+        <li id="menu_item_pricing" class="menu_mobile_hide"><a href="https://www.streak.tech/#pricing" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Pricing'});">Pricing</a></li>
+        <li><a href="/logout" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Logout', eventLabel: 'Navigation'});">Logout</a></li>
+        </ul>
+    </li> -->
+    <div class="is_auth" style="display: none">{% csrf_token %}</div>
+    <!-- <li class="menu_mobile_hide"><a href="/login" onclick="">Login</a></li>
+    <li class="menu_mobile_hide"><a href="/signup" onclick="">Signup</a></li>
+    <li class="menu_mobile_hide"><a href="/help" onclick="">Help</a></li>
+    <li class="menu_icon menu_mobile_show"><a href="">&nbsp;&nbsp;&nbsp;FirstName</a><img id="menu_icon" class="noSelect" src="/static/imgs/menu.png">
+        <ul id="new_menu" class="card">
+        <li><a href="/login" onclick="">Login</a></li>
+        <li><a href="/signup" onclick="">Signup</a></li>
+        <li><a href="/help" onclick="">Help</a></li>
+        </ul>
+    </li> -->
+   </ul>
+  </div>
+  </div>
+  {% else %}
+  <div class="flex home_header">
+    <div class="flex home_logo">
+      <a id="home_logo_link" href="/" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Home icon', eventLabel: 'Home Navigation'});">
+        <div><img src="/static/imgs/logosvg.svg"><span id="sub" style="">&nbsp;Beta</span></div>
+        <div><p>STREAK<!-- <span>AI</span> --><!-- <span id="home_sub">&nbsp;Beta</span> --></p></div>
+      </a>
+      <a id="home_logo_mobile_link" href="/mobile_landing" onclick="ga('send', {hitType: 'event', eventCategory: 'App_Header', eventAction: 'Home icon', eventLabel: 'Home Navigation'});">
+        <div><img src="/static/imgs/logosvg.svg"><span id="sub" style="">&nbsp;Beta alert app</span></div>
+        <div><p>STREAK<!-- <span>AI</span> --><!-- <span id="home_sub">&nbsp;Beta</span> --></p></div>
+      </a>
+    </div>
+    <div class="block">
+      <ul class="home_menu">
+        <!-- <li><a href="#features" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Features', eventLabel: 'Home Navigation'});">Features</a></li>
+        <li><a href="#pricing" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Pricing', eventLabel: 'Home Navigation'});">Pricing</a></li>
+        <li><a href="/help" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Home Navigation'});">Methodology</a></li> -->
+      </ul>
+    </div>
+    <div class="block">
+      <ul class="home_menu">
+        <li><a href="#features" id="feature_option" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Features', eventLabel: 'Home Navigation'});">Features</a></li>
+        <li><a href="#pricing" id="feature_pricing" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Pricing', eventLabel: 'Home Navigation'});">Pricing</a></li>
+        <li><a href="/signup" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Help', eventLabel: 'Home Navigation'});">Sign up</a></li>
+        <!-- <li><a href="/dashboard" class="menu_mobile_hide" onclick="ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Log in', eventLabel: 'Home Navigation'});">Log In</a></li> -->
+        <li id="start_free_trial" class="menu_mobile_hide" onclick="log_in_kite();ga('send', {hitType: 'event', eventCategory: 'Header', eventAction: 'Start free trial', eventLabel: 'Home Navigation'});">Start Free Trial</li>
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+  <div class="error_box" id="error_box" style="display: none;">
+    <div><p id="error_message"></p></div>
+    <div id="error_close" onclick=""><p>Close</p><img src="/static/imgs/close_white.png"></div>
+  </div>
+   <div class="trial_box" id="trial_box" style="display: none;">
+    <div>
+      <img src="/static/imgs/subscription-flag.png">
+      <p id="trial_message">Your free trial is over. Please subscribe to continue using the services.</p>
+      <!-- <p id="trial_message">Your 7 day free trial is over. Please subscribe to continue using the services.</p> -->
+      <button class='start_subscription_popup_btn' onclick="start_subscription_free_popup();">Subscribe</button>
+    </div>
+    <!-- <div id="trial_close" onclick=""><p>Close</p><img src="/static/imgs/close_white.png"></div> -->
+  </div>
+  <!-- <div class="warning_box" id="warning_box" style="display: none;"t>
+    <div>
+      <img src="/static/imgs/subscription-flag.png">
+      <p id="warning_message">We are upgrading our servers for deployment algos, you might experience some delays on alerts.</p>
+    </div>
+  </div> -->
+  <div class="snackbar animated bounceInUp" style="display: none;">
+    <p class="">Your Strategy is live!</p>
+  </div>
+  <div class="block body">
+
+{% block body %}
+{% endblock %}
+
+  
+  </div>
+<div class="footer_home">
+    <div class="footer_container">
+      <div class="footer_left">
+        <div class="about_streak">
+          <p class="streak_title"><a href="/">Streak</a></p>
+          <p class="streak_description">Algo trade, without coding</p>
+        </div>
+        <div class="contact_streak">
+          <!-- <p><span><img src="/static/imgs/footer-phone.png"></span>&nbsp;+91 123 456 7891</p> -->
+          <p><span><img src="/static/imgs/footer-mail.png"></span>&nbsp;support@streak.tech</p>
+        </div>
+        <!-- <div class="social_streak">
+          <span><a href="https://www.linkedin.com/company/streaktech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Linkedin', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-linkedin.png"></a></span>
+          <span><a href="https://twitter.com/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Twitter', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-twitter.png"></a></span>
+          <span><a href="https://www.facebook.com/pg/StreakAI/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Facebook', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-facebook.png"></a></span>
+          <span><a href="https://www.youtube.com/c/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Youtube', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-youtube.svg" id="youtube"></a></span>
+        </div> -->
+      </div>
+      <div class="footer_right">
+        <div class="footer_terms">
+          <p>
+              <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Terms of use', eventLabel: 'Home Footer'});">Terms of Use</a></span>
+              <span><a href="/privacy" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Privacy policy', eventLabel: 'Home Footer'});">Privacy Policy</a></span>
+              <span><a href="/disclosure" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Risk Disclosure', eventLabel: 'Home Footer'});">Risk Disclosure</a></span>
+            </p>
+        </div>
+        <div class="nse_member">
+          <!-- <p>Zerodha: Member of NSE​ &​ BSE – SEBI Registration no.: INZ000031633 CDSL: Depository services through Zerodha Securities Pvt. Ltd. – SEBI Registration no.: IN-DP-100-2015 Commodity Trading through Zerodha Commodities Pvt. Ltd. MCX: 46025 | NCDEX: 1138 – SEBI Registration no.: INZ000038238</p> -->
+          <div class="social_streak">
+          <span><a href="https://www.linkedin.com/company/streaktech/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Linkedin', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-linkedin.png"></a></span>
+          <span><a href="https://twitter.com/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Twitter', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-twitter.png"></a></span>
+          <span><a href="https://www.facebook.com/pg/StreakAI/" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Facebook', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-facebook.png"></a></span>
+          <span><a href="https://www.youtube.com/c/StreakTech" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Youtube', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-youtube.svg" id="youtube"></a></span>
+        </div>
+        </div>
+        <div class="footer_copyright">
+          <span><a href="/terms#copyright" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Copyright', eventLabel: 'Home Footer'});">© 2018 Streak. All rights reserved.</a></span>
+        </div>
+      </div>
+    </div>
+ <!--  <div class="footer">
+  <p>
+     <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Copyright', eventLabel: 'Footer'});">© 2017 Streak</a></span>
+    <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Terms of use', eventLabel: 'Footer'});">Terms of Use</a></span>
+    <span><a href="/privacy" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Privacy policy', eventLabel: 'Footer'});">Privacy Policy</a></span>
+    <span><a href="/disclosure" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Risk Disclosure', eventLabel: 'Footer'});">Risk Disclosure</a></span>
+  </p>
+</div> -->
+</div>
+</div>
+
+<div class="popup" style="display: none;">
+      <div class="card">
+       <!--  <div class="close" onclick="close_popup();"><img src="/static/imgs/close.png"></div>
+        <div class="popup_body"> -->
+        {% block popup_body%}
+        <!-- <p>Do you want to submit changes to Algorithm?</p> -->
+        {% endblock %}
+         <!--  <video class="card" width="400" controls>
+  <source src="imgs/videos/etnow.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+<video class="card" width="400" controls>
+  <source src="imgs/videos/bloomberg.mp4" type="video/mp4">
+
+  Your browser does not support HTML5 video.
+</video> -->
+        <!-- </div> -->
+        <!-- <div class="popup_buttons">
+          <button type="submit" class="cancel" onclick="close_popup();">Cancel</button>
+          <button type="submit" class="confirm" onclick="{% block onconfirm %}{% endblock %}">{% block confirm %}Confirm{% endblock %}</button>
+        </div> -->
+      </div>
+</div>
+<div class="my_baskets_popup" style="display: none;">
+  <div class="card animated pulse">
+    <div class="close_baskets_popup"><img onclick="$('.my_baskets_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/icon-deploy-close.png"></div>
+    <div class="baskets_body">
+      <div class="baskets_header">
+        <p>My Baskets</p>
+        <p>Customized Collections of my favorite stocks.</p>
+      </div>
+      <div class="baskets_list">
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+        <div class="basket">
+          <p>Basket One</p>
+          <button class="edit_basket" onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">Edit</button>
+          <button class="delete_basket">Delete</button>
+        </div>
+      </div>
+    </div>
+    <div class="baskets_footer">
+        <button onclick="$('.baskets_body, .baskets_footer').hide();$('.create_baskets_body, .create_baskets_footer').fadeIn();">+ Create new basket</button>
+    </div>
+    <div class="create_baskets_body" style="display: none;">
+      <div class="baskets_header">
+        <p>Create a new basket</p>
+        <p>A collection of my favorite stocks.</p>
+      </div>
+      <div class="create_basket_body">
+        <p>Enter a name</p>
+        <input type="text" name="">
+        <p>Add stocks</p>
+        <input type="text" name="search_eq" id="create_basket_equities_input" placeholder="Add equities to backtest">
+        <div class="equities_list">
+        <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+        </div>
+      </div>
+    </div>
+    <div class="create_baskets_footer" style="display: none;">
+        <button class="go_back" onclick="$('.create_baskets_body, .create_baskets_footer').hide();$('.baskets_body, .baskets_footer').fadeIn();">Back</button>
+        <button class="save_basket" onclick="$('.create_baskets_body, .create_baskets_footer').hide();$('.baskets_body, .baskets_footer').fadeIn();">Save</button>
+    </div>
+  </div>
+</div>
+<div class="saved_bt_popup" style="display: none;">
+  <div class="card animated pulse">
+    <div class="close_saved_bt_popup"><img onclick="$('.saved_bt_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/icon-deploy-close.png"></div>
+  </div>
+</div>
+<!-- <div class="ti_msg_popup" style="display: none;text-align: center;">    
+  <div class="" style="left: 0px;">    
+    <div class="close" onclick="close_popup();"><img src="/static/imgs/close.png"></div>   
+    <div class="ti_popup_body">   
+    <p class="ti_msg"></p>   
+    </div>    
+    <div class="ti_popup_buttons">    
+      <button type="submit" class="ti_cancel" onclick="close_popup();">Okay</button>    
+    </div>    
+  </div>    --> 
+</div>
+<!-- <div class="ti_popup" style="display: none;">
+      <div class="">
+        <div class="close" onclick="close_popup();"><img src="/static/imgs/close.png"></div>
+        <div class="ti_popup_body">
+        {% block ti_popup%}
+        <p id="ti_name"></p>
+        <table id="ti_populate">
+          <tr>
+            <th>Period</th>
+            <th><input type="number" name=""></th>
+          </tr>
+          <tr>
+            <th>Frequency</th>
+            <th><input type="number" name=""></th>
+          </tr>
+        </table>
+        {% endblock %}
+        </div>
+        <div class="ti_popup_buttons">
+          <button type="submit" class="ti_cancel" onclick="close_popup();">Cancel</button>
+          <button type="submit" class="done" onclick="">Done</button>
+        </div>
+      </div>
+</div> -->
+<div class="welcome_popup" {% if request.session.first_time_login %}
+  style="display: block;"
+{% else %}
+  {% if subscription_start_before_login|default:False %}
+  style="display: block;"
+  {% endif %} 
+{% endif %}
+>
+  <div class="welcome_message">
+    <img src="/static/imgs/flame-icon-big.png">
+    <!-- <h1>Welcome to Streak</h1> -->
+    <!-- <p>Algo trade, without coding.<br> Create, backtest and deploy algos.</p> -->
+    {% if subscription_start_before_login|default:False %}
+      <h1>Congratulations, your subscription is successful.</h1> <p><!--A monthly subscription gives you so many more abilities <br> and freedom for building and automating strategies.--></p> <!--<h2>Your 7 day trial begins today</h2>--> 
+      <!-- <button onclick="skip_tour();">Jump in!</button> 
+      <p class="skip_tour" onclick="skip_tour();">Jump in!</p> -->
+      <script type="text/javascript">
+      $(document).ready(function(){
+        start_subscription(subscription_instance='first')
+      });</script>
+      <button onclick="start_first_tour();">Start tour</button>
+      <!-- <p class="skip_tour" onclick="skip_tour();">Skip tour</p> -->
+    {% else %}
+      <h1>Welcome to Streak</h1>
+      <h2>Your free trial begins today</h2>
+      <button onclick="start_first_tour();">Start tour</button>
+      <!-- <p class="skip_tour" onclick="skip_tour();">Skip tour</p> -->
+    {% endif %}
+  </div>
+</div>
+<div class="welcome_popup" {% if blocked_login is True %}
+  style="display: block;"
+{% else %}
+  style="display: none;"
+{% endif %}
+>
+  <div class="welcome_message">
+    <img src="/static/imgs/flame-icon-big.png">
+      <h1>Welcome to Streak</h1>
+      <h2>Currently we are in closed beta, we will launch soon.</h2>
+      <button onclick="window.location.href='https://goo.gl/forms/llnIXYHYLDsyShWf2'">Join beta</button>
+      <p class="skip_tour" onclick="skip_tour();">Cancel</p>
+  </div>
+</div>
+<div class="subscription_popup">
+  <div class="subscription_message">
+    <div class="close_subscription_popup"><img onclick="$('.subscription_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/icon-deploy-close.png"></div>
+    <img src="/static/imgs/flame-icon-big.png">
+    <h1>Start your monthly subscription</h1>
+    <p>Streak gives <strong>100 backtests and 50 live deployments everyday</strong> for &#8377; 500/- (+ GST) a month. <!-- <br> and freedom for building and automating strategies. --></p>
+    <div class="subscription_details">
+      <div class="subscription_row">
+        <div class="subscription_block">
+          <div class="subscription_heading"><h2><img src="/static/imgs/subscription-data.png">&nbsp;&nbsp;&nbsp;Zero Coding</h2></div>
+          <div class="subscription_description"><p><!-- Streak is the first innovative platform in the world that enables algo trading without coding.  Our Intuitive algo creation tool built from scratch with ease of trading in mind. --> Intuitive interface to build trading algos without coding. <!-- Streak's systematic approach allows traders to  -->Trade objectively and benefit from market movements.</p></div>
+        </div>
+        <div class="subscription_block">
+          <div class="subscription_heading"><h2><img src="/static/imgs/subscription-backtest.png">&nbsp;&nbsp;&nbsp;Backtests</h2></div>
+          <div class="subscription_description"><p>Run up to 100 backtests a day on any scrip listed on NSE. You can tweak various parameters to measure algo performance.</p></div>
+        </div>
+        <div class="subscription_block">
+          <div class="subscription_heading"><h2><img src="/static/imgs/subscription-trading-system.png">&nbsp;&nbsp;&nbsp;Live Algos</h2></div>
+          <div class="subscription_description"><p>Deploy up to 50 live algos at any given time. Streak bots will constantly scan for signals and generate real time actionable alerts.<!--  when the algo is triggered. --></p></div>
+        </div>
+      </div>
+       <div class="subscription_row">
+        <div class="subscription_block">
+          <div class="subscription_heading"><h2><img src="/static/imgs/subscription-privacy.png">&nbsp;&nbsp;&nbsp;Privacy Protection</h2></div>
+          <div class="subscription_description"><p>All algos you create are private. Only you will be able to view, modify or deploy these algos.</p></div>
+        </div>
+        <div class="subscription_block">
+          <div class="subscription_heading"><h2><img src="/static/imgs/subscription-analytics.png">&nbsp;&nbsp;&nbsp;Analytics</h2></div>
+          <div class="subscription_description"><p>Get insights such as number of signals generated, winning and losing streak, winning trades and much more.</p></div>
+        </div>
+        <div class="subscription_block">
+          <div class="subscription_heading"><h2><img src="/static/imgs/subscription-alerts.png">&nbsp;&nbsp;&nbsp;Actionable Alerts</h2></div>
+          <div class="subscription_description"><p>One click order placement when trading signals are generated. Get instant alerts on email, mobile and website.</p></div>
+        </div>
+      </div>
+    </div>
+    <!-- <h2>Your 7 day trial begins today</h2> -->
+    <p style="margin-bottom: 0px;">&#8377; 500/- (+ GST) per month will be charged from your Zerodha account. This plan is on autorenew mode, you can cancel anytime.</p>
+    <p class="sub-title"><input type="checkbox" id="start_subscription_checkbox" name="cancel_subscription_checkbox">&nbsp;&nbsp;&nbsp;I have read and agree to the <a href="/terms" target="_blank">Terms</a>.</p>
+    <button id="start_subscription_btn" onclick="start_subscription();">Subscribe</button>
+    <!-- <p class="skip_tour">Skip tour</p> -->
+  </div>
+</div>
+{% if request.session.first_time_deploy %}
+<script type="text/javascript">
+  var first_time_deploy = "true";
+  ss_d = '{{request.session.session_secret}}';
+    first_login_complete(ss_d,'first_time_deploy');
+</script>
+{% else %}
+<script type="text/javascript">
+  var first_time_deploy = "false";
+</script>
+{% endif %}
+{% block loader_popup %}
+<div class="loader_parent">
+  <!-- <div class="loader"></div>
+  <p>Loading...</p> -->
+  <div class="loader-wrap">
+    <div class="loader">
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+      <span class="loader-item"></span>
+    </div>
+  </div>
+ <!--  <span class="loading-dots-container" id="update_top_performance1">
+          <div class="loading-dots">
+              <div class="loading-dots--dot"></div>
+              <div class="loading-dots--dot"></div>
+              <div class="loading-dots--dot"></div>
+          </div>
+      </span> -->
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+      ss = '{{request.session.session_secret}}';
+      first_login_complete(ss,'first_time_login');
+    }
+  );
+</script>
+{% endblock %}
+</body>
+
+</html>
+{% block errorblock %}
+{% endblock %}

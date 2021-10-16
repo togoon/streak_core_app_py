@@ -1,0 +1,29 @@
+{
+  "short_name": "Streak",
+  "name": "Streak",
+  "icons": [
+    {
+      "src": "/static/imgs/new/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/imgs/new/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "theme_color": "#0088FF",
+  "prefer_related_applications": true,
+	"related_applications": [
+	  {
+	    "platform": "play",
+	    "id": "com.streak"
+	  }
+	]
+}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | SignUp {% endblock %}
+{% block page_css1 %} <link href="/static/css/signup.css?v=1.7.1" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/signup.js?v=1.7.1"></script> {% endblock %}
+
+{% block body %}
+
+<!-- <div class="block sec_main">
+	<div class="signup_sec">
+		<p>Create a {---} Account</p>
+		
+		<p id="login_link">Already have an account?&nbsp;&nbsp;&nbsp;<a href="/login" onclick="ga('send', 'event', 'Login', 'Link', 'SignUp page');">Login</a></p>
+	</div>
+</div> -->
+<div class="block sec_main">
+	<div class="signup_left">
+		<div class="design_sec">
+			
+		</div>
+	</div>
+	<div class="signup_right">
+		<div class="signup_sec">
+			<!-- <div class="signup_logo"><img src="/static/imgs/logo.png"></div> -->
+			<p class="signup_title"> <!-- <span>DON'T CODE, JUST TRADE</span> <br> --> Create, Backtest and Deploy algorithms in crypto markets</p>
+			<form action="/directsignup/" method="post">
+			<input class="full_name" type="text" name="first_name" placeholder="Full Name" value="{{first_name}}" required>
+			<!-- <input type="text" name="last_name" placeholder="Last Name" value="{{form.last_name}}" required> -->
+			<input class="phone_number" type="number" name="phone_number" placeholder="Mobile Number" value="{{phone_number}}" required>
+			<input class="email" type="email" name="email" placeholder="Email" value="{{email}}" required>
+			<input class="password" type="password" name="password" placeholder="Password" value="{{password}}" required>
+			<input class="password" type="password" name="password2" placeholder="Confirm Password" required>
+		<!-- 	<input type="checkbox" name="terms_checkbox" id="terms_checkbox" value="1" required>I accept the <a href="/terms" onclick="ga('send', 'event', 'Terms of Use', 'Signup');">Terms of Use</a> and <a href="privacy" onclick="ga('send', 'event', 'Privacy Policy', 'Signup');">Privacy Policy</a>. -->
+			<p class="signup_statements">By creating an account, you agree to our <a href="/terms">Terms</a></p>
+			<button type="submit" onclick="ga('send', 'event', 'Signup', 'Submit Click');">Create&nbsp;&nbsp;Account</button>
+			<p class="signup_statements already">Already have an account? <a href="/login">Log in</a></p>
+			{% csrf_token %}
+		</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block errorblock %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		{% if error_msg and error_msg.strip %}
+			$('#error_message').text('{{error_msg}}');
+			$("#error_box").show();
+			$(".body").css({"margin-top": "5px"});
+		{% endif %}
+		{% for e in error %}
+			$('#error_message').append('{{e}}<br>');
+			$("#error_box").show();
+			$(".body").css({"margin-top": "5px"});
+		{% endfor %}
+	});
+
+</script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Login {% endblock %}
+{% block page_css1 %} <link href="/static/css/login.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/login.js"></script> {% endblock %}
+
+{% block body %}
+
+<div class="block sec_main">
+	<div class="login_left">
+		<div class="design_sec">
+			<!-- <p class="tagline">A Smarter Way of Trading</p>
+			<p class="tagline_sub">Strategy Automation, Speed of Execution & Unbiased Trades</p>
+			<p class="tagline_sub_sub">Write your own Algorithm which will Trade for you</p> -->
+			<!-- <table>
+				<tr>
+					<td><img src="/static/imgs/log2.png"></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td class="middle_img"><img src="/static/imgs/log4.png"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td><img src="/static/imgs/log5.png"></td>
+				</tr>
+			</table> -->
+		</div>
+	</div>
+	<div class="login_right">
+		<div class="login_sec">
+			<p class="login_title">Streak World</p>
+			<form action="/login/" method="post">
+				{% csrf_token%}
+				<input class="email" id='login_email' type="email" name="login_email" placeholder="Email" value="{{email}}" required>
+				<input class="password" id='login_password' type="password" name="login_password" placeholder="Password">
+				<!-- <p style="color:red;margin: 1px 0px 1px 0px;padding: 0px;">{{msg}}</p> -->
+				<p id="forgot_pass_button" class="login_statements"><a href="/forgot_password/" class="login_statements" onclick="ga('send', 'event', 'Forgot Password', 'Link Clicked');">Forgot Password?</a></p>
+				<button type="submit" onclick="ga('send', 'event', 'Login', 'Submit Click');">Login</button>
+				<!-- <button type="submit" onclick="submit_login();">Login</button> -->
+				<div>
+				<!-- <p id="forgot_pass_button"><a href="/forgot_password">Forgot Password</a></p> -->
+				<p id="signup_link" class="login_statements">Don't have an account?&nbsp;&nbsp;&nbsp;<a href="/directsignup" onclick="ga('send', 'event', 'Signup', 'Link', 'Login page');">Create Account</a></p>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block errorblock %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		{% if error_msg and error_msg.strip %}
+			$('#error_message').text('{{error_msg}}');
+			$("#error_box").show();
+			$(".body").css({"margin-top": "5px"});
+		{% endif %}
+		{% for e in error %}
+			$('#error_message').append('{{e}}<br>');
+			$("#error_box").show();
+			$(".body").css({"margin-top": "5px"});
+		{% endfor %}
+	});
+
+</script>
+{% endblock %}

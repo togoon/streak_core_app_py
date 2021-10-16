@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+    {% block meta_keywords %} 
+    <meta name="keywords" content="Streak AI, Backtest Algorithm, Backtest Trading Algorithm, Test trading Algorithm, Test trading strategy, test strategy on historical data, historical equity data, equity info, backtest, portfolio performance, profit/loss, cumulative returns, Sharpe ratio, order placement, equity/stock performance, algorithmic trading, trading strategy, trading, investments, trading tool, backtesting tool, AI trading, strategizing investments, Streak">
+    {% endblock %}
+    {% block meta_desc %} 
+    <meta name="description" content="Algo trade, without coding">
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@StreakTech">
+    <meta name="twitter:title" content="Streak">
+    <meta name="twitter:description" content="Algo trade, without coding">
+    <meta name="twitter:image" content="https://www.streak.tech/static/imgs/social-logo.png">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Streak" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.streak.tech/static/imgs/social-logo.png" />
+    <meta property="og:description" content="Algo trade, without coding" />
+    {% endblock %}  
+{% block page_css2 %} <link href="/static/css/backtest.css" rel="stylesheet"> {% endblock %}
+{% block page_css1 %} <link href="/static/css/daterangepicker.min.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/jquery-ui.min.js"></script>{% endblock %}
+{% block page_js2 %} <!-- <script src="/static/js/moment.js"></script> --> {% endblock %}
+{% block page_js3 %} <script src="/static/js/knockout.js"></script> {% endblock %}
+{% block page_js4 %} <script src="/static/js/daterangepicker.min.js"></script><script type="text/javascript">
+	$(document).ready(function(){
+	$("#date_range").daterangepicker({
+  		  timeZone: 'Asia/Kolkata',
+  		  //startDate: new Date(''),
+  		  //stopDate: new Date(''),
+		  minDate: moment().subtract(2, 'years'),
+		  callback: function (startDate, endDate, period) {
+		    $(this).val(startDate.format('L') + ' – ' + endDate.format('L'));
+		  }
+		});
+	$('#date_range').val('{{start_time}}'+' – '+'{{stop_time}}')
+	});
+	bt_url1 = "{{bt_url1}}";
+	bt_url2 = "{{bt_url2}}";
+</script>
+{% endblock %}
+{% block page_js5 %} <script src="/static/js/backtest_shared.js"></script>{% endblock %}
+{% block page_js7 %} <script src="/static/js/dateformat.js"></script>{% endblock %}
+{% block body %}
+
+<!-- <input type="text" id="datepicker" style="border:1px solid #000; width: 500px;"> -->
+<div class="mobile_message"><p>For more functionality and better experience, open the website on a desktop or a laptop.</p></div>
+<div class="block sec_main">
+	<div class="backtest_results">
+		<div class="backtest_results_title">
+			<p>Backtest Results</p>
+		</div>
+		<div class="backtest_results_body">
+			<div class="empty_backtest_results_row" id="loading_backtest_results_row" style="display: none;">
+				<div class="backtest_results_left">
+					<div class="results_section">
+					<div class="chart_section">
+						<div class="chart_header">
+							<div class="equity_section">
+								<p class="company_name">Canara Bank Ltd&nbsp;<span class="exc_symbol">NSE</span></p>
+								<!-- <p >: CANBK</p> -->
+							</div>
+						</div>
+						<div class="chart_body">
+							<div class="backtest_row_loader">
+  								<img src="/static/imgs/backtest-loading-gif.gif">
+    							<div id="myBtProgress"><div id="myBtBar"></div></div>
+    							<p>Generating Backtest Results&nbsp;&nbsp;&nbsp;<span>100%</span></p>
+  							</div>
+						</div>
+					</div>
+					<div class="pnl_section">
+						<div class="pnl">
+							<p>P&L&nbsp;<span>(N.A)&nbsp;</span><span>(N.A)&nbsp;</span></p>
+						</div>
+						<div class="streak">
+							<div class="streak_body">
+								<div class="wins"></div>
+								<div class="losses"></div>
+							</div>
+						</div>
+						<div class="results_table">
+						<table>
+						<tr>
+						<td>Total number of signals</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of wins</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of losses</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Winning streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Losing streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max gains</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max loss</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/winning trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/losing trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max Drawdown</td>
+						<td>- / -</td>
+						</tr>
+						</table>
+						</div>
+					</div>
+					</div>
+					<div class="empty_transactions_section">
+						<p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+					</div>
+				</div>
+				<div class="backtest_results_right">
+					<div class="fundamentals_section">
+						<table>
+						<caption>Stock Performance</caption>
+						<tr><td>Period High</td><td>- / -</td></tr><tr><td>Period Low</td><td>- / -</td></tr><tr><td>Period return</td><td>- / -</td></tr>
+						</table>
+					</div>
+					<div class="actions_section">
+						<table class="actions_buttons">
+							<!-- <tr>
+								<td>
+								<button class="deploy"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Automate</button>
+								</td>
+							</tr> -->
+							<tr>
+								<td>
+								<button class="download"><span><img src="/static/imgs/icon-new-download.png"></span></button>
+								<button class="empty_share"><span><img src="/static/imgs/icon-share.png"></span></button>
+								</td>
+							</tr>
+						</table>
+						<div class="social_buttons">
+							<span><button><img src="/static/imgs/icon-linkedin.png"></button></span>
+							<span><button><img src="/static/imgs/icon-whatsapp.png"></button></span>
+							<span><button><img src="/static/imgs/icon-facebook.png"></button></span>
+							<span><button><img src="/static/imgs/icon-twitter.png"></button></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="empty_backtest_results_row" id="empty_backtest_results_row" style="display: none;">
+				<div class="backtest_results_left">
+					<div class="results_section">
+					<div class="chart_section">
+						<div class="chart_header">
+							<div class="equity_section">
+								<p class="company_name">Canara Bank Ltd&nbsp;<span class="exc_symbol">NSE</span></p>
+								<!-- <p >: CANBK</p> -->
+							</div>
+							<div class="brokerage_section">
+								<p>Brokerage&nbsp;&nbsp;&nbsp;
+									<label class="switch">
+  									<input class="brokerage_toggle" type="checkbox" checked>
+  									<span class="slider"></span>
+									</label>
+								</p>
+							</div>
+						</div>
+						<div class="chart_body">
+							<p class="backtest_row_error_message_display">No data to display</p>
+						</div>
+					</div>
+					<div class="pnl_section">
+						<div class="pnl">
+							<p>P&L&nbsp;<span>(N.A)&nbsp;</span><span>(N.A)&nbsp;</span></p>
+						</div>
+						<div class="streak">
+							<div class="streak_body">
+								<div class="wins"></div>
+								<div class="losses"></div>
+							</div>
+						</div>
+						<div class="results_table">
+						<table>
+						<tr>
+						<td>Total number of signals</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of wins</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of losses</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Winning streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Losing streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max gains</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max loss</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/winning trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/losing trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max Drawdown</td>
+						<td>- / -</td>
+						</tr>
+						</table>
+						</div>
+					</div>
+					</div>
+					<div class="empty_transactions_section">
+						<p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+					</div>
+				</div>
+				<div class="backtest_results_right">
+					<div class="fundamentals_section">
+						<table>
+						<caption>Stock Performance</caption>
+						<tr><td>Period High</td><td>- / -</td></tr><tr><td>Period Low</td><td>- / -</td></tr><tr><td>Period return</td><td>- / -</td></tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="empty_backtest_results_body" style="display: none;">
+			<img src="/static/imgs/empty-backtest.png">
+      		<p>Oops, something went wrong!<br>Please try again.</p>
+		</div>
+	<!-- <div class="charts card">
+		<div class="chart_left card">
+			<canvas id="pnl_chartContainer_new"></canvas>
+			<canvas id="orders_chartContainer_new"></canvas>
+		</div>
+		<div class="chart_right card">
+		<canvas id="piechartContainer_new"></canvas>
+		</div>
+	</div> -->
+	</div>
+	<div class="transactions_table card" style="display: none;">
+		<p>Transactions Detail</p>
+		<table id='trade_log'>
+			<tr>
+				<th>Trigger Date</th>
+				<th>Equity</th>
+				<th>Buy/Sell</th>
+				<th>Qty</th>
+				<th>Price</th>
+				<th>Profit/Loss</th>
+				<th>Portfolio Value</th>
+			</tr>
+		</table>
+	</div>
+</div>
+<div style="display: none">
+	<input style="display:none" id="au_cc" name="" value="{{algo_uuid}}">
+	<input style="display:none" id="an_cc" name="" value="{{algo_name}}">
+	<input style="display:none" id="ad_cc" name="" value="{{algo_desc}}">
+	<input style="display:none" id="et_cc" name="" value="{{entry_logic}}">
+	<input style="display:none" id="ex_cc" name="" value="{{exit_logic}}">
+	<input style="display:none" id="pt_cc" name="" value="{{position_type}}">
+	<input style="display:none" type="hidden" id="ui_cc" name="" value="{{user_uuid}}">
+</div>
+{% csrf_token %}
+{% endblock %}
+{% block page_js6 %}<script type="text/javascript" src="/static/js/chart.bundle.min.js"></script><script type="text/javascript">
+ $(document).ready(function() {
+});
+	</script> 
+{% endblock %}
+{% block loader_popup %}
+<div class="loader_parent_backtest" style="display: none;">
+  <!-- <div><img src="/static/imgs/loader.gif"></div>
+  <p>Running backtest...</p> -->
+  <div>
+  	<img src="/static/imgs/backtest-loading-gif.gif">
+  	<p>Generating Backtest Results&nbsp;&nbsp;&nbsp;<span>100%</span></p>
+    <div id="myProgress"><div id="myBar"></div></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block popup_body %}
+   <!--  <div class="deploy_details">
+    <div class="popup_title">
+    <p>Live Trade your Algorithm</p>
+    </div>
+    <div class="choose_brokerage">
+    <p>Choose your Brokerage&nbsp;</p>
+    <select id='algo_live_for'><option>Zerodha</option>
+    <option>ShareKhan</option>
+    <option>Angel Broking</option></select>
+    </div>
+    <div class="live_duration">
+    <p>Algorithm Live for&nbsp;</p>
+    <select id='algo_live_for'>
+        <option value='1'>1 day</option>
+        <option value='2'>2 days</option>
+        <option value='3'>3 days</option>
+        <option value='5'>5 days</option>
+    </select>
+    </div>
+    <div class="deploy_freq">
+    <p>Maximum Algorithm Trading Frequency&nbsp;</p>
+    <select id='trading_frequency'>
+        <option value='1'>one trade</option>
+        <option value='5'>5 trades</option>
+        <option value='10'>10 trades</option>
+    </select>
+    </div>
+    <div class="trading_terms">
+    <input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" onclick="ga('send', 'event', 'Trading Terms', 'Dashboard');">Trading Terms</a>.
+        <p>I accept the <a href="/trading_terms">Trading Terms</a></p>
+    </div>
+    </div> -->
+    <div class="deploy_summary">
+    	<div class="deploy_summary_heading"><p>AlgoTest</p></div>
+    	<div class="deploy_summary_body">
+    		<p class="entry_heading">Entry</p>
+            <p class="condition_summary" id="entry_condition_summary">Buy 50 shares of CANBK if 20Day SMA is greater than 40Day SMA and RSI is greater than 75.</p>
+            <p class="exit_heading">Exit</p>
+            <p class="condition_summary" id="exit_condition_summary">Sell 50 shares of CANBK at Stop loss of 5% or Take profit of 10%.</p>
+            <p class="interval_heading">Interval</p>
+            <p class="condition_summary" id="interval_condition_summary">1 minute</p>
+    	</div>
+    </div>
+    <div class="deploy_fields">
+    	<div class="close" onclick="close_popup();"><img src="/static/imgs/icon-deploy-close.png"></div>
+    	<div class="deploy_heading"><p>Deploy to Zerodha</p></div>
+    	<div class="deploy_body">
+            <div><p>Select your brokerage</p></div>
+            <div><select id="ip_broker"><option value='zerodha'>Zerodha</option></select></div>
+            <div><p>Select your frequency</p></div>
+            <div><select id="ip_frequency">
+                <option value="1">Once</option>
+                <option value="2">Twice</option>
+                <option value="3">Thrice</option>
+                <option value="4">Four times</option>
+                <option value="5">Five times</option>
+            </select></div>
+            <div><p>What is your strategy's period?</p></div>
+            <div><select id="ip_live_period">
+                <option value="1">1 day</option>
+                <option value="2">2 days</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5 days</option>
+                <option value="7">1 week</option>
+                <option value="30">1 month</option>
+            </select></div>
+    		<div class="trading_terms">
+    		<input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" onclick="ga('send', 'event', 'Trading Terms', 'Dashboard');">Trading Terms</a>.
+    		</div>
+    		<button class="deploy_confirm"><span><img src="/static/imgs/icon-deploy-confirm.png"></span>&nbsp;&nbsp;Confirm and Automate</button>
+    	</div>
+    </div>
+    <!-- <div class="algo_name_desc">
+    <div>
+    <label for="algo_name">Algorithm Name<em><span style="color:red;">*</span></em></label>
+    <input type="text" class="" id="algo_name" placeholder="">
+    </div>
+    <div>
+    <label for="algo_description">Description</label>
+    <input type="text" class="" id="algo_description" placeholder="">
+    </div>
+    </div> -->
+    <script type="text/javascript">
+    	var deployed_seg_sym = [];
+    	var deployed_seg_sym_deployment_uuid = {};
+    	// $(document).ready(function(){
+		{% if backtest_results %}
+		run_backtest_flag = "{{run_backtest_flag|lower}}";
+    	if (run_backtest_flag != true){
+    		backtest_results_json = {{backtest_results|safe}};
+    		// backtest_results_json = backtest_results_json.replace(/u'/g, "'");
+    		// backtest_results_json = backtest_results_json.replace(/'/g, "\"");
+    		// backtest_results_json = backtest_results_json.replace(/True/g, "true");
+    		// backtest_results_json = backtest_results_json.replace(/False/g, "false");
+    		try{
+    			algo_uuid = "{{algo_uuid}}";
+    			for(var i=0;i<backtest_results_json.length;i++)
+	    			{
+	    				backtest_results = backtest_results_json[i]['backtest_result'];
+			    		for(var k in backtest_results)
+						{
+							data = backtest_results[k];
+							[seg,sym] = [null,null];
+							try{
+								[seg,sym] = k.split("_");
+								msg = backtest_results;
+								refresh_result(algo_uuid,k,msg,seg,sym);
+							}
+							catch(e){
+								// show the respective error msg in the plot region
+								refresh_error(k,msg);
+								continue;
+							}
+						}
+					}
+    		}
+    		catch(e){
+    			console.log(e);
+    		}
+    	};
+    	{% endif %}
+    // 	$(".transactions_section").off("click");
+    // 	$(".transactions_section").click(function(){
+		  // 	// alert($(this).attr("class"));
+		  // 	$(this).toggleClass("expandable-color");
+		  // 	$(this).parentsUntil(".backtest_results_row").find(".transactions_table").slideToggle();
+		  // 	if($(this).find("img").attr("src") == "/static/imgs/icon-down-arrow.png"){
+		  // 	$(this).find("img").attr("src", "/static/imgs/icon-up-arrow.png");	
+		  // 	}
+		  // 	else{
+		  // 	$(this).find("img").attr("src", "/static/imgs/icon-down-arrow.png");
+		  // 	}
+	  	// });
+    // });
+    </script>
+{% endblock %}
+{% block onconfirm %}
+deploy_action();ga('send', 'event', 'Deploy Algorithm', 'Confirmed', 'Popup');
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

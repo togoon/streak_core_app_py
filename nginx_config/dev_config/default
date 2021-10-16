@@ -1,0 +1,223 @@
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# http://wiki.nginx.org/Pitfalls
+# http://wiki.nginx.org/QuickStart
+# http://wiki.nginx.org/Configuration
+#
+# Generally, you will want to move this file somewhere, and start with a clean
+# file but keep this around for reference. Or just disable in sites-enabled.
+#
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+##
+
+# Default server configuration
+#
+#server {
+#        listen 80;
+#        server_name streaks.tech www.streaks.tech streak.ai www.streak.ai;
+#        return 302 https://www.streak.tech$request_uri;
+#}
+#server { 
+#        listen 443 ssl; 
+#        server_name streak.ai; 
+#        return 302 https://www.streak.tech$request_uri; 
+#        ssl_certificate /etc/letsencrypt/live/streak.ai/fullchain.pem; # managed by Certbot 
+#        ssl_certificate_key /etc/letsencrypt/live/streak.ai/privkey.pem; # managed by Certbot 
+# 
+#} 
+#server { 
+#        listen 443 ssl; 
+#        server_name www.streak.ai; 
+#        return 302 https://www.streak.tech$request_uri; 
+#        ssl_certificate /etc/letsencrypt/live/www.streak.ai/fullchain.pem; # managed by Certbot 
+#        ssl_certificate_key /etc/letsencrypt/live/www.streak.ai/privkey.pem; # managed by Certbot 
+# 
+#} 
+#server { 
+#        listen 443 ssl; 
+#        server_name streaks.tech; 
+#        return 302 https://www.streak.tech$request_uri; 
+#        ssl_certificate /etc/letsencrypt/live/streaks.tech/fullchain.pem; # managed by Certbot 
+#        ssl_certificate_key /etc/letsencrypt/live/streaks.tech/privkey.pem; # managed by Certbot 
+#} 
+#server { 
+#        listen 443 ssl; 
+#        server_name www.streaks.tech; 
+#        return 302 https://www.streak.tech$request_uri; 
+#        ssl_certificate /etc/letsencrypt/live/www.streaks.tech/fullchain.pem; # managed by Certbot 
+#        ssl_certificate_key /etc/letsencrypt/live/www.streaks.tech/privkey.pem; # managed by Certbot 
+#} 
+ 
+#server { 
+#        listen 443 ssl; 
+#        server_name streak.tech; 
+#        return 302 https://www.streak.tech$request_uri; 
+#        ssl_certificate /etc/nginx/ssl/streak.tech.chained.crt; 
+#        ssl_certificate_key /etc/nginx/ssl/streak.tech.key; 
+#}
+
+server {
+       listen [::]:80;
+       server_name _;
+        rewrite ^(.*) https://www.streak.tech$1 permanent;
+        #ssl on;
+#        ssl_certificate /etc/nginx/ssl/streak.tech.chained.crt;
+#        ssl_certificate_key /etc/nginx/ssl/streak.tech.key;
+        #ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        #ssl_prefer_server_ciphers on;
+        #ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRS$
+        #ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+}
+
+server {
+	listen 80;
+	#listen [::]:80;
+	server_name -;
+	
+	location /elb-status {
+#            access_log off;
+            return 200;
+        }
+}
+
+proxy_cache_path /home/ubuntu/cache levels=1:2 keys_zone=my_cache:100m max_size=8g 
+                 inactive=60m use_temp_path=off;
+
+server {
+        listen 80; #default_server;
+        #listen [::]:80; #default_server;
+	
+        if ($http_x_forwarded_proto = 'http') {
+             return 301 https://$host$request_uri;
+        }
+        # SSL configuration
+        #
+        #listen 443 ssl ;#default_server;
+        #listen [::]:443 ssl;#default_server;
+        #ssl off;
+        #ssl_certificate /etc/nginx/ssl/streak.tech.chained.crt;
+        #ssl_certificate_key /etc/nginx/ssl/streak.tech.key;
+
+        #ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        #ssl_prefer_server_ciphers on;
+        #ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS"; 
+        #ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+
+        server_name streak.tech www.streak.tech streak.zerodha.com streak.ninja elb.streak.ninja api.streak.ninja api.streak.tech;
+
+        #rewrite ^/dashboard(.*) https://$host/dashboard redirect;
+
+	if ($host = 'streak.tech') {
+		rewrite ^/dashboard(.*) https://streak.zerodha.com/dashboard redirect; 
+	}
+
+	if ($host = 'www.streak.tech') {
+                rewrite ^/dashboard(.*) https://streak.zerodha.com/dashboard redirect; 
+        }
+
+        location /{
+        include uwsgi_params;
+        uwsgi_pass unix:/home/ubuntu/streak_core_app/streak_core/streak_core/streak_core.sock;
+        }
+        location /static/ {
+        valid_referers www.streak.tech streak.tech streak.zerodha.com www.streak.zerodha.com streak.ninja elb.streak.ninja api.streak.ninja api.streak.tech;
+        if ($invalid_referer) {
+                return 403;
+        }
+        autoindex on;
+        alias /home/ubuntu/static/;
+	
+	proxy_cache my_cache;
+	#proxy_pass /home/ubuntu/static/;
+        }
+
+        #location = / {
+        #    return 302 https://streak.tech;
+        #}
+        
+        #
+        # Note: You should disable gzip for SSL traffic.
+        # See: https://bugs.debian.org/773332
+        #
+        # Read up on ssl_ciphers to ensure a secure configuration.
+        # See: https://bugs.debian.org/765782
+        #
+        # Self signed certs generated by the ssl-cert package
+        # Don't use them in a production server!
+        #
+        # include snippets/snakeoil.conf;
+
+        root /var/www/html;
+
+        # Add index.php to the list if you are using PHP
+        index index.html index.htm index.nginx-debian.html;
+
+        #server_name _;
+
+        #location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        #}
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        #location ~ \.php$ {
+        #       include snippets/fastcgi-php.conf;
+        #
+        #       # With php7.0-cgi alone:
+        #       fastcgi_pass 127.0.0.1:9000;
+        #       # With php7.0-fpm:
+        #       fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        #}
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #location ~ /\.ht {
+        #       deny all;
+        #}
+        location /nginx_status {
+        # Choose your status module
+
+        # freely available with open source NGINX
+        stub_status;
+
+        # for open source NGINX < version 1.7.5
+        # stub_status on;
+
+        # available only with NGINX Plus
+        # status;
+
+        auth_basic           "Administrator’s Area";
+        auth_basic_user_file /etc/apache2/.htpasswd;
+        }
+
+        error_page 500 502 503 504 /500.html;
+        location = /500.html {
+                alias /home/ubuntu/streak_core_app/streak_core/coreapp/templates/under_maintenance.html;
+                autoindex on;
+                #internal;
+        }
+
+}
+
+
+# Virtual Host configuration for example.com
+#
+# You can move that to a different file under sites-available/ and symlink that
+# to sites-enabled/ to enable it.
+#
+#server {
+#       listen 80;
+#       listen [::]:80;
+#
+#       server_name example.com;
+#
+#       root /var/www/example.com;
+#       index index.html;
+#
+#       location / {
+#               try_files $uri $uri/ =404;
+#       }
+#}

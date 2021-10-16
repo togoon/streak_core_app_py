@@ -1,0 +1,19 @@
+{ 
+    "_id" : ObjectId("5a5e38418b57df529716b42b"), 
+    "user_uuid" : "eff87bd6-bbec-4db5-809c-740b0a828253", 
+    "user_broker_id" : "YJ3548", 
+    "subscription_uuid" : "6d186833-c3e6-43a9-954a-f14026fc56e0", 
+    "subscription_type" : NumberInt(1), 
+    "subscription_product" : "basic", 
+    "subscription_plan" : "basic", 
+    "subscription_price" : 500.0, 
+    "subscription_tax" : 90.0, 
+    "subscription_total_price" : 590.0, 
+    "subscription_validity" : ISODate("2018-08-30T23:59:59.030+0000"), 
+    "latest_subscription_id" : "3b73a8ca-3724-4453-9174-814376f26b4f", 
+    "subscription_instance" : "restart", 
+    "subscription_active" : true, 
+    "created_at" : ISODate("2018-01-16T23:07:05.365+0000"), 
+    "updated_at" : ISODate("2018-07-31T16:02:16.572+0000"), 
+    "renew_plan_type" : NumberInt(-1)
+}

@@ -1,0 +1,706 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Backtest {% endblock %}
+    {% block meta_keywords %} 
+    <meta name="keywords" content="Streak Tech, Backtest algo, algo performance, algorithm performance, backtest metrics, backtest performance metrics, P&L, max Drawdown, winning streak, losing streak, Maximum gains, Maximum loss, Backtest Algorithm, Backtest Trading Algorithm, Test trading Algorithm, Test trading strategy, test strategy on historical data, historical equity data, backtest, portfolio performance, profit/loss, cumulative returns, Sharpe ratio, equity/stock performance, algorithmic trading, trading, investments, trading tool, backtesting tool, AI trading, strategizing investments, Zerodha, Kite">
+    {% endblock %}
+{% block page_css2 %} <link href="/static/css/backtest.css?v=1.2" rel="stylesheet"> {% endblock %}
+{% block page_css1 %} <link href="/static/css/daterangepicker.min.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/jquery-ui.min.js"></script>{% endblock %}
+{% block page_js2 %} <!-- <script src="/static/js/moment.js"></script> --> {% endblock %}
+{% block page_js3 %} <script src="/static/js/knockout.js"></script> {% endblock %}
+{% block page_js4 %} <script src="/static/js/daterangepicker.min.js"></script><script type="text/javascript">
+	$(document).ready(function(){
+	$("#date_range").daterangepicker({
+  		  timeZone: 'Asia/Kolkata',
+  		  //startDate: new Date(''),
+  		  //stopDate: new Date(''),
+  		  expanded: true,
+  		  daterangepickerFormat: 'DD/MM/YYYY',
+		  minDate: moment().subtract(1, 'years'),
+		  callback: function (startDate, endDate, period) {
+		    $(this).val(startDate.format('DD/MM/YYYY') + ' – ' + endDate.format('DD/MM/YYYY'));
+		  }
+		});
+	$('#date_range').val('{{start_time}}'+' – '+'{{stop_time}}')
+	});
+	bt_url1 = "{{bt_url1}}";
+	bt_url2 = "{{bt_url2}}";
+</script><script src="/static/js/share_helper.js"></script>
+{% endblock %}
+{% block page_js5 %} <script src="/static/js/backtest.js?v=1.2"></script>{% endblock %}
+{% block page_js7 %} <script src="/static/js/dateformat.js"></script><script src="/static/js/product_tour_backtest.js"></script>{% endblock %}
+{% block body %}
+
+<!-- <input type="text" id="datepicker" style="border:1px solid #000; width: 500px;"> -->
+<div class="mobile_message"><p>For more functionality and better experience, open the website on a desktop or a laptop.</p></div>
+<div class="block sec_main">
+	<div class="block test_headers">
+	<div class="test_header3 card">
+		<div class="bt_inputs">
+			<table>
+				<tr>
+					<th>Initial Capital</th>
+					<th>Quantity</th>
+					<th>Stop loss %</th>
+					<th>Take profit %</th>
+					<th>Order type</th>
+					<th>Candle interval</th>
+					<th>Backtest period</th>
+				</tr>
+				<tr>
+					<td><input id='ip_initial_capital' type="number" min="0" name="" value="10000000"></td>
+					<td><input id="ip_quantity" type="number" min="0" name="" value="{{position_qty}}"></td>
+					<td><input id="ip_stoploss" type="number" min="0" name="" value="{{stop_loss}}"></td>
+					<td><input id="ip_takeprofit" type="number" min="0" name="" value="{{take_profit}}"></td>
+					<td><select id="ip_holding_type">
+						<option value="MIS" selected>MIS</option>
+						<option value="CNC">CNC/NRML</option>
+					</select>
+					<td><select id="ip_interval">
+						<option value="min">1 Minute</option>
+						<option value="3min">3 Minutes</option>
+						<option value="5min">5 Minutes</option>
+						<option value="10min">10 Minutes</option>
+						<option value="15min">15 Minutes</option>
+						<option value="30min">30 Minutes</option>
+						<!-- <option value="15min">15min</option>
+						<option value="30min">30min</option>  -->
+						<option value="hour" selected>1 Hour</option>
+						<option value="day">1 Day</option>
+					</select>
+					</td>
+					<td id="td_datepicker"><input type="" name="" id="date_range"></td>
+					<script type="text/javascript">
+						{% if ip_interval %}
+							$("#ip_interval").val('{{ip_interval}}');
+						{% else %}
+							$("#ip_interval").val('hour');
+						{% endif %}
+						{% if holding_type %}
+							$("#ip_holding_type").val('{{holding_type}}');
+						{% else %}
+							$("#ip_holding_type").val('MIS');
+						{% endif %}
+						// dynamically set date range
+					</script>
+				</tr>
+			</table>
+		</div>
+		<div class="bt_actions">
+			<button class="run_backtest" id="run_backtest" onclick="run_backtest_sequential();save_backtest_pref();">Run Backtest&nbsp;<img src="/static/imgs/icon-forward.png"></button>
+			<!-- <button class="edit_strategy" id="edit_strategy" data-tooltip-bottom="Edit algo" onclick="edit_algorithm()"><img src="/static/imgs/icon-edit.png"></button> -->
+			<button class="edit_strategy" id="edit_strategy" data-tooltip-bottom="Edit algo" onclick="edit_algorithm()">Edit algo&nbsp;<img src="/static/imgs/icon-edit.png"></button>
+			<button class="save-view" style="display: none;"><img src="/static/imgs/icon-save-view.png"></button>
+			<button class="scanner" style="display: none;"><img src="/static/imgs/icon-scanner.png"></button>
+		</div>
+		<!-- <table>
+		<tr>
+			<input id="action_uuid" style="display: none;" type="text" name="" value="{{request.session.action_uuid}}">
+			<th class="initial_capital_amt">
+			<span>&nbsp;&nbsp;&nbsp;Initial Capital:&nbsp;&nbsp;&nbsp;</span>
+			<input id="initial_capital_input" type="text" name="" placeholder="1000" value="{{initial_capital}}" onchange="ga('send', 'event', 'Parameters changed', 'Initial Capital', 'Backtest Page');">
+			</th>
+			<th class="brokerage">
+				<select id="commission" onchange="ga('send', 'event', 'Parameters changed', 'Commission', 'Backtest Page');">
+				<option value="0.0">No Brokerage fee</option>
+				<option value="10">Brokerage fee - INR 10</option>
+				</select>
+			</th>
+			<th class="date_th">
+				<span>&nbsp;&nbsp;&nbsp;Duration:&nbsp;&nbsp;&nbsp;</span>
+				<input type="datepicker" id="from_datepicker" name="" value="{{start}}" placeholder="From" onchange="ga('send', 'event', 'Parameters changed', 'From Date changed', 'Backtest Page');">
+				<span>&nbsp;&nbsp;&nbsp;to&nbsp;&nbsp;&nbsp;</span>
+				<input type="datepicker" id="to_datepicker" name="" value="{{stop}}" placeholder="To" onchange="ga('send', 'event', 'Parameters changed', 'To Date changed', 'Backtest Page');">
+			</th>
+			<th class="final_capital">Final Capital:&nbsp; <span></span></th>
+			<th class="profit" style="display:none">Profit: &nbsp;<span></span></th>		
+			<th class="loss" style="display:none">Loss: &nbsp;<span></span></th>
+			<th class="run_backtest"><button type="submit" onclick="run_backtest();ga('send', 'event', 'Clicked Backtest Algorithm', 'Backtest Page');">Run Backtest</button></th>
+		</tr>
+		</table> -->
+	</div>
+	<div class="test_header1 card">
+		<div class="equity_holder">
+              <input type="text" name="search_eq" id="equities_input" placeholder="Search ex: canbk, sbin, infy">
+              <div class="added_equities">
+              {% for sym,seg in equities.items %}
+              <span><span data-syms="{{sym}}_{{seg}}">{{sym}} {{seg}}</span><span><img src="/static/imgs/icon-strategy-remove_equity.png"></span></span>
+              {% endfor %}
+              <!-- <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span> -->
+              </div>
+          </div>
+          <div class="deploy_holder">
+          	<button class="deploy deploy_disabled" id="deploy" onclick="deploy_algorithm_popup_multi('{{algo_uuid}}')"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Deploy</button><input type="checkbox" name="" class="deploy_all_checkbox" onclick="select_all(event,$(this))">
+          </div>
+		<!-- <table>
+		<tr>
+			<th>{{action_name|capfirst}}</th>
+			<th id="test_edit_th"><button class="save" onclick="ga('send', 'event', 'Save Algorithm Button', 'Backtest Page');window.location='/dashboard'"><img src="/static/imgs/save.png"> Save</button><button type="submit" class="edit_button" onclick="edit_button('{{request.session.action_uuid}}');ga('send', 'event', 'Edit Algorithm', 'Backtest Page');"><img src="/static/imgs/edit.png">&nbsp;Edit</button>
+
+			{% if not team_user%}
+                <button type="submit" class="edit_button" onclick="deploy_button('0',null);ga('send', 'event', 'Deploy Algorithm', 'Dashboard Page');">&nbsp;Deploy</button>
+                {% else %}
+                <button type="submit" class="edit_button" onclick="deploy_button('{{request.session.action_uuid}}',null);ga('send', 'event', 'Deploy Algorithm', 'Dashboard Page');">&nbsp;Deploy</button>
+            {% endif %}
+			</th>
+		</tr>
+		</table> -->
+	</div>
+	<div class="test_header2 card" style="display: none;">
+		<table id='metrics'>
+		<tr>
+			<th>Total Returns</th>
+			<th>Cumulative Returns</th>
+			<th>Sharpe</th>
+			<th style="display:none">Max Drawdown</th>
+			<th>Volatility</th>
+			<th>Downside Risk</th>
+		</tr>
+		<tr>
+			<td id="return">{{return|floatformat:2}}%</td>
+			<td id="cum_returns">{{cum_returns|floatformat:2}}%</td>
+			<td id="sharpe">{{sharpe|floatformat:2}}%</td>
+			<td id="max_draw" style="display:none">{{max_draw|floatformat:2}}%</td>
+			<td id="volatility">{{volatility|floatformat:2}}%</td>
+			<td id="downside_risk">{{downside_risk|floatformat:2}}%</td>
+		</tr>
+		</table>
+	</div>
+	</div>
+	<!-- <div class="empty_backtest_div condition_not_met">
+                        <div><img src="/static/imgs/settings.png"></div>
+                        <h1>NO TRADES EXECUTED</h1>
+                        <p>No trades were executed for this algorithm since the condition in the algorithm never occurred.<br>Try a different time range or edit the algorithm and run backtest again.</p>
+                        <button type="submit" class="edit_button" onclick="edit_button('{{request.session.action_uuid}}');ga('send', 'event', 'Edit Algorithm', 'Backtest Page');">Edit Algorithm</button>
+    </div>
+	<div class="empty_backtest_div low_capital">
+                        <div><img src="/static/imgs/settings.png"></div>
+                        <h1>Initial Capital too low</h1>
+                        <p>No trades were executed for this algorithm since the initial capital is too low.<br>Increase the initial capital and run backtest again.</p>
+    </div> -->
+	<!-- <div class="charts card">
+		<div class="chart_left card">
+			<div id="pnl_chartContainer"></div>
+			<div id="orders_chartContainer"></div>
+		</div>
+		<div class="chart_right card">
+			<div id="piechartContainer"></div>
+		</div>
+	</div> -->
+	<div class="backtest_results" id="backtest_results">
+		<div class="backtest_results_title">
+			<p data-tooltip-right="Click to view algo" id="view_algo_details">{{algo_name|default:'Algo name'}}<span class="algo_detail_icon"><img src="/static/imgs/dropdown.svg"></span></p>
+			<div class="algo_detail_window" id="algo_detail_window" style="display: none;">
+				<div class="algo_summary">
+                    <!-- <p class="entry_heading">Entry</p>
+                    <p class="dashboard_condition_summary">
+                        {% if a.position_type == 1 %}Buy{% else %}Sell{% endif %}
+                         {{a.quantity}} shares when {{a.entry_logic}}.</p>
+                        <p class="exit_heading">Exit</p>
+                        <p class="dashboard_condition_summary">
+                        {% if a.position_type == 1 %}Sell{% else %}Buy{% endif%}
+                         {{a.quantity}} shares at a Stop loss of {{a.stop_loss}}% or Take profit of {{a.take_profit}}%.</p>
+                        <p class="interval_heading">Candle interval</p>
+                        <p class="dashboard_condition_summary" style="padding-bottom: 0px;">{{a.time_frame|title}}1 min</p> -->
+            </div>
+		</div>
+		</div>
+		<div class="backtest_results_body" id="backtest_results_body">
+			<div class="empty_backtest_results_row" id="loading_backtest_results_row" style="display: none;">
+				<div class="backtest_results_left">
+					<div class="results_section">
+					<div class="chart_section" id="chart_section">
+						<div class="chart_header">
+							<div class="equity_section">
+								<p class="company_name">Canara Bank Ltd&nbsp;<span class="exc_symbol">NSE</span></p>
+								<!-- <p >: CANBK</p> -->
+							</div>
+						</div>
+						<div class="chart_body">
+							<div class="backtest_row_loader">
+  								<!-- <img src="/static/imgs/backtest-loading-gif.gif"> -->
+    							<div id="myBtProgress"><div id="myBtBar"></div></div>
+    							<p>Generating Backtest Results&nbsp;&nbsp;&nbsp;<span>100%</span></p>
+  							</div>
+						</div>
+					</div>
+					<div class="pnl_section">
+						<div class="pnl">
+							<p>P&L&nbsp;<span>(N.A)&nbsp;</span><span>(N.A)&nbsp;</span></p>
+						</div>
+						<div class="streak">
+							<div class="streak_body">
+								<div class="wins"></div>
+								<div class="losses"></div>
+							</div>
+						</div>
+						<div class="results_table">
+						<table>
+						<tr>
+						<td>Total number of signals</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of wins</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of losses</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Winning streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Losing streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max gains</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max loss</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/winning trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/losing trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max Drawdown</td>
+						<td>- / -</td>
+						</tr>
+						</table>
+						</div>
+					</div>
+					</div>
+					<div class="empty_transactions_section">
+						<p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+					</div>
+				</div>
+				<div class="backtest_results_right">
+					<div class="fundamentals_section">
+						<table>
+						<caption>Stock Performance</caption>
+						<tr><td>Period High</td><td>- / -</td></tr><tr><td>Period Low</td><td>- / -</td></tr><tr><td>Period return</td><td>- / -</td></tr>
+						</table>
+					</div>
+					<div class="actions_section">
+						<table class="actions_buttons">
+							<tr>
+								<td>
+								<button class="deploy"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Deploy</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								<button class="download"><span><img src="/static/imgs/icon-new-download.png"></span></button>
+								<button class="empty_share"><span><img src="/static/imgs/icon-share.png"></span></button>
+								</td>
+							</tr>
+						</table>
+						<div class="social_buttons">
+							<span><button><img src="/static/imgs/icon-linkedin.png"></button></span>
+							<span><button><img src="/static/imgs/icon-whatsapp.png"></button></span>
+							<span><button><img src="/static/imgs/icon-facebook.png"></button></span>
+							<span><button><img src="/static/imgs/icon-twitter.png"></button></span>
+						</div>
+						<div class="share_window">
+							<input type="text" name="">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="empty_backtest_results_row" id="empty_backtest_results_row" style="display: none;">
+				<div class="backtest_results_left">
+					<div class="results_section">
+					<div class="chart_section">
+						<div class="chart_header">
+							<div class="equity_section">
+								<p class="company_name">Canara Bank Ltd&nbsp;<span class="exc_symbol">NSE</span></p>
+								<!-- <p >: CANBK</p> -->
+							</div>
+							<div class="brokerage_section">
+								<p>Brokerage&nbsp;&nbsp;&nbsp;
+									<label class="switch">
+  									<input class="brokerage_toggle" type="checkbox" checked>
+  									<span class="slider"></span>
+									</label>
+								</p>
+							</div>
+						</div>
+						<div class="chart_body">
+							<p class="backtest_row_error_message_display">No data to display</p>
+						</div>
+					</div>
+					<div class="pnl_section">
+						<div class="pnl">
+							<p>P&L&nbsp;<span>(N.A)&nbsp;</span><span>(N.A)&nbsp;</span></p>
+						</div>
+						<div class="streak">
+							<div class="streak_body">
+								<div class="wins"></div>
+								<div class="losses"></div>
+							</div>
+						</div>
+						<div class="results_table">
+						<table>
+						<tr>
+						<td>Total number of signals</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of wins</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Number of losses</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Winning streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Losing streak</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max gains</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max loss</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/winning trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Avg gain/losing trade</td>
+						<td>- / -</td>
+						</tr>
+						<tr>
+						<td>Max Drawdown</td>
+						<td>- / -</td>
+						</tr>
+						</table>
+						</div>
+					</div>
+					</div>
+					<div class="empty_transactions_section">
+						<p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+					</div>
+				</div>
+				<div class="backtest_results_right">
+					<div class="fundamentals_section">
+						<table>
+						<caption>Stock Performance</caption>
+						<tr><td>Period High</td><td>- / -</td></tr><tr><td>Period Low</td><td>- / -</td></tr><tr><td>Period return</td><td>- / -</td></tr>
+						</table>
+					</div>
+					<div class="actions_section">
+						<table class="actions_buttons">
+							<tr>
+								<td>
+								<button class="deploy"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Deploy</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								<button class="download"><span><img src="/static/imgs/icon-new-download.png"></span></button>
+								<button class="empty_share"><span><img src="/static/imgs/icon-share.png"></span></button>
+								</td>
+							</tr>
+						</table>
+						<div class="social_buttons">
+							<span><button><img src="/static/imgs/icon-linkedin.png"></button></span>
+							<span><button><img src="/static/imgs/icon-whatsapp.png"></button></span>
+							<span><button><img src="/static/imgs/icon-facebook.png"></button></span>
+							<span><button><img src="/static/imgs/icon-twitter.png"></button></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="empty_backtest_results_body" style="display: none;">
+			<img src="/static/imgs/empty-backtest.png">
+      		<p>Oops, something went wrong!<br>Please try again.</p>
+		</div>
+	<!-- <div class="charts card">
+		<div class="chart_left card">
+			<canvas id="pnl_chartContainer_new"></canvas>
+			<canvas id="orders_chartContainer_new"></canvas>
+		</div>
+		<div class="chart_right card">
+		<canvas id="piechartContainer_new"></canvas>
+		</div>
+	</div> -->
+	</div>
+	<div class="transactions_table card" style="display: none;">
+	<p>Transactions Detail</p>
+		<table id='trade_log'>
+			<tr>
+				<th>Date</th>
+				<th>Equity</th>
+				<th>Buy/Sell</th>
+				<th>Qty</th>
+				<th>Price</th>
+				<th>Profit/Loss</th>
+				<th>Portfolio Value</th>
+			</tr>
+		</table>
+	</div>
+</div>
+<div style="display: none">
+	<input style="display:none" id="au_cc" name="" value="{{algo_uuid}}">
+	<input style="display:none" id="an_cc" name="" value="{{algo_name}}">
+	<input style="display:none" id="ad_cc" name="" value="{{algo_desc}}">
+	<input style="display:none" id="et_cc" name="" value="{{entry_logic}}">
+	<input style="display:none" id="ex_cc" name="" value="{{exit_logic}}">
+	<input style="display:none" id="pt_cc" name="" value="{{position_type}}">
+	<input style="display:none" type="hidden" id="ui_cc" name="" value="{{user_uuid}}">
+</div>
+{% csrf_token %}
+{% endblock %}
+{% block page_js6 %}<script type="text/javascript" src="/static/js/chart.bundle.min.js"></script><script type="text/javascript">
+ $(document).ready(function() {
+});
+	</script> 
+{% endblock %}
+{% block loader_popup %}
+<div class="loader_parent_backtest" style="display: none;">
+  <!-- <div><img src="/static/imgs/loader.gif"></div>
+  <p>Running backtest...</p> -->
+  <div>
+  	<!-- <img src="/static/imgs/backtest-loading-gif.gif"> -->
+  	<p>Generating Backtest Results&nbsp;&nbsp;&nbsp;<span>100%</span></p>
+    <div id="myBtProgress"><div id="myBtBar"></div></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block popup_body %}
+   <!--  <div class="deploy_details">
+    <div class="popup_title">
+    <p>Live Trade your Algorithm</p>
+    </div>
+    <div class="choose_brokerage">
+    <p>Choose your Brokerage&nbsp;</p>
+    <select id='algo_live_for'><option>Zerodha</option>
+    <option>ShareKhan</option>
+    <option>Angel Broking</option></select>
+    </div>
+    <div class="live_duration">
+    <p>Algorithm Live for&nbsp;</p>
+    <select id='algo_live_for'>
+        <option value='1'>1 day</option>
+        <option value='2'>2 days</option>
+        <option value='3'>3 days</option>
+        <option value='5'>5 days</option>
+    </select>
+    </div>
+    <div class="deploy_freq">
+    <p>Maximum Algorithm Trading Frequency&nbsp;</p>
+    <select id='trading_frequency'>
+        <option value='1'>one trade</option>
+        <option value='5'>5 trades</option>
+        <option value='10'>10 trades</option>
+    </select>
+    </div>
+    <div class="trading_terms">
+    <input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" onclick="ga('send', 'event', 'Trading Terms', 'Dashboard');">Trading Terms</a>.
+        <p>I accept the <a href="/trading_terms">Trading Terms</a></p>
+    </div>
+    </div> -->
+    <div class="deploy_summary">
+    	<div class="deploy_summary_heading"><p>AlgoTest</p></div>
+    	<div class="deploy_summary_body">
+    		<p class="entry_heading">Entry</p>
+            <p class="condition_summary" id="entry_condition_summary">Buy 50 shares of CANBK if 20Day SMA is greater than 40Day SMA and RSI is greater than 75.</p>
+            <p class="exit_heading">Exit</p>
+            <p class="condition_summary" id="exit_condition_summary">Sell 50 shares of CANBK at Stop loss of 5% or Take profit of 10%.</p>
+            <p class="interval_heading">Candle interval</p>
+            <p class="condition_summary" id="interval_condition_summary">1 minute</p>
+    	</div>
+    </div>
+    <div class="deploy_fields">
+    	<div class="close" onclick="close_popup();"><img src="/static/imgs/icon-deploy-close.png"></div>
+    	<!-- <div class="deploy_heading"><p>Deploy your algorithm</p></div> -->
+        <div class="deploy_heading"><p>Deploy</p></div>
+    	<div class="deploy_body">
+            <!-- <div><p>Broker</p></div> -->
+            <!-- <div><p class="zerodha_heading">Zerodha</p></div> -->
+            <div style="display: none;"><select id="ip_broker"><option value='zerodha'>Zerodha</option></select></div>
+            <!-- <div><p>Select your frequency</p></div>
+            <div><select id="ip_frequency">
+                <option value="1">Once</option>
+                <option value="2">Twice</option>
+                <option value="3">Thrice</option>
+                <option value="4">Four times</option>
+                <option value="5">Five times</option>
+            </select></div> -->
+            <div><p>Algo live for</p></div>
+            <div><select id="ip_live_period">
+                <option value="1">Intraday (MIS)</option>
+                <option value="30">Overnight (CNC/NRML)</option>
+               <!--  <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5 days</option>
+                <option value="7">1 week</option>
+                <option value="30">1 month</option> -->
+            </select></div>
+            <div><p class="mis_disclaimer_deploy" id="mis_disclaimer_deploy">All Intraday (MIS) algos will expire at 3:20 PM (currency futures at 4:30 PM)</p>
+    		<div class="trading_terms"><!-- style="margin-bottom: -5%;" -->
+    		<input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required checked>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" onclick="ga('send', 'event', 'Trading Terms', 'Dashboard');">Trading Terms</a>.
+    		</div>
+    		<button class="deploy_confirm"><span><img src="/static/imgs/icon-deploy-confirm.png"></span>&nbsp;&nbsp;Confirm</button>
+    	</div>
+    </div>
+    <!-- <div class="algo_name_desc">
+    <div>
+    <label for="algo_name">Algorithm Name<em><span style="color:red;">*</span></em></label>
+    <input type="text" class="" id="algo_name" placeholder="">
+    </div>
+    <div>
+    <label for="algo_description">Description</label>
+    <input type="text" class="" id="algo_description" placeholder="">
+    </div>
+    </div> -->
+</div>
+    <script type="text/javascript">
+    	var deployed_seg_sym = [];
+    	var deployed_seg_sym_deployment_uuid = {};
+    	// $(document).ready(function(){
+		{% if backtest_results %}
+		run_backtest_flag = "{{run_backtest_flag|lower}}";
+    	if (run_backtest_flag != true){
+    		var backtest_results_json = {{backtest_results|safe}};
+    		// backtest_results_json = backtest_results_json.replace(/u'/g, "'");
+    		// backtest_results_json = backtest_results_json.replace(/'/g, "\"");
+    		// backtest_results_json = backtest_results_json.replace(/True/g, "true");
+    		// backtest_results_json = backtest_results_json.replace(/False/g, "false");
+    		try{
+    			deployed_seg_sym = {{deployed_seg_sym|safe}};
+    			deployed_seg_sym_deployment_uuid = {{deployed_seg_sym_deployment_uuid|safe}};
+    			algo_uuid = "{{algo_uuid}}";
+    			for(var i=0;i<backtest_results_json.length;i++)
+	    			{
+	    				backtest_results = backtest_results_json[i]['backtest_result'];
+			    		for(var k in backtest_results)
+						{
+							data = backtest_results[k];
+							[seg,sym] = [null,null];
+							try{
+								[seg,sym] = k.split("_");
+								msg = backtest_results;
+								refresh_result(algo_uuid,k,msg,seg,sym);
+							}
+							catch(e){
+								// show the respective error msg in the plot region
+								refresh_error(k,msg);
+								continue;
+							}
+						}
+					}
+    		}
+    		catch(e){
+    			console.log(e);
+    		}
+    	};
+    	{% endif %}
+    // 	$(".transactions_section").off("click");
+    // 	$(".transactions_section").click(function(){
+		  // 	// alert($(this).attr("class"));
+		  // 	$(this).toggleClass("expandable-color");
+		  // 	$(this).parentsUntil(".backtest_results_row").find(".transactions_table").slideToggle();
+		  // 	if($(this).find("img").attr("src") == "/static/imgs/icon-down-arrow.png"){
+		  // 	$(this).find("img").attr("src", "/static/imgs/icon-up-arrow.png");	
+		  // 	}
+		  // 	else{
+		  // 	$(this).find("img").attr("src", "/static/imgs/icon-down-arrow.png");
+		  // 	}
+	  	// });
+    // });
+    	
+    	var entry = '{{entry_logic|default:''}}';
+    	var exit = '{{exit_logic|default:''}}';
+    	var algo_name = '{{algo_name|default:''}}';
+    	var position_type = '{{position_type|default:''}}';
+    	var holding_type = '{{holding_type|default:''}}';
+    	var c_interval = '{{ip_interval|default:''}}';
+    	var c_position_qty = '{{position_qty|default:0}}';
+    	var c_stop_loss = '{{stop_loss}}';
+    	var c_take_profit = '{{take_profit}}';
+
+    	if (entry!=''){
+	    	if (position_type == 'Buy'|| position_type == 'BUY')
+				var position_type_exit = 'SELL';
+			else
+				var position_type_exit = 'BUY';
+
+	    	var entry_str = '';
+	    	entry_str = position_type+' '+c_position_qty+' shares when '+entry+'.'
+	    	var exit_str='';
+			if(exit!='')
+	    	{
+	    		exit_str = position_type_exit+' '+c_position_qty+' shares when '+exit+' or '+' at Stop loss of '+c_stop_loss+'% or Take profit of '+c_take_profit+'%.';
+	    	}
+		    else
+		    {
+		       exit_str = position_type_exit+' '+c_position_qty+' shares at Stop loss of '+c_stop_loss+'% or Take profit of '+c_take_profit+'%.';
+		    }
+
+		    c_interval_str = '';
+		    
+		    switch(c_interval){
+		        case 'min': c_interval_str = '1 Minute'; break;
+		        case '3min': c_interval_str = '3 Minute'; break;
+		        case '5min': c_interval_str = '5 Minute'; break;
+		        case '10min': c_interval_str = '10 Minute'; break;
+		        case '15min': c_interval_str = '15 Minute'; break;
+		        case '30min': c_interval_str = '30 Minute'; break;
+		        case 'hour': c_interval_str = '1 Hour'; break;
+		        case 'day': c_interval_str = '1 Day'; break;
+		       }
+		    algo_summary = '<p class="entry_heading">Entry</p> <p class="dashboard_condition_summary"> '+entry_str+'</p> <p class="exit_heading">Exit</p> <p class="dashboard_condition_summary"> '+exit_str+'</p> <p class="interval_heading">Candle interval</p> <p class="dashboard_condition_summary" style="padding-bottom: 0px;">'+c_interval_str+'</p>';
+		    $('.algo_summary').html(algo_summary);
+    	}
+
+    	$(document).ready(function(){
+			if(Object.keys(equity_added).length === 0){
+			$('.empty_backtest_results_body').show();
+			$('.empty_backtest_results_body p').html('No saved backtests.<br>Add instruments and run backtest.')
+			}else{
+				$('.empty_backtest_results_body').hide();
+			}
+		});
+    </script>
+{% if request.session.first_time_backtest %}
+<script type="text/javascript">
+	var first_time_backtest = "true";
+	ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_backtest');
+</script>
+{% else %}
+<script type="text/javascript">
+	var first_time_backtest = "false";
+</script>
+  {% endif %}
+{% endblock %}
+{% block onconfirm %}
+deploy_action();ga('send', 'event', 'Deploy Algorithm', 'Confirmed', 'Popup');
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

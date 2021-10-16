@@ -1,0 +1,87 @@
+html, body{
+	margin: 0px;
+}
+.milestones_container{
+	display: block;
+	width: 100%;
+	height: auto;
+	max-width: 1000px;
+	margin: auto;
+}
+.milestone_image, .milestone_text{
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+.milestone_image img{
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+.milestone_text p{
+	font-family: Open Sans,sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #555;
+    margin: 0px;
+    resize: none;
+    padding: 25px 15px;
+    box-sizing: border-box;
+    line-height: 1.7;
+}
+.milestone_text h1{
+	font-family: Open Sans,sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #555;
+    margin: 0px;
+    margin-top: 30px;
+    resize: none;
+    padding: 25px 15px;
+    box-sizing: border-box;
+    line-height: 1.7;
+}
+.milestone_text h2{
+	font-family: Open Sans,sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: #555;
+    margin: 0px;
+    margin-top: 30px;
+    resize: none;
+    padding: 25px 15px;
+    box-sizing: border-box;
+    line-height: 1.7;
+    text-align: center;
+    margin-bottom: 70px;
+}
+a{
+	width:100%;
+	display: block;
+	height: auto;
+}
+.milestone_text h1 span{
+	margin-left: 10px;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #0088ff;
+    letter-spacing: 0.5px;
+    font-weight: 400;
+}
+@media only screen and (max-width: 1024px){
+	.milestone_text p{
+		font-size: 14px;
+	}
+	.milestone_text h1{
+		font-size: 18px;
+		padding: 0px 15px;
+		font-weight: 500;
+	}
+	.milestone_text h2{
+		font-size: 20px;
+		margin-top: 0px;
+		margin-bottom: 30px;
+	}
+}

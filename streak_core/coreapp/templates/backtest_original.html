@@ -1,0 +1,768 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Backtest {% endblock %}
+    {% block meta_keywords %} 
+    <meta name="keywords" content="{---}, {---} AI, Backtest Algorithm, Backtest Trading Algorithm, Test trading Algorithm, Test trading strategy, test strategy on historical data, historical equity data, equity info, backtest, portfolio performance, profit/loss, cumulative returns, Sharpe ratio, order placement, equity/stock performance, algorithmic trading, trading strategy, trading, investments, trading tool, backtesting tool, AI trading, strategizing investments, {---}.ai, {---}">
+    {% endblock %}
+    {% block meta_desc %} 
+    <meta name="description" content="Backtest {---} Trading Algorithm on historical stock/equity data and measure porfolio performance, profit/loss, cumulative returns and see your order placed transaction details.">
+    {% endblock %} 
+{% block page_css2 %} <link href="/static/css/backtest.css" rel="stylesheet"> {% endblock %}
+{% block page_css1 %} <link href="/static/css/daterangepicker.min.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/jquery-ui.min.js"></script>{% endblock %}
+{% block page_js2 %} <script src="/static/js/moment.js"></script> {% endblock %}
+{% block page_js3 %} <script src="/static/js/knockout.js"></script> {% endblock %}
+{% block page_js4 %} <script src="/static/js/daterangepicker.min.js"></script> 
+    <script type="text/javascript">
+     $(document).ready(function(){
+    $("#date_range").daterangepicker({
+  minDate: moment().subtract(2, 'years'),
+  callback: function (startDate, endDate, period) {
+    $(this).val(startDate.format('L') + ' – ' + endDate.format('L'));
+  }
+});
+    });
+</script>
+{% endblock %}
+{% block page_js5 %} <script src="/static/js/backtest.js"></script>{% endblock %}
+{% block body %}
+
+<!-- <input type="text" id="datepicker" style="border:1px solid #000; width: 500px;"> -->
+<div class="mobile_message"><p>For more functionality and better experience, open the website on a desktop or a laptop.</p></div>
+<div class="block sec_main">
+    <div class="block test_headers">
+    <div class="test_header3 card">
+        <div class="bt_inputs">
+            <table>
+                <tr>
+                    <th>Initial Capital</th>
+                    <th>Quantity</th>
+                    <th>Stop loss %</th>
+                    <th>Take profit %</th>
+                    <th>Backtest period</th>
+                </tr>
+                <tr>
+                    <td><input type="number" min="0" name=""></td>
+                    <td><input type="number" min="0" name=""></td>
+                    <td><input type="number" min="0" name=""></td>
+                    <td><input type="number" min="0" name=""></td>
+                    <td><input type="" name="" id="date_range"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="bt_actions">
+            <button class="run_backtest">Run Backtest&nbsp;<img src="/static/imgs/icon-forward.png"></button>
+            <button class="save-view"><img src="/static/imgs/icon-save-view.png"></button>
+            <button class="scanner"><img src="/static/imgs/icon-scanner.png"></button>
+        </div>
+        <!-- <table>
+        <tr>
+            <input id="action_uuid" style="display: none;" type="text" name="" value="{{request.session.action_uuid}}">
+            <th class="initial_capital_amt">
+            <span>&nbsp;&nbsp;&nbsp;Initial Capital:&nbsp;&nbsp;&nbsp;</span>
+            <input id="initial_capital_input" type="text" name="" placeholder="1000" value="{{initial_capital}}" onchange="ga('send', 'event', 'Parameters changed', 'Initial Capital', 'Backtest Page');">
+            </th>
+            <th class="brokerage">
+                <select id="commission" onchange="ga('send', 'event', 'Parameters changed', 'Commission', 'Backtest Page');">
+                <option value="0.0">No Brokerage fee</option>
+                <option value="10">Brokerage fee - INR 10</option>
+                </select>
+            </th>
+            <th class="date_th">
+                <span>&nbsp;&nbsp;&nbsp;Duration:&nbsp;&nbsp;&nbsp;</span>
+                <input type="datepicker" id="from_datepicker" name="" value="{{start}}" placeholder="From" onchange="ga('send', 'event', 'Parameters changed', 'From Date changed', 'Backtest Page');">
+                <span>&nbsp;&nbsp;&nbsp;to&nbsp;&nbsp;&nbsp;</span>
+                <input type="datepicker" id="to_datepicker" name="" value="{{stop}}" placeholder="To" onchange="ga('send', 'event', 'Parameters changed', 'To Date changed', 'Backtest Page');">
+            </th>
+            <th class="final_capital">Final Capital:&nbsp; <span></span></th>
+            <th class="profit" style="display:none">Profit: &nbsp;<span></span></th>        
+            <th class="loss" style="display:none">Loss: &nbsp;<span></span></th>
+            <th class="run_backtest"><button type="submit" onclick="run_backtest();ga('send', 'event', 'Clicked Backtest Algorithm', 'Backtest Page');">Run Backtest</button></th>
+        </tr>
+        </table> -->
+    </div>
+    <div class="test_header1 card">
+        <div>
+              <input type="text" name="search_eq" id="equities_input" placeholder="Add equities to backtest">
+              <div class="added_equities">
+              <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>HDFCBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              <span><span>ICICIBANK</span><span><img src="/static/imgs/icon-close-blue.png"></span></span>
+              </div>
+          </div>
+        <!-- <table>
+        <tr>
+            <th>{{action_name|capfirst}}</th>
+            <th id="test_edit_th"><button class="save" onclick="ga('send', 'event', 'Save Algorithm Button', 'Backtest Page');window.location='/dashboard'"><img src="/static/imgs/save.png"> Save</button><button type="submit" class="edit_button" onclick="edit_button('{{request.session.action_uuid}}');ga('send', 'event', 'Edit Algorithm', 'Backtest Page');"><img src="/static/imgs/edit.png">&nbsp;Edit</button>
+
+            {% if not team_user%}
+                <button type="submit" class="edit_button" onclick="deploy_button('0',null);ga('send', 'event', 'Deploy Algorithm', 'Dashboard Page');">&nbsp;Deploy</button>
+                {% else %}
+                <button type="submit" class="edit_button" onclick="deploy_button('{{request.session.action_uuid}}',null);ga('send', 'event', 'Deploy Algorithm', 'Dashboard Page');">&nbsp;Deploy</button>
+            {% endif %}
+            </th>
+        </tr>
+        </table> -->
+    </div>
+    <div class="test_header2 card" style="display: none;">
+        <table id='metrics'>
+        <tr>
+            <th>Total Returns</th>
+            <th>Cumulative Returns</th>
+            <th>Sharpe</th>
+            <th style="display:none">Max Drawdown</th>
+            <th>Volatility</th>
+            <th>Downside Risk</th>
+        </tr>
+        <tr>
+            <td id="return">{{return|floatformat:2}}%</td>
+            <td id="cum_returns">{{cum_returns|floatformat:2}}%</td>
+            <td id="sharpe">{{sharpe|floatformat:2}}%</td>
+            <td id="max_draw" style="display:none">{{max_draw|floatformat:2}}%</td>
+            <td id="volatility">{{volatility|floatformat:2}}%</td>
+            <td id="downside_risk">{{downside_risk|floatformat:2}}%</td>
+        </tr>
+        </table>
+    </div>
+    </div>
+    <div class="empty_backtest_div condition_not_met">
+                        <div><img src="/static/imgs/settings.png"></div>
+                        <h1>NO TRADES EXECUTED</h1>
+                        <p>No trades were executed for this algorithm since the condition in the algorithm never occurred.<br>Try a different time range or edit the algorithm and run backtest again.</p>
+                        <!-- <button><a href="/algorithm">Create Algorithm</a></button> -->
+                        <button type="submit" class="edit_button" onclick="edit_button('{{request.session.action_uuid}}');ga('send', 'event', 'Edit Algorithm', 'Backtest Page');">Edit Algorithm</button>
+    </div>
+    <div class="empty_backtest_div low_capital">
+                        <div><img src="/static/imgs/settings.png"></div>
+                        <h1>Initial Capital too low</h1>
+                        <p>No trades were executed for this algorithm since the initial capital is too low.<br>Increase the initial capital and run backtest again.</p>
+    </div>
+    <!-- <div class="charts card">
+        <div class="chart_left card">
+            <div id="pnl_chartContainer"></div>
+            <div id="orders_chartContainer"></div>
+        </div>
+        <div class="chart_right card">
+            <div id="piechartContainer"></div>
+        </div>
+    </div> -->
+    <div class="backtest_results">
+        <div class="backtest_results_title">
+            <p>Backtest Results</p>
+        </div>
+        <div class="backtest_results_body">
+            <div class="backtest_results_row">
+                <div class="backtest_results_left">
+                    <div class="results_section">
+                    <div class="chart_section">
+                        <div class="chart_header">
+                            <div class="equity_section">
+                                <p class="company_name">Canara Bank Ltd</p>
+                                <p class="exc_symbol">NSE: CANBK</p>
+                            </div>
+                            <div class="brokerage_section">
+                                <p>Brokerage&nbsp;&nbsp;&nbsp;
+                                    <label class="switch">
+                                    <input class="brokerage_toggle" type="checkbox" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="chart_body">
+                            <canvas id="pnl_chartContainer_new"></canvas>
+                        </div>
+                    </div>
+                    <div class="pnl_section">
+                        <div class="pnl">
+                            <p>P&L&nbsp;<span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p>
+                        </div>
+                        <div class="streak">
+                            <div class="streak_body">
+                                <div class="wins"></div>
+                                <div class="losses"></div>
+                            </div>
+                        </div>
+                        <div class="results_table">
+                        <table>
+                        <tr>
+                        <td>Alpha</td>
+                        <td>0.079</td>
+                        </tr>
+                        <tr>
+                        <td>Beta</td>
+                        <td>0.597</td>
+                        </tr>
+                        <tr>
+                        <td>Volatility</td>
+                        <td>34.61%</td>
+                        </tr>
+                        <tr>
+                        <td>Sharpe Ratio</td>
+                        <td>36.69</td>
+                        </tr>
+                        <tr>
+                        <td>Sortino</td>
+                        <td>7.89</td>
+                        </tr>
+                        <tr>
+                        <td>Max Drawdown</td>
+                        <td>0.23%</td>
+                        </tr>
+                        </table>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="transactions_section">
+                        <p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+                    </div>
+                    <div class="transactions_table">
+                        <table id='trade_log'>
+                        <tr>
+                        <th>Date</th>
+                        <th>Equity</th>
+                        <th>Buy/Sell</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Profit/Loss</th>
+                        <th>Portfolio Value</th>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="backtest_results_right">
+                    <div class="fundamentals_section">
+                        <table>
+                        <caption>Fundamentals</caption>
+                        <tr>
+                        <td>1 Mo. Return</td>
+                        <td>-7.46%</td>
+                        </tr>
+                        <tr>
+                        <td>1 Yr. Return</td>
+                        <td>-12.85%</td>
+                        </tr>
+                        <tr>
+                        <td>52 Wk High</td>
+                        <td>1082.70</td>
+                        </tr>
+                        <tr>
+                        <td>52 Wk Low</td>
+                        <td>860.00</td>
+                        </tr>
+                        <tr>
+                        <td>P/E</td>
+                        <td>14.47</td>
+                        </tr>
+                        <tr>
+                        <td>Div. Yield</td>
+                        <td>2.84%</td>
+                        </tr>
+                        </table>
+                    </div>
+                    <div class="actions_section">
+                        <table class="actions_buttons">
+                            <tr>
+                                <td>
+                                <button class="deploy"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Deploy</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <button class="download"><span><img src="/static/imgs/icon-download.png"></span>&nbsp;&nbsp;&nbsp;Download</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="social_buttons">
+                            <span><button><img src="/static/imgs/icon-linkedin.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-whatsapp.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-facebook.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-twitter.png"></button></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="backtest_results_row">
+                <div class="backtest_results_left">
+                    <div class="results_section">
+                    <div class="chart_section">
+                        <div class="chart_header">
+                            <div class="equity_section">
+                                <p class="company_name">Canara Bank Ltd</p>
+                                <p class="exc_symbol">NSE: CANBK</p>
+                            </div>
+                            <div class="brokerage_section">
+                                <p>Brokerage&nbsp;&nbsp;&nbsp;
+                                    <label class="switch">
+                                    <input class="brokerage_toggle" type="checkbox" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="chart_body"></div>
+                    </div>
+                    <div class="pnl_section">
+                        <div class="pnl">
+                            <p>P&L&nbsp;<span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p>
+                        </div>
+                        <div class="streak">
+                            <div class="streak_body">
+                                <div class="wins"></div>
+                                <div class="losses"></div>
+                            </div>
+                        </div>
+                        <div class="results_table">
+                        <table>
+                        <tr>
+                        <td>Alpha</td>
+                        <td>0.079</td>
+                        </tr>
+                        <tr>
+                        <td>Beta</td>
+                        <td>0.597</td>
+                        </tr>
+                        <tr>
+                        <td>Volatility</td>
+                        <td>34.61%</td>
+                        </tr>
+                        <tr>
+                        <td>Sharpe Ratio</td>
+                        <td>36.69</td>
+                        </tr>
+                        <tr>
+                        <td>Sortino</td>
+                        <td>7.89</td>
+                        </tr>
+                        <tr>
+                        <td>Max Drawdown</td>
+                        <td>0.23%</td>
+                        </tr>
+                        </table>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="transactions_section">
+                        <p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+                    </div>
+                    <div class="transactions_table">
+                        <table id='trade_log'>
+                        <tr>
+                        <th>Date</th>
+                        <th>Equity</th>
+                        <th>Buy/Sell</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Profit/Loss</th>
+                        <th>Portfolio Value</th>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="backtest_results_right">
+                    <div class="fundamentals_section">
+                        <table>
+                        <caption>Fundamentals</caption>
+                        <tr>
+                        <td>1 Mo. Return</td>
+                        <td>-7.46%</td>
+                        </tr>
+                        <tr>
+                        <td>1 Yr. Return</td>
+                        <td>-12.85%</td>
+                        </tr>
+                        <tr>
+                        <td>52 Wk High</td>
+                        <td>1082.70</td>
+                        </tr>
+                        <tr>
+                        <td>52 Wk Low</td>
+                        <td>860.00</td>
+                        </tr>
+                        <tr>
+                        <td>P/E</td>
+                        <td>14.47</td>
+                        </tr>
+                        <tr>
+                        <td>Div. Yield</td>
+                        <td>2.84%</td>
+                        </tr>
+                        </table>
+                    </div>
+                    <div class="actions_section">
+                        <table class="actions_buttons">
+                            <tr>
+                                <td>
+                                <button class="deploy"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Deploy</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <button class="download"><span><img src="/static/imgs/icon-download.png"></span>&nbsp;&nbsp;&nbsp;Download</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="social_buttons">
+                            <span><button><img src="/static/imgs/icon-linkedin.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-whatsapp.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-facebook.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-twitter.png"></button></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="backtest_results_row">
+                <div class="backtest_results_left">
+                    <div class="results_section">
+                    <div class="chart_section">
+                        <div class="chart_header">
+                            <div class="equity_section">
+                                <p class="company_name">Canara Bank Ltd</p>
+                                <p class="exc_symbol">NSE: CANBK</p>
+                            </div>
+                            <div class="brokerage_section">
+                                <p>Brokerage&nbsp;&nbsp;&nbsp;
+                                    <label class="switch">
+                                    <input class="brokerage_toggle" type="checkbox" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="chart_body"></div>
+                    </div>
+                    <div class="pnl_section">
+                        <div class="pnl">
+                            <p>P&L&nbsp;<span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p>
+                        </div>
+                        <div class="streak">
+                            <div class="streak_body">
+                                <div class="wins"></div>
+                                <div class="losses"></div>
+                            </div>
+                        </div>
+                        <div class="results_table">
+                        <table>
+                        <tr>
+                        <td>Alpha</td>
+                        <td>0.079</td>
+                        </tr>
+                        <tr>
+                        <td>Beta</td>
+                        <td>0.597</td>
+                        </tr>
+                        <tr>
+                        <td>Volatility</td>
+                        <td>34.61%</td>
+                        </tr>
+                        <tr>
+                        <td>Sharpe Ratio</td>
+                        <td>36.69</td>
+                        </tr>
+                        <tr>
+                        <td>Sortino</td>
+                        <td>7.89</td>
+                        </tr>
+                        <tr>
+                        <td>Max Drawdown</td>
+                        <td>0.23%</td>
+                        </tr>
+                        </table>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="transactions_section">
+                        <p>Transaction Details <span><img src="/static/imgs/icon-down-arrow.png"></span></p>
+                    </div>
+                    <div class="transactions_table">
+                        <table id='trade_log'>
+                        <tr>
+                        <th>Date</th>
+                        <th>Equity</th>
+                        <th>Buy/Sell</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Profit/Loss</th>
+                        <th>Portfolio Value</th>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        <tr>
+                        <td>21-MAY-2017</td>
+                        <td>NSE-HDFCBANK</td>
+                        <td>Buy</td>
+                        <td>500</td>
+                        <td>283.34</td>
+                        <td>+7395</td>
+                        <td>7654789</td>
+                        </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="backtest_results_right">
+                    <div class="fundamentals_section">
+                        <table>
+                        <caption>Fundamentals</caption>
+                        <tr>
+                        <td>1 Mo. Return</td>
+                        <td>-7.46%</td>
+                        </tr>
+                        <tr>
+                        <td>1 Yr. Return</td>
+                        <td>-12.85%</td>
+                        </tr>
+                        <tr>
+                        <td>52 Wk High</td>
+                        <td>1082.70</td>
+                        </tr>
+                        <tr>
+                        <td>52 Wk Low</td>
+                        <td>860.00</td>
+                        </tr>
+                        <tr>
+                        <td>P/E</td>
+                        <td>14.47</td>
+                        </tr>
+                        <tr>
+                        <td>Div. Yield</td>
+                        <td>2.84%</td>
+                        </tr>
+                        </table>
+                    </div>
+                    <div class="actions_section">
+                        <table class="actions_buttons">
+                            <tr>
+                                <td>
+                                <button class="deploy"><span><img src="/static/imgs/icon-deploy.png"></span>&nbsp;&nbsp;&nbsp;Deploy</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <button class="download"><span><img src="/static/imgs/icon-download.png"></span>&nbsp;&nbsp;&nbsp;Download</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="social_buttons">
+                            <span><button><img src="/static/imgs/icon-linkedin.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-whatsapp.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-facebook.png"></button></span>
+                            <span><button><img src="/static/imgs/icon-twitter.png"></button></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- <div class="charts card">
+        <div class="chart_left card">
+            <canvas id="pnl_chartContainer_new"></canvas>
+            <canvas id="orders_chartContainer_new"></canvas>
+        </div>
+        <div class="chart_right card">
+        <canvas id="piechartContainer_new"></canvas>
+        </div>
+    </div> -->
+    </div>
+    <div class="transactions_table card" style="display: none;">
+    <p>Transactions Detail</p>
+        <table id='trade_log'>
+            <tr>
+                <th>Date</th>
+                <th>Equity</th>
+                <th>Buy/Sell</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Profit/Loss</th>
+                <th>Portfolio Value</th>
+            </tr>
+        </table>
+    </div>
+</div>
+{% csrf_token %}
+{% endblock %}
+{% block page_js6 %}<script type="text/javascript" src="/static/js/chart.bundle.min.js"></script><script type="text/javascript">
+ $(document).ready(function() {
+});
+    </script> 
+{% endblock %}
+{% block loader_popup %}
+<div class="loader_parent_backtest" style="display: none;">
+  <div><img src="/static/imgs/loader.gif"></div>
+  <p>Running backtest...</p>
+</div>
+{% endblock %}
+
+{% block popup_body %}
+    <div class="deploy_details">
+    <div class="popup_title">
+    <p>Live Trade your Algorithm</p>
+    </div>
+    <div class="choose_brokerage">
+    <p>Choose your Brokerage&nbsp;</p>
+    <select id='algo_live_for'><option>Zerodha</option>
+    <option>ShareKhan</option>
+    <option>Angel Broking</option></select>
+    </div>
+    <div class="live_duration">
+    <p>Algorithm Live for&nbsp;</p>
+    <select id='algo_live_for'>
+        <option value='1'>1 day</option>
+        <option value='2'>2 days</option>
+        <option value='3'>3 days</option>
+        <option value='5'>5 days</option>
+    </select>
+    </div>
+    <div class="deploy_freq">
+    <p>Maximum Algorithm Trading Frequency&nbsp;</p>
+    <select id='trading_frequency'>
+        <option value='1'>one trade</option>
+        <option value='5'>5 trades</option>
+        <option value='10'>10 trades</option>
+    </select>
+    </div>
+    <div class="trading_terms">
+    <input type="checkbox" name="trading_terms_checkbox" id="trading_terms_checkbox" value="1" required>&nbsp;I accept the&nbsp;&nbsp;<a href="/trading_terms" onclick="ga('send', 'event', 'Trading Terms', 'Dashboard');">Trading Terms</a>.
+        <!-- <p>I accept the <a href="/trading_terms">Trading Terms</a></p> -->
+    </div>
+    </div>  
+    <!-- <div class="algo_name_desc">
+    <div>
+    <label for="algo_name">Algorithm Name<em><span style="color:red;">*</span></em></label>
+    <input type="text" class="" id="algo_name" placeholder="">
+    </div>
+    <div>
+    <label for="algo_description">Description</label>
+    <input type="text" class="" id="algo_description" placeholder="">
+    </div>
+    </div> -->  
+{% endblock %}
+{% block onconfirm %}
+deploy_action();ga('send', 'event', 'Deploy Algorithm', 'Confirmed', 'Popup');
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

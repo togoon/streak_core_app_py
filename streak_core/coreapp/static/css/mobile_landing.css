@@ -1,0 +1,2007 @@
+html{
+  background-color: transparent;
+  background-image: url('../imgs/home-graph-grid.png');
+  background-position: 0px -70px;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+.main{
+	width:100%;
+}
+.footer_home, .home_menu{
+	display: none !important;
+}
+#home_logo_link{
+	display: none !important;
+}
+#home_logo_mobile_link{
+  display: block !important;
+  text-decoration: none;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  padding-top: 12px;
+}
+.home_body{
+	display: block;
+	width: 100%;
+	height: auto;
+	background-color: transparent;
+}
+.hero_section{
+	display: block;
+	width: 100%;
+	height: 700px;
+	padding-top: 221px;
+	background-color: transparent;
+}
+#feature_option, #feature_pricing{
+  display: block;
+}
+h1{
+	width: 100%;
+	padding: 10px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 34px;
+	font-weight: 400;
+	color: #3c4858;
+	text-align: center;
+	margin: 0px;
+	box-sizing: border-box;
+}
+h2{
+	width: 100%;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 20px;
+	font-weight: 400;
+	color: #8492a6;
+	text-align: center;
+	margin: 0px;
+	box-sizing: border-box;
+}
+.log_in_kite{
+  width: auto;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 2px;
+  border:none;
+  margin: auto;
+  cursor: pointer;
+  display: flex;
+  outline: none;
+  padding: 0px;
+  background-color: #0088ff;
+  color: #FFFFFF;
+  margin-top: 50px;
+}
+.log_in_kite span{
+	padding: 15px 30px !important;
+	background-color: #0088ff;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	box-shadow: 0 2px 40px 0 rgba(0, 0, 0, 0.2);
+}
+.log_in_kite span:first-child{
+	padding: 15px !important;
+	border-radius: 2px;
+	background:  #0181d3; /* For browsers that do not support gradients */    
+    background: -webkit-radial-gradient (#0181d3 10%, #035f9a 100%); /* Safari 5.1 to 6.0 */
+    background: -o-radial-gradient (#0181d3 10%, #035f9a 100%); /* For Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient (#0181d3 10%, #035f9a 100%); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(#0181d3 10%, #035f9a 100%); /* Standard syntax (must be last) */
+}
+.log_in_kite span:hover{
+  background-color: #008ee9;
+}
+.log_in_kite span:focus{
+	background-color: #007ac8;
+}
+.log_in_kite img{
+  width: 24px;
+  height: 16px;
+  /*margin-bottom: 0px;*/
+  /*margin-left: 5px;*/
+}
+.for_traders_section{
+  display: block;
+  width: 100%;
+  padding: 75px 0px;
+  background-color: transparent;
+  background-image: url('../imgs/home-bg-right.png');
+  background-position: 100% 70%;
+  background-repeat: no-repeat;
+  background-size: 242px auto;
+}
+.home-section-icons{
+	width: 100%;
+	display: block;
+	margin-bottom: 20px;
+}
+.home-section-icons a{
+	display: block;
+    width: fit-content;
+    margin: auto;
+}
+.home-icon-one{
+	width: 40px;
+	height: 40px;
+	margin: auto;
+	display: block;
+}
+.cta{
+  width: auto;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 2px;
+  border:none;
+  margin: auto;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  padding: 15px 30px;
+  background-color: #0088ff;
+  color: #FFFFFF;
+}
+.cta:hover{
+  background-color: #008ee9;
+}
+.cta:focus{
+	background-color: #007ac8;
+}
+.entry_exit{
+	width: 100%;
+	display: flex;
+	margin: 20px 0px 0px 0px;
+	padding: 70px 0px;
+	background-image: url('../imgs/home-bg-left.png');
+    background-position: 16% 0%;
+    background-repeat: no-repeat;
+    background-size: 257px auto;
+}
+.entry_left, .exit_right{
+	width: 50%;
+	display: block;
+}
+.entry_card, .exit_card{
+	display: block;
+	width: 400px;
+	height: 200px;
+	padding: 30px;
+	background-color: #FFFFFF;
+	box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.1);
+}
+.entry_card{
+	float: right;
+	margin-right: 30px;
+}
+.entry_title{
+	width: 100%;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: #00e486;
+	text-align: left;
+	margin: 0px;
+	margin-bottom: 10px;
+}
+.exit_title{
+	width: 100%;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: #ff6239;
+	text-align: left;
+	margin: 0px;
+	margin-bottom: 10px;
+}
+.strategy{
+	width: 300px;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 22px;
+	font-weight: 300;
+	color: #192024;
+	text-align: left;
+	margin: 0px;
+}
+.zerodha_section_top{
+	width: 100%;
+	height: 100px;
+   background-color: #edf9ff;
+   background-image: url('../imgs/home-bg-zerodha-top.png');
+   background-position: 0px 0px;
+   background-repeat: no-repeat;
+   background-size: 100% 100%;
+}
+.zerodha_section{
+	display: block;
+    width: 100%;
+    margin-top: -1px;
+    /*padding: 75px 0px;*/
+    background: #57bdff; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(right, #57bdff, #0178c5); /*Safari 5.1-6*/
+    background: -o-linear-gradient(left, #57bdff, #0178c5); /*Opera 11.1-12*/
+    background: -moz-linear-gradient(left, #57bdff, #0178c5); /*Fx 3.6-15*/
+    background: linear-gradient(to left, #57bdff, #0178c5); /*Standard*/
+}
+.zerodha_section_bottom{
+	width: 100%;
+	height: 100px;
+	margin-top: -1px;
+   background-color: transparent;
+   background-image: url('../imgs/home-bg-zerodha-bottom.png');
+   background-position: 0px 0px;
+   background-repeat: no-repeat;
+   background-size: 100% 100%;
+}
+.zerodha_title{
+	width: 100%;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 34px;
+	font-weight: 400;
+	color: #FFFFFF;
+	text-align: center;
+	margin: 0px;
+	margin-bottom: 15px;
+}
+.zerodha_description{
+	width: 100%;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 18px;
+	font-weight: 400;
+	color: #FFFFFF;
+	opacity: 0.8;
+	text-align: center;
+	margin: 0px;
+	margin-bottom: 15px;
+}
+.zerodha_logo{
+	width: 100%;
+	display: block;
+	padding: 30px 0px;
+	padding-top: 50px;
+}
+.zerodha_logo img{
+	width: 240px;
+	margin: auto;
+	display: block;
+}
+.zerodha_values{
+	width: 70%;
+    margin: auto;
+    display: flex;
+    padding: 30px 50px;
+}
+.zerodha_values>div{
+	background-color: #FFFFFF;
+	border-radius: 2px;
+	padding: 15px 20px;
+	/*display: block;*/
+	display: none;
+	text-align: center;
+	margin: auto;
+}
+.zerodha_values p{
+	width: auto;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+	color: #3c4858;
+	text-align: center;
+	margin: 0px;
+}
+.zerodha_values span{
+	margin-right: 10px;
+}
+.zerodha_values img{
+	width: 16px;
+}
+.testimonials_section{
+	display: block;
+    width: 100%;
+    padding: 75px 0px;
+    background-color: #FFFFFF;
+}
+.home-icon-two{
+	width: 38px;
+	height: 35px;
+	margin: auto;
+	display: block;
+}
+.testimonials_body{
+	width: 96%;
+    margin: auto;
+    display: flex;
+    height: auto;
+    margin-top: 50px;
+}
+.testimonials_body>div{
+	width: 33.333333%;
+	display: block;
+}
+.testimonials_box{
+	width: 100%;
+	padding: 20px;
+	display: block;
+}
+.testimonials_top{
+	width: 100%;
+	display: block;
+	padding: 30px;
+	border: 1px solid #ecf0f1;
+	border-bottom: none;
+}
+.testimonials_top p{
+	width: 100%;
+	height: 200px;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 18px;
+	opacity: 0.8;
+	font-weight: 400;
+	color: #192024;
+	text-align: left;
+	margin: 0px;
+	margin-bottom: 10px;
+}
+.testimonials_bottom{
+	width: 100%;
+	display: flex;
+	padding: 0px 30px 30px 30px;
+	border: 1px solid #ecf0f1;
+	border-top: none;
+}
+.testimonials_photo, .testimonials_desc{
+	width: auto;
+	display: block;
+}
+.testimonials_photo img{
+	width: 48px;
+	height: 48px;
+	margin: auto;
+	display: block;
+}
+.testimonials_name{
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	color: #0088ff;
+	text-align: left;
+	margin: 0px;
+	padding-left: 10px;
+}
+.testimonials_designation{
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	color: #8492a6;
+	text-align: left;
+	margin: 0px;
+	padding-left: 10px;
+}
+.popular_strategies_section{
+	display: block;
+    width: 100%;
+    padding: 75px 0px;
+    background-color: #f6fbff;
+}
+.home-icon-three{
+	width: 43px;
+	height: 40px;
+	margin: auto;
+	display: block;
+}
+.popular_strategies_section_body{
+	width: 100%;
+	display: flex;
+	padding: 50px 0px;
+}
+.ps_entry_exit{
+	width: 30%;
+	display: block;
+	margin: 20px 0px 0px 0px;
+	/*padding: 70px 0px;*/
+}
+.ps_entry_left, .ps_exit_right{
+	width: 50%;
+	display: block;
+}
+.ps_entry_card, .ps_exit_card{
+	display: block;
+	width: 400px;
+	height: auto;
+	padding: 30px;
+	background-color: #FFFFFF;
+	box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.1);
+}
+.ps_entry_title{
+	width: 100%;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: #00e486;
+	text-align: left;
+	margin: 0px;
+	margin-bottom: 10px;
+}
+.ps_exit_title{
+	width: 100%;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: #ff6239;
+	text-align: left;
+	margin: 0px;
+	margin-bottom: 10px;
+}
+.ps_strategy{
+	width: 300px;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 22px;
+	font-weight: 300;
+	color: #192024;
+	text-align: left;
+	margin: 0px;
+}
+.ps_results{
+	width: 100%;
+	display: block;
+}
+.ps_results img{
+	width: 1260px;
+	display: block;
+	margin: auto;
+}
+.video_section{
+	display: block;
+    width: 100%;
+    padding: 75px 0px;
+    /*background-color: #FFFFFF;*/
+}
+.home-icon-four{
+	width: 42px;
+	height: 27px;
+	margin: auto;
+	display: block;
+}
+.video_section_body{
+	width: 100%;
+	display: block;
+	padding: 30px 0px;
+}
+.video{
+	width: 711px;
+	height: 400px;
+	background-color: #0088ff;
+	box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.2);
+	margin: auto;
+	display: block;
+}
+.features_section{
+	display: block;
+    width: 100%;
+    padding: 15px 0px 35px 0px;
+    background: #ecf8ff; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(rgba(247, 252, 255, 0), #ecf8ff); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(rgba(247, 252, 255, 0), #ecf8ff); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(rgba(247, 252, 255, 0), #ecf8ff); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(rgba(247, 252, 255, 0), #ecf8ff); /* Standard syntax */
+}
+.home-icon-five{
+	width: 37px;
+	height: 42px;
+	margin: auto;
+	display: block;
+}
+.features_section_body{
+	width: 100%;
+	padding-top: 75px;
+	display: block;
+}
+.feature_row{
+	width: 100%;
+	display: flex;
+}
+.feature_row:nth-child(2){
+	margin: 75px 0px;
+}
+.feature_row:first-child, .feature_row:last-child{
+	width: 90%;
+	margin: auto;
+}
+.feature_description{
+	width: 50%;
+	display: block;
+}
+.feature_description h2{
+	text-align: left;
+	color: #3c4858;
+	padding-left: 30px;
+}
+.feature_screenshot{
+	width: 50%;
+	display: block;
+}
+.feature_title{
+	width: 100%;
+	margin: 0px;
+	padding: 10px;
+	text-align: left;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 28px;
+	font-weight: 400;
+	color: #3c4858;
+	text-transform: uppercase;
+	padding-left: 30px;
+}
+.sub_feature{
+	width: 100%;
+	margin: 0px;
+	padding: 10px;
+	text-align: left;
+	line-height: 1.5;
+	font-family: 'Roboto', sans-serif;
+	font-size: 17px;
+	font-weight: 400;
+	color: #3c4858;
+	color: #8492a6;
+}
+.sub_feature span, .blue_tick{
+	margin-right: 10px;
+}
+.sub_feature img{
+	width: 13px;
+	height: 9px;
+}
+.blue_tick img{
+	width: 20px;
+	/*height: 9px;*/
+}
+.home-features-one{
+	max-width: 554px;
+	margin: auto;
+	display: block;
+}
+.home-features-two{
+	width: 705px;
+	margin: auto;
+	display: block;
+}
+.home-features-three{
+	width: 655px;
+	margin: auto;
+	display: block;
+}
+.press_media{
+	display: block;
+    width: 100%;
+    padding: 15px 0px;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #ecf0f1;
+	margin-bottom: 100px;
+	margin-top: 50px;
+}
+.press_media div{
+	display: flex;
+	width: 70%;
+	padding: 70px 0px;
+	margin: auto;
+	margin-bottom: 50px;
+	/*border-bottom: 1px solid #ecf0f1;
+	margin-bottom: 100px;*/
+}
+.press_media a{
+	max-width: 25%;
+	height: 70px;
+	padding: 0px 30px;
+	margin: auto;
+	display: block;
+}
+#deccan{
+	height: 60px;
+}
+.press_media img{
+	height: 100%;
+	max-width: 100%;
+	margin: auto;
+	display: block;
+}
+.pricing{
+	display: block;
+    width: 100%;
+    padding: 15px 0px;
+    background-color: #FFFFFF;
+}
+.home-icon-six{
+	width: 40px;
+	height: 42px;
+	margin: auto;
+	display: block;
+}
+.pricing_body{
+	width: 100%;
+	display: flex;
+	padding: 75px 0px;
+}
+.pricing_details{
+	width: 50%;
+	height: auto;
+	display: block;
+}
+.free_trial{
+	width: 400px;
+	border-radius: 2px;
+	background-color: #0273bc;
+	display: block;
+	float: right;
+	margin-top: 50px;
+	margin-bottom: 50px;
+	padding: 30px;
+}
+.subscription{
+	width: 500px;
+	border-radius: 2px;
+	background-color: #0088ff;
+	box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.2);
+	display: block;
+	padding: 30px;
+}
+.pricing_details p{
+	font-family: 'Roboto', sans-serif;
+	color: #FFFFFF;
+	text-align: left;
+	margin: 0px;
+}
+.pricing_title{
+	font-size: 22px;
+	font-weight: 500;
+	margin-bottom: 10px !important;
+}
+.pricing_description{
+	font-size: 18px;
+	opacity: 0.7;
+	font-weight: 400;
+	margin-bottom: 30px !important;
+}
+.pricing_package{
+	font-size: 18px;
+	font-weight: 500;
+	margin-bottom: 15px !important;
+}
+.free_trial .white_cta{
+  width: auto;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 2px;
+  border:none;
+  margin-top: 30px;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  padding: 15px 30px;
+  background-color: #FFFFFF;
+  color: #0273bc;
+}
+.free_trial .white_cta:hover{
+  background-color: #f1f6f9;
+}
+.free_trial .white_cta:focus{
+  background-color: #e2eef7;
+}
+.subscription .white_cta{
+  width: auto;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 2px;
+  border:none;
+  margin-top: 30px;
+  cursor: pointer;
+  display: block;
+  outline: none;
+  padding: 15px 30px;
+  background-color: #FFFFFF;
+  color: #0088ff;
+}
+.subscription .white_cta:hover{
+  background-color: #eff8ff;
+}
+.subscription .white_cta:focus{
+  background-color: #e0eff9;
+}
+/*.footer_home{
+  width: 100%;
+  height: auto;
+  margin: 0px;
+  padding: 30px 0px 30px 0px;
+  display: block;
+  background-color: #FFF;
+  border-top: 1px solid #ecf0f1;
+  box-sizing: border-box;
+  position: relative;
+  bottom: 0px;
+}
+.footer_home p{
+  width: 100%;
+  color: #3c4858;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+.footer_home span{
+  margin: 10px;
+  padding-bottom: 2px;
+  color: #3c4858;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.footer_home a{
+  color: inherit;
+  color: #3c4858;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: none;
+}
+.footer_home span:hover{
+  border-bottom: 1px solid #3c4858;
+}*/
+@media only screen and (max-width: 1024px){
+	html{
+		background-position: 0px -40px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 12px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 50px;
+		padding-top: 0px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 16px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 13px !important;
+	}
+	h1{
+		font-size: 28px;
+	}
+	h2{
+		font-size: 14px;
+	}
+	.hero_section{
+		height: 480px;
+		padding-top: 80px;
+	}
+	.log_in_kite{
+		font-size: 16px;
+	}
+	.log_in_kite img{
+		width: 25px;
+    	height: 20px;
+	}
+	.log_in_kite span{
+		padding: 13px 30px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.entry_exit{
+		background-position: 4% 0%;
+		background-size: 221px auto;
+	}
+	.strategy{
+		font-size: 15px;
+	}
+	.entry_title, .exit_title{
+		font-size: 10px;
+	}
+	.for_traders_section{
+		background-position: 100% 50%;
+		background-size: 185px auto;
+	}
+	.zerodha_title{
+		font-size: 26px;
+	}
+	.zerodha_description{
+		font-size: 12px;
+	}
+	.zerodha_logo{
+		padding: 25px 0px;
+	}
+	.zerodha_logo img{
+		width: 130px;
+	}
+	.zerodha_values{
+		padding: 30px;
+	}
+	.zerodha_values>div{
+		padding: 12px 20px;
+	}
+	.zerodha_values p{
+		font-size: 11px;
+	}
+	.testimonials_top p{
+		font-size: 13px;
+		height: 130px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 12px;
+	}
+	.video{
+		width: 60%;
+		height: 350px;
+	}
+	.video_section{
+		padding: 0px;
+	}
+	.video_section_body{
+		padding: 25px 0px;
+	}
+	.ps_results img{
+		width: 90%;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 90%;
+	}
+	.feature_row:nth-child(2){
+		width: 90%;
+		margin: 55px auto;
+	}
+	.feature_description{
+		width: 50%;
+	}
+	.feature_screenshot{
+		width: 50%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 50px;
+	}
+	.pricing_details{
+		width: 47%;
+	}
+	.pricing_title{
+		font-size: 16px;
+	}
+	.pricing_description{
+		font-size: 12px;
+	}
+	.pricing_package{
+		font-size: 12px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 13px !important;
+	}
+	.cta{
+		padding: 10px 20px;
+		font-size: 13px;
+	}
+	.entry_card, .exit_card{
+		height: 120px;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1100px) and (min-width: 1025px){
+	html{
+		background-position: 0px -40px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 12px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 50px;
+		padding-top: 0px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 18px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 13px !important;
+	}
+	h1{
+		font-size: 28px;
+	}
+	h2{
+		font-size: 14px;
+	}
+	.hero_section{
+		height: 480px;
+		padding-top: 80px;
+	}
+	.log_in_kite{
+		font-size: 14px;
+	}
+	.log_in_kite img{
+		width: 19px;
+    	height: 13px;
+	}
+	.log_in_kite span{
+		padding: 10px 25px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.entry_exit{
+		background-position: 4% 0%;
+		background-size: 221px auto;
+	}
+	.strategy{
+		font-size: 15px;
+	}
+	.entry_title, .exit_title{
+		font-size: 10px;
+	}
+	.for_traders_section{
+		background-position: 100% 50%;
+		background-size: 185px auto;
+	}
+	.zerodha_title{
+		font-size: 26px;
+	}
+	.zerodha_description{
+		font-size: 12px;
+	}
+	.zerodha_logo{
+		padding: 25px 0px;
+	}
+	.zerodha_logo img{
+		width: 130px;
+	}
+	.zerodha_values{
+		padding: 30px;
+	}
+	.zerodha_values>div{
+		padding: 12px 20px;
+	}
+	.zerodha_values p{
+		font-size: 11px;
+	}
+	.testimonials_top p{
+		font-size: 13px;
+		height: 150px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 12px;
+	}
+	.video{
+		width: 60%;
+		height: 350px;
+	}
+	.video_section{
+		padding: 0px;
+	}
+	.video_section_body{
+		padding: 25px 0px;
+	}
+	.ps_results img{
+		width: 90%;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 90%;
+	}
+	.feature_row:nth-child(2){
+		width: 96%;
+		margin: 75px auto;
+	}
+	.feature_description{
+		width: 60%;
+	}
+	.feature_screenshot{
+		width: 40%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 70px;
+	}
+	.pricing_details{
+		width: 47%;
+	}
+	.pricing_title{
+		font-size: 16px;
+	}
+	.pricing_description{
+		font-size: 12px;
+	}
+	.pricing_package{
+		font-size: 12px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 13px !important;
+	}
+	.cta{
+		padding: 10px 20px;
+		font-size: 13px;
+	}
+	.entry_card, .exit_card{
+		height: 120px;
+	}
+	.press_media a{
+		height: 60px;
+	}
+	#deccan{
+		height: 50px;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1279px) and (min-width: 1101px){
+	html{
+		background-position: 0px -50px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 12px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 50px;
+		padding-top: 0px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 18px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 13px !important;
+	}
+	h1{
+		font-size: 28px;
+	}
+	h2{
+		font-size: 14px;
+	}
+	.hero_section{
+		height: 530px;
+		padding-top: 80px;
+	}
+	.log_in_kite{
+		font-size: 14px;
+	}
+	.log_in_kite img{
+		width: 19px;
+    	height: 13px;
+	}
+	.log_in_kite span{
+		padding: 10px 25px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.entry_exit{
+		background-position: 4% 0%;
+		background-size: 221px auto;
+	}
+	.strategy{
+		font-size: 15px;
+	}
+	.entry_title, .exit_title{
+		font-size: 10px;
+	}
+	.for_traders_section{
+		background-position: 100% 50%;
+		background-size: 185px auto;
+	}
+	.zerodha_title{
+		font-size: 26px;
+	}
+	.zerodha_description{
+		font-size: 12px;
+	}
+	.zerodha_logo{
+		padding: 25px 0px;
+	}
+	.zerodha_logo img{
+		width: 130px;
+	}
+	.zerodha_values{
+		padding: 30px;
+	}
+	.zerodha_values>div{
+		padding: 12px 20px;
+	}
+	.zerodha_values p{
+		font-size: 11px;
+	}
+	.testimonials_top p{
+		font-size: 13px;
+		height: 150px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 12px;
+	}
+	.video{
+		width: 621px;
+		height: 350px;
+	}
+	.video_section{
+		padding: 0px;
+	}
+	.video_section_body{
+		padding: 25px 0px;
+	}
+	.ps_results img{
+		width: 90%;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 93%;
+	}
+	.feature_row:nth-child(2){
+		width: 96%;
+		margin: 75px auto;
+	}
+	.feature_description{
+		width: 50%;
+	}
+	.feature_screenshot{
+		width: 50%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 30px;
+	}
+	.pricing_details{
+		width: 47%;
+	}
+	.pricing_title{
+		font-size: 16px;
+	}
+	.pricing_description{
+		font-size: 12px;
+	}
+	.pricing_package{
+		font-size: 12px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 13px !important;
+	}
+	.cta{
+		padding: 10px 20px;
+		font-size: 13px;
+	}
+	.entry_card, .exit_card{
+		height: 135px;
+	}
+	.press_media a{
+		height: 60px;
+	}
+	#deccan{
+		height: 50px;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1366px) and (min-width: 1280px){
+	html{
+		background-position: 0px -70px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 13px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 50px;
+		padding-top: 0px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 20px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 13px !important;
+	}
+	h1{
+		font-size: 28px;
+	}
+	h2{
+		font-size: 14px;
+	}
+	.hero_section{
+		height: 550px;
+		padding-top: 100px;
+	}
+	.log_in_kite{
+		font-size: 13px;
+	}
+	.log_in_kite img{
+		width: 16px;
+    	height: 11px;
+	}
+	.log_in_kite span{
+		padding: 10px 25px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.strategy{
+		font-size: 20px;
+	}
+	.entry_title, .exit_title{
+		font-size: 12px;
+	}
+	.zerodha_title{
+		font-size: 30px;
+	}
+	.zerodha_description{
+		font-size: 13px;
+	}
+	.zerodha_logo img{
+		width: 150px;
+	}
+	.zerodha_values p{
+		font-size: 12px;
+	}
+	.testimonials_top p{
+		font-size: 16px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 14px;
+	}
+	.ps_results img{
+		width: 1170px;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 93%;
+	}
+	.feature_row:nth-child(2){
+		width: 93%;
+		margin: 75px auto;
+	}
+	.feature_description{
+		width: 55%;
+	}
+	.feature_screenshot{
+		width: 45%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 30px;
+	}
+	.pricing_title{
+		font-size: 18px;
+	}
+	.pricing_description{
+		font-size: 14px;
+	}
+	.pricing_package{
+		font-size: 14px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 14px !important;
+	}
+	.entry_card, .exit_card{
+		height: 185px;
+	}
+	.cta{
+		padding: 10px 20px;
+		font-size: 13px;
+	}
+	.video_section{
+		padding: 0px;
+	}
+	.video_section_body{
+		padding: 25px 0px;
+	}
+	.press_media a{
+		height: 60px;
+	}
+	#deccan{
+		height: 50px;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1440px) and (min-width: 1367px){
+	html{
+		background-position: 0px -70px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 16px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 50px;
+		padding-top: 0px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 26px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 13px !important;
+	}
+	h1{
+		font-size: 28px;
+	}
+	h2{
+		font-size: 14px;
+	}
+	.hero_section{
+		height: 585px;
+    	padding-top: 130px;
+	}
+	.log_in_kite{
+		font-size: 14px;
+	}
+	.log_in_kite img{
+		width: 19px;
+    	height: 13px;
+	}
+	.log_in_kite span{
+		padding: 10px 25px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.strategy{
+		font-size: 20px;
+	}
+	.entry_title, .exit_title{
+		font-size: 12px;
+	}
+	.zerodha_title{
+		font-size: 32px;
+	}
+	.zerodha_description{
+		font-size: 13px;
+	}
+	.zerodha_logo img{
+		width: 150px;
+	}
+	.zerodha_values p{
+		font-size: 12px;
+	}
+	.testimonials_top p{
+		font-size: 16px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 14px;
+	}
+	.ps_results img{
+		width: 1170px;
+	}
+	.video_section{
+		padding-top: 0px;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 90%;
+	}
+	.feature_row:nth-child(2){
+		width: 95%;
+		margin: 55px auto;
+	}
+	.feature_description{
+		width: 60%;
+	}
+	.feature_screenshot{
+		width: 50%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 30px;
+	}
+	.feature_title{
+		font-size: 20px;
+	}
+	.sub_feature{
+		font-size: 14px;
+	}
+	.pricing_title{
+		font-size: 18px;
+	}
+	.pricing_description{
+		font-size: 14px;
+	}
+	.pricing_package{
+		font-size: 14px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 14px !important;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1500px) and (min-width: 1441px){
+	html{
+		background-position: 0px -75px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 16px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 50px;
+		padding-top: 0px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 26px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 13px !important;
+	}
+	h1{
+		font-size: 28px;
+	}
+	h2{
+		font-size: 14px;
+	}
+	.hero_section{
+		height: 621px;
+		padding-top: 125px;
+	}
+	.log_in_kite{
+		font-size: 14px;
+	}
+	.log_in_kite img{
+		width: 19px;
+    	height: 13px;
+	}
+	.log_in_kite span{
+		padding: 10px 25px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.strategy{
+		font-size: 20px;
+	}
+	.entry_title, .exit_title{
+		font-size: 12px;
+	}
+	.zerodha_title{
+		font-size: 32px;
+	}
+	.zerodha_description{
+		font-size: 13px;
+	}
+	.zerodha_logo img{
+		width: 150px;
+	}
+	.zerodha_values p{
+		font-size: 12px;
+	}
+	.testimonials_top p{
+		font-size: 16px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 14px;
+	}
+	.ps_results img{
+		width: 1170px;
+	}
+	.video_section{
+		padding-top: 0px;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 90%;
+	}
+	.feature_row:nth-child(2){
+		width: 90%;
+		margin: 55px auto;
+	}
+	.feature_description{
+		width: 60%;
+	}
+	.feature_screenshot{
+		width: 50%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 30px;
+	}
+	.feature_title{
+		font-size: 20px;
+	}
+	.sub_feature{
+		font-size: 14px;
+	}
+	.pricing_title{
+		font-size: 18px;
+	}
+	.pricing_description{
+		font-size: 14px;
+	}
+	.pricing_package{
+		font-size: 14px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 14px !important;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1600px) and (min-width: 1501px){
+	html{
+		background-position: 0px -50px;
+	}
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+	.sub_feature{
+		font-size: 16px;
+	}
+	.home_logo{
+		padding: 0px 10px 10px 30px;
+	}
+	.home_header{
+		height: 60px;
+		padding-top: 7px;
+	}
+	.home_menu{
+		padding: 10px 40px 10px 20px;
+	}
+	.feature_title{
+		font-size: 26px;
+	}
+	.home_menu > li{
+		color: #5f6977;
+	}
+	.home_menu > li > a, .home_menu > li{
+		font-size: 14px !important;
+	}
+	h1{
+		font-size: 32px;
+	}
+	h2{
+		font-size: 16px;
+	}
+	.hero_section{
+		height: 721px;
+		padding-top: 150px;
+	}
+	.log_in_kite{
+		font-size: 15px;
+	}
+	.log_in_kite img{
+		width: 21px;
+    	height: 15px;
+	}
+	.log_in_kite span{
+		padding: 10px 25px !important;
+	}
+	.log_in_kite span:first-child{
+		padding: 10px !important;
+	}
+	.strategy{
+		font-size: 20px;
+	}
+	.entry_title, .exit_title{
+		font-size: 12px;
+	}
+	.zerodha_title{
+		font-size: 32px;
+	}
+	.zerodha_description{
+		font-size: 15px;
+	}
+	.zerodha_logo img{
+		width: 180px;
+	}
+	.zerodha_values p{
+		font-size: 13px;
+	}
+	.testimonials_top p{
+		font-size: 16px;
+	}
+	.testimonials_name, .testimonials_designation{
+		font-size: 14px;
+	}
+	.ps_results img{
+		width: 1170px;
+	}
+	.video_section{
+		padding-top: 0px;
+	}
+	.feature_row:first-child, .feature_row:last-child{
+		width: 90%;
+	}
+	.feature_row:nth-child(2){
+		width: 90%;
+		margin: 55px auto;
+	}
+	.feature_description{
+		width: 50%;
+	}
+	.feature_screenshot{
+		width: 50%;
+	}
+	.home-features-one, .home-features-two, .home-features-three{
+		width: 100%;
+	}
+	.feature_row:nth-child(2) .feature_description{
+		margin-left: 30px;
+	}
+	.feature_title{
+		font-size: 20px;
+	}
+	.sub_feature{
+		font-size: 14px;
+	}
+	.pricing_title{
+		font-size: 18px;
+	}
+	.pricing_description{
+		font-size: 14px;
+	}
+	.pricing_package{
+		font-size: 14px;
+	}
+	.white_cta{
+		margin-top: 55px !important;
+		padding: 12px 26px !important;
+		font-size: 15px !important;
+	}
+	/*.footer_home{
+		padding: 10px 0px 10px 0px;
+	}
+	.footer_home a{
+		font-size: 14px;
+	}*/
+}
+@media screen and (max-width: 1920px) and (min-width: 1601px){
+	.main{
+		width: 100%;
+		max-width: 100%;
+	}
+}
+/*Changing colors for non-retina*/
+@media only screen and (max-resolution: 170dpi){
+
+}
+/*Changing colors for non-retina ends*/
+
+/*Mobile responsiveness*/
+@media only screen and (max-width: 699px){
+	.menu_mobile_hide{
+    	display: none !important;
+  	}
+  	.menu_mobile_show{
+    	display: block !important;
+  	}
+  	html, .main, .sec_main{
+    	min-width: 100% !important;
+    	max-width: 100% !important;
+    	width: 100% !important;
+  	}
+	html{
+		background-size: 100% 110%;
+	}
+	h1{
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
+	h2{
+		font-size: 16px;
+	}
+	.feature_row{
+		display: block;
+		padding: 0px 30px !important;
+	}
+	.feature_screenshot, .feature_description{
+		width: 100%;
+		margin-top: 50px;
+		margin-left: 0px !important;
+		margin-right: 0px !important;
+	}
+	.feature_title, .feature_description h2, .sub_feature{
+		text-align: center;
+		font-size: 14px;
+	}
+	.feature_title{
+		font-size: 18px;
+	}
+	.feature_description h2{
+		font-size: 16px;
+		margin-bottom: 20px;
+	}
+	.home-features-one{
+		max-width: 400px;
+	}
+	.home-features-two{
+		max-width: 554px;
+	}
+	.home-features-three{
+		max-width: 500px;
+	}
+	.zerodha_logo img{
+		width: 170px;
+	}
+	.zerodha_description{
+		font-size: 14px;
+	}
+	.zerodha_values{
+		padding: 10px;
+	}
+	.features_section_body{
+		padding-top: 0px;
+	}
+	.feature_row:first-child, .feature_row:last-child, .feature_row:nth-child(2){
+		width: 100%;
+	}
+	.feature_title, .feature_description h2{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	.hero_section{
+		height: 421px;
+		padding-top: 100px;
+	}
+	.home-icon-five{
+		height: 25px;
+		width: auto;
+	}
+	.video{
+		width: 90%;
+    	height: 200px;
+	}
+	.home_logo{
+		width: 100%;
+	}
+	.home_logo img{
+		height: 20px;
+	}
+	#sub{
+		font-size: 10px;
+	}
+	.press_media{
+		margin-bottom: 30px;
+		margin-top: 0px;
+	}
+	.press_media div{
+		display: block;
+		width: 100%;
+		padding: 10px 0px;
+		margin-bottom: 0px;
+	}
+	.press_media a{
+		height: 60px;
+		max-width: 60%;
+		margin-bottom: 10%;
+	}
+	#deccan{
+		height: 50px;
+	}
+}
+@media screen and (max-width: 1024px) and (min-width: 700px){
+	.menu_mobile_hide{
+    	display: none !important;
+  	}
+  	.menu_mobile_show{
+    	display: block !important;
+  	}
+  	html, .main, .sec_main{
+    	min-width: 100% !important;
+    	max-width: 100% !important;
+    	width: 100% !important;
+  	}
+	html{
+		background-size: 100% 80%;
+	}
+	h1{
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
+	h2{
+		font-size: 12px;
+	}
+	.feature_row{
+		display: block;
+		padding: 0px 30px !important;
+	}
+	.feature_screenshot, .feature_description{
+		width: 100%;
+		margin-top: 50px;
+		margin-left: 0px !important;
+		margin-right: 0px !important;
+	}
+	.feature_title, .feature_description h2, .sub_feature{
+		text-align: center;
+		font-size: 14px;
+	}
+	.feature_title{
+		font-size: 18px;
+	}
+	.feature_description h2{
+		font-size: 16px;
+		margin-bottom: 20px;
+	}
+	.home-features-one{
+		max-width: 400px;
+	}
+	.home-features-two{
+		max-width: 554px;
+	}
+	.home-features-three{
+		max-width: 500px;
+	}
+	.zerodha_logo img{
+		width: 170px;
+	}
+	.zerodha_description{
+		font-size: 14px;
+	}
+	.zerodha_values{
+		padding: 10px;
+	}
+	.features_section_body{
+		padding-top: 0px;
+	}
+	.feature_row:first-child, .feature_row:last-child, .feature_row:nth-child(2){
+		width: 100%;
+	}
+	.feature_title, .feature_description h2{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	.hero_section{
+		height: 521px;
+		padding-top: 100px;
+	}
+	.home-icon-five{
+		height: 25px;
+		width: auto;
+	}
+	.press_media div{
+		width: 100%;
+	}
+	.press_media a{
+		height: 60px;
+	}
+	#deccan{
+		height: 50px;
+	}
+	.subscription{
+		width: 366px;
+	}
+	.free_trial{
+		width: 336px;
+	}
+}

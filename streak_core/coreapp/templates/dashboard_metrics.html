@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Dashboard {% endblock %}
+
+{% block page_css1 %} <link href="/static/css/dashboard_metrics.css?v=2.0" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/dashboard_metrics.js?v=2.0"></script> {% endblock %}
+{% block page_js2 %} <script src="/static/js/jquery-ui.min.js"></script> {% endblock %}
+{% block page_js4 %} <script src="/static/js/knockout.js"></script> {% endblock %}
+{% block page_js3 %}<script src="/static/js/product_tour_dashboard.js?v=2.0"></script>{% endblock %} -->
+{% block body %}
+{% csrf_token %}
+<div class="dashboard_metrics">
+	<!-- <div class="sidebar"></div> -->
+	<div class="greeting_section">
+		<div class="greeting_subsection">
+			<script type="text/javascript">
+				var u_name="{{request.session.user_name}}";
+			</script>
+			<div id="greeting_top">
+				<p class="greeting greeting_gm_4am"><img src="/static/imgs/new/fancy/sun.svg">Good Morning</p>
+				<!-- <p class="greeting greeting_ga_12pm"><img src="/static/imgs/new/fancy/sun.svg">Good Afternoon Jaya</p>
+				<p class="greeting greeting_ge_4pm"><img src="/static/imgs/new/fancy/sun.svg">Good Evening Jaya</p>
+				<p class="greeting greeting_ge_6pm"><img src="/static/imgs/new/fancy/moon.svg">Good Evening Jaya</p> -->
+			</div>
+			<div class="indices">
+				<div class="token__CCCAGG_BTC_--_USD">
+					<p class="index_value ltp_d"><span class="sub_ltp_d">0.0</span><span class="index_value_change sub_ltp_c">&nbsp;0.0 %</span></p>
+					<p class="index_name">Bitcoin (BTC)</p>
+				</div>
+				<div class="token__CCCAGG_ETH_--_USD">
+					<p class="index_value ltp_d"><span class="sub_ltp_d">0.0</span><span class="index_value_change sub_ltp_c">&nbsp;0.0 %</span></p>
+					<p class="index_name">Ethereum (ETH)</p>
+				</div>
+			</div>
+		</div>
+		<div class="funding_subsection">
+			<p class="funding_header"><img src="/static/imgs/new/equity.svg">Equity</p>
+			<div class="funding_subsection_content">
+			<div class="funds_main">
+				<p class="funds_value" id="available_funds">0</p>
+				<p class="funds_label">Available balance</p>
+			</div>
+			<!-- <div class="divider"></div> -->
+			<div class="funds_details">
+				<div>
+					<p class="funds_value" id="margin_funds">0</p>
+					<p class="funds_label">Margins used</p>
+				</div>
+				<div>
+					<p class="funds_value" id="account_funds">0</p>
+					<p class="funds_label">Account value</p>
+				</div>
+			</div>
+			</div>
+		</div>
+		<div class="funding_subsection">
+			<p class="funding_header"><img src="/static/imgs/new/commodity.svg">Commodity</p>
+			<div class="funding_subsection_content">
+			<div class="funds_main">
+				<p class="funds_value" id="commodity_available_funds">0</p>
+				<p class="funds_label">Available balance</p>
+			</div>
+			<!-- <div class="divider"></div> -->
+			<div class="funds_details">
+				<div>
+					<p class="funds_value" id="commodity_margin_funds">0</p>
+					<p class="funds_label">Margins used</p>
+				</div>
+				<div>
+					<p class="funds_value" id="commodity_account_funds">0</p>
+					<p class="funds_label">Account value</p>
+				</div>
+			</div>
+			</div>
+		</div>
+		<div class="whats_new_subsection">
+			<div>
+				<!-- <p class="wn_heading"><img src="/static/imgs/new/fancy/whats_new.svg">What's new</p> -->
+				<!-- <p class="wn_subheading"><a href="https://help.streak.tech/notifications/#notifications" target="_blank">Enhanced notifications</a><br>Notifications section is now grouped together based on algos</p> -->
+				<!-- <p class="wn_subheading"><b>Renko</b> exclusively for Ultimate plan</p> -->
+				<a href="{{link_to}}" target="_blank"><img src="{{img_url}}"></a>
+			</div>
+		</div>
+	</div>
+	<div class="algos_section">
+		<div>
+			<div class="algos_container">
+				<div class="algos_header">
+					<p>Sample strategies</p>
+					<span class="loading-dots-container" id="update_top_performance1">
+					<div class="loading-dots" id="samples_loader">
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+					</div>
+				</span>
+				</div>
+				<div class="algos_table" id="samples_table">
+					<div class="algos_title_row">
+						<div class="row_algo_title"><p>Strategies</p></div>
+						<div class="row_instrument_title"><p>Instrument</p></div>
+						<div class="row_pnl_title"><p>P&L</p></div>
+						<div class="row_action_title"><p></p></div>
+					</div>
+					<div class="algos_desc_row">
+						<div class="row_algo_desc">
+							<div class="algo_avatar algo_avatar1"><p>B</p></div>
+							<p>Bearish supertrend</p>
+						</div>
+						<div class="row_instrument_desc"><p>CANBK<span>NSE</span></p></div>
+						<div class="row_pnl_desc"><p><span><img src="/static/imgs/icon-arrow-up-green.png"></span>198.98(+534%)</p></div>
+						<div class="row_action_desc"><p><img src="/static/imgs/new/menu_dots.svg"></p></div>
+					</div>
+					<div class="algos_desc_row">
+						<div class="row_algo_desc">
+							<div class="algo_avatar algo_avatar2"><p>V</p></div>
+							<p>Volume based algo</p>
+						</div>
+						<div class="row_instrument_desc"><p>CANBK<span>NSE</span></p></div>
+						<div class="row_pnl_desc"><p><span><img src="/static/imgs/icon-arrow-up-green.png"></span>198.98(+534%)</p></div>
+						<div class="row_action_desc"><p><img src="/static/imgs/new/menu_dots.svg"></p></div>
+					</div>
+					<div class="algos_desc_row">
+						<div class="row_algo_desc">
+							<div class="algo_avatar algo_avatar3"><p>M</p></div>
+							<p>Moving average bullish</p>
+						</div>
+						<div class="row_instrument_desc"><p>CANBK<span>NSE</span></p></div>
+						<div class="row_pnl_desc"><p><span><img src="/static/imgs/icon-arrow-up-green.png"></span>198.98(+534%)</p></div>
+						<div class="row_action_desc"><p><img src="/static/imgs/new/menu_dots.svg"></p></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div class="algos_container">
+				<div class="algos_header">
+					<p>My top performers</p>
+					<span class="loading-dots-container" id="update_top_performance1">
+					<div class="loading-dots" id="top_performers_loader">
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+					</div>
+				</span>
+				</div>
+				<div class="algos_table" id="top_performers_table">
+					<div class="algos_title_row">
+						<div class="row_algo_title"><p>Strategies</p></div>
+						<div class="row_instrument_title"><p>Instrument</p></div>
+						<div class="row_pnl_title"><p>P&L</p></div>
+						<div class="row_action_title"><p></p></div>
+					</div>
+					<div class="algos_desc_row">
+						<div class="row_algo_desc">
+							<div class="algo_avatar algo_avatar4"><p>E</p></div>
+							<p>Exponential moving average</p>
+						</div>
+						<div class="row_instrument_desc"><p>CANBK<span>NSE</span></p></div>
+						<div class="row_pnl_desc"><p><span><img src="/static/imgs/icon-arrow-up-green.png"></span>198.98(+534%)</p></div>
+						<div class="row_action_desc">
+							<p><img src="/static/imgs/new/menu_dots.svg"></p>
+							<!-- <div class="action_buttons">
+                            <button class="algo_details"><img src="/static/imgs/new/algo_details.svg">Algo details</button>
+                            <div><button class="icon-create-similar"><img src="/static/imgs/new/copy.svg">Copy</button></div>
+                            <div><button class="icon-dashboard-backtest"><img src="/static/imgs/new/b.svg">Backtests</button></div>
+                        	</div> -->
+						</div>
+					</div>
+					<div class="algos_desc_row">
+						<div class="row_algo_desc">
+							<div class="algo_avatar algo_avatar5"><p>R</p></div>
+							<p>RSI overbought</p>
+						</div>
+						<div class="row_instrument_desc"><p>CANBK<span>NSE</span></p></div>
+						<div class="row_pnl_desc"><p><span><img src="/static/imgs/icon-arrow-up-green.png"></span>198.98(+534%)</p></div>
+						<div class="row_action_desc"><p><img src="/static/imgs/new/menu_dots.svg"></p></div>
+					</div>
+					<div class="algos_desc_row">
+						<div class="row_algo_desc">
+							<div class="algo_avatar algo_avatar6"><p>S</p></div>
+							<p>Supertren bullish</p>
+						</div>
+						<div class="row_instrument_desc"><p>CANBK<span>NSE</span></p></div>
+						<div class="row_pnl_desc"><p><span><img src="/static/imgs/icon-arrow-up-green.png"></span>198.98(+534%)</p></div>
+						<div class="row_action_desc"><p><img src="/static/imgs/new/menu_dots.svg"></p></div>
+					</div>
+				</div>
+				<!-- <div class="before_top_performers">
+					<img src="/static/imgs/new/empty/algos-empty.svg">
+                    <p class="backtest_row_error_message_display">No top performers</p>
+                    <button>Create algo</button>
+				</div>
+				<div class="loading_sample_algos">
+                    <p>Loading...</p>
+				</div>
+				<div class="loading_top_performers">
+                    <p>Loading...</p>
+				</div> -->
+			</div>
+		</div>
+	</div>
+	<div class="usage_section">
+		<div class="usage_header">
+			<p>Usage</p>
+			<span class="loading-dots-container" id="usage_header_loader">
+					<div class="loading-dots">
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+					</div>
+				</span>
+		</div>
+		<div class="usage_holder">
+		<div class="usage_container">
+			<div class="usage_details_heading">
+				<p><img src="/static/imgs/new/algo_details.svg">Strategies</p>
+			</div>
+			<div>
+			<div class="usage_details">
+				<div>
+					<p class="usage_value" id="algo_created">0</p>
+					<p class="usage_label">Created</p>
+				</div>
+			</div>
+			<div class="usage_details">
+				<div>
+					<p class="usage_value" id="algo_backtested">0</p>
+					<p class="usage_label">Backtested</p>
+				</div>
+			</div>
+			<div class="usage_details">
+				<div>
+					<p class="usage_value" id="algo_deployed">0</p>
+					<p class="usage_label">Deployed</p>
+				</div>
+			</div>
+			</div>
+		</div>
+		<div class="divider" style="margin-left:30px !important; height: 100px !important;"></div>
+		<div class="usage_container">
+			<div class="usage_details_heading">
+				<p><img src="/static/imgs/new/notification.svg">Alerts</p>
+			</div>
+			<div>
+			<div class="usage_details">
+				<div>
+					<p class="usage_value" id="notif_sent">0</p>
+					<p class="usage_label">Sent</p>
+				</div>
+			</div>
+			<div class="usage_details">
+				<div>
+					<p class="usage_value" id="notif_action_taken">0</p>
+					<p class="usage_label">Action taken</p>
+				</div>
+			</div>
+			<div class="usage_details">
+				<div>
+					<p class="usage_value" id="notif_expired">0</p>
+					<p class="usage_label">Expired / Cancelled</p>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="top">
+	<div class="metrics">
+		<div class="created">
+			<h1 class="metrics_heading">Strategies<span><img src="/static/imgs/algo_orange.svg"></span></h1>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_created">Created<span>0</span></h2>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_backtested">Backtested<span>0</span></h2>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_deployed">Deployed<span>0</span></h2>
+		</div>
+		<div class="backtested">
+			<h1 class="metrics_heading">Alerts<span><img src="/static/imgs/alert.svg"></span></span></h1>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_sent">Sent<span>0</span></h2>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_confirmed">Confirmed<span>0</span></h2>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_exp_can">Expired or Cancelled<span>0</span></h2>
+		</div>
+		<div class="deployed">
+			<h1 class="metrics_heading">Funds<span><img src="/static/imgs/rupee.svg"></span></span></h1>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_available_balance">Margin available<span>0</span></h2>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_margins_used">Margins used<span>0</span></h2>
+			<h2 class="metrics_sub_heading" id="metrics_sub_heading_account_value">Account value<span>0</span></h2>
+		</div>
+	</div>
+	<div class="user_message">
+		<!-- <h2>Hello {{request.session.user_name|title|truncatewords:50}},</h2> -->
+		<!-- <p>Welcome to Streak<br>A platform built for futuristic traders</p> -->
+		<!-- <p>“{{welcome_phrase.quote}}” <br><span class="quote_author">– {{welcome_phrase.author}}</span></p> -->
+		<div class="whats_new_section">
+			<!-- <p>What's new: <span><a href="https://www.youtube.com/watch?v=fY6UsssNXIU&index=1&list=PLYiYmYGb65i58tAeOaHvA9nQ7IUfkBInT" target="_blank" onclick="ga('send', {hitType: 'event', eventCategory: 'Whats new', eventAction: 'Video Playlist', eventLabel: 'Dashboard page'});">Video Playlist</a></span></p> -->
+			<p>What's new</p>
+			<!-- <h2>Hello {{request.session.user_name|title|truncatewords:50}},</h2> -->
+			<p><span class="whatsnew_heading">Introducing currency futures</span><br><br><span class="whatsnew_text"></span><span class="whatsnew_text">We are glad to announce that we have introduced currency futures on Streak platform.You can now create, backtest, and deploy algos on currencies, live in the market.</span></p>
+		</div>
+	</div>
+	</div>
+	<div class="bottom">
+		<div class="dm_left" id='sample_algos_parent'>
+			<h1>Sample Strategies
+				<span class="loading-dots-container" id="update_top_performance1">
+					<div class="loading-dots">
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+					</div>
+				</span>
+			</h1>
+			<div class="sample_algos top_performers_empty">
+				<div class="algo">
+					<h2>Loading...</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div>
+			<div class="sample_algos top_performers_empty">
+				<div class="algo">
+					<h2>Loading...</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div>
+			<div class="sample_algos top_performers_empty">
+				<div class="algo">
+					<h2>Loading...</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="dm_right" id='top_performers_algos_parent'>
+			<h1>My Top Performers
+				<span class="loading-dots-container" id="update_top_performance2">
+					<div class="loading-dots">
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+  						<div class="loading-dots--dot"></div>
+					</div>
+				</span>
+			</h1>
+			<!-- <div class="top_performers">
+				<div class="algo">
+					<h2>Golden crossover</h2>
+					// <h2 class="backtest_pnl">Backtested P&L <span class="profit">+12,500 (+10%)</span></h2>
+					<p class="algo_entry"><span>Entry:</span><br>Buy 50 stocks of CANBK when 20 minute SMA is higher than 40 minute SMA.</p>
+					<p class="algo_exit"><span>Exit:</span><br>Sell 50 stocks of CANBK at a SL of 5% or TP of 10%.</p>
+					<p class="algo_interval"><span>Interval:</span><br>1 minute</p>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">+12,500 (+10%)</span></h2>
+					<div class="result_chart">
+						<canvas id="sample_chartContainer_new"></canvas>
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div>
+			<div class="top_performers">
+				<div class="algo">
+					<h2>Golden crossover</h2>
+					//<h2 class="backtest_pnl">Backtested P&L <span class="profit">+12,500 (+10%)</span></h2>
+					<p class="algo_entry"><span>Entry:</span><br>Buy 50 stocks of CANBK when 20 minute SMA is higher than 40 minute SMA.</p>
+					<p class="algo_exit"><span>Exit:</span><br>Sell 50 stocks of CANBK at a SL of 5% or TP of 10%.</p>
+					<p class="algo_interval"><span>Interval:</span><br>1 minute</p>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">+12,500 (+10%)</span></h2>
+					<div class="result_chart">
+						<canvas id="sample_chartContainer_new"></canvas>
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div>
+			<div class="top_performers">
+				<div class="algo">
+					<h2>Golden crossover</h2>
+					// <h2 class="backtest_pnl">Backtested P&L <span class="profit">+12,500 (+10%)</span></h2>
+					<p class="algo_entry"><span>Entry:</span><br>Buy 50 stocks of CANBK when 20 minute SMA is higher than 40 minute SMA.</p>
+					<p class="algo_exit"><span>Exit:</span><br>Sell 50 stocks of CANBK at a SL of 5% or TP of 10%.</p>
+					<p class="algo_interval"><span>Interval:</span><br>1 minute</p>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">+12,500 (+10%)</span></h2>
+					<div class="result_chart">
+						<canvas id="sample_chartContainer_new"></canvas>
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div> -->
+			<div class="top_performers top_performers_empty">
+				<div class="algo">
+					<h2>Loading...</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">Results&nbsp;<img src="/static/imgs/icon-forward.png"></button>
+					</div>
+				</div>
+			</div>
+			<div class="top_performers top_performers_empty">
+				<div class="algo">
+					<h2>Loading...</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">Results&nbsp;<img src="/static/imgs/icon-forward.png"></button>
+					</div>
+				</div>
+			</div>
+			<div class="top_performers top_performers_empty">
+				<div class="algo">
+					<h2>Loading...</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">Results&nbsp;<img src="/static/imgs/icon-forward.png"></button>
+					</div>
+				</div>
+				<!--<div class="algo" style="width:100%">
+					<h2 style="padding-top: 0px;height: 0px;"></h2>
+					<div class="backtest_row_loader">
+						<div id="myBtProgress3" class="myBtProgress">
+							<div id="myBtBar"></div>
+							<h2 style="text-align: center;border-top: none;">Loading ...</h2>
+						</div>
+					</div>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div> -->
+			</div>
+			<!-- <div class="top_performers top_performers_empty">
+				<div class="algo">
+					<h2>No top performer</h2>
+				</div>
+				<div class="algo_result">
+					<h2 class="backtest_pnl">Backtested P&L <span class="profit">N/A (N/A)</span></h2>
+					<div class="result_chart">
+					</div>
+					<div class="algo_cta">
+						<button class="try">GO</button>
+					</div>
+				</div>
+			</div> -->
+		</div>
+	</div>
+	<div class="dashboard_disclaimer">
+		<p>Disclaimer: Backtesting results are hypothetical and are simulated on historical data and the performance results have certain inherent limitations. Past performance is not an indicator of future results.</p>
+	</div>
+</div>
+<div class="algo_details_popup">
+  <div class="card animated pulse">
+    <div class="close_algo_details_popup"><img onclick="$('.algo_details_popup').fadeOut();$('body').removeClass('body_scroll');" src="/static/imgs/new/close.svg"></div>
+    <div class="algo_details_window" id="">
+        <div class="deploy_summary_heading"><p>AlgoTest</p></div>
+        <div class="algo_summary"><p class="entry_heading"><img src="/static/imgs/new/entry.svg"><span>Entry</span></p> <p class="dashboard_condition_summary"> BUY 10 shares when Opening Range(Open,min) lower than Prev N(Low,-1,day) at 1 minute interval using candlestick chart.<br>Enter trade between 00:00 to 23:59</p> <p class="exit_heading"><img src="/static/imgs/new/exit.svg"><span>Exit</span></p> <p class="dashboard_condition_summary"> SELL 10 shares at Stop loss of 1% or Take profit of 1% at 1 minute interval using candlestick chart.<br></p></div>
+      </div>
+  </div>
+</div>
+{% if request.session.first_time_dashboard %}
+  <script type="text/javascript">
+    var first_time_dashboard = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_dashboard');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_dashboard = "false";
+  </script>
+{% endif %}
+{% csrf_token %}
+{% endblock %}
+{% block page_js6 %}<script type="text/javascript" src="/static/js/chart.bundle.min.js"></script><script type="text/javascript">
+ $(document).ready(function() {
+});
+	</script> 
+{% endblock %}

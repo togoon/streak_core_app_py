@@ -1,0 +1,394 @@
+/*#menu_item_alerts{
+  border-bottom: 1px solid #FFFFFF;
+  border-radius: 0px;
+}
+#menu_item_alerts>a{
+}
+#menu_item_alerts:hover{
+  border-radius: 2px;
+}*/
+.home_menu, .footer_home{
+  display: none !important;
+}
+html, body, .main{
+  max-width: 100%;
+  /*min-height: 100%;*/
+  max-height: 100%;
+  min-width: 100%;
+  background-color: #FFFFFF;
+}
+.header{
+  background-color: #FFFFFF;
+  border-bottom: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.body{
+  background-color: #FFFFFF;
+  /*height: 100vh;*/
+}
+.mobile_notification_holder{
+  /*height: 100%;*/
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  margin-top: 50px;
+  /*box-shadow: 0 1px 35px rgba(0, 0, 0, 0.1);*/
+}
+.mobile_notification_holder #notifications{
+  padding: 0px !important;
+  margin: 0px !important;
+  left: 0px;
+  position: relative;
+}
+#notification_details{
+  max-height: 100%;
+  min-height: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  margin: 0px !important;
+  right: 0px;
+  left: 0px;
+  overflow: initial;
+  position: relative;
+}
+.notif_first_line{
+  min-width: 110px;
+  width: 30% !important;
+}
+.notif_second_line, .notif_second_line_cancel_order{
+  width: 70% !important;
+}
+#cancel_order_notif_confirm{
+  float: right;
+  margin-right: 0%;
+  margin-left: 0%;
+}
+.notif_window{
+  margin: 10px auto 20px auto;
+}
+.empty_alerts{
+  height: 100%;
+  width: 100%;
+  padding-top: 130px;
+  display: block;
+}
+/*.empty_alerts img{
+  width: 53px;
+  height: 69px;
+  margin: auto;
+  display: block;
+}
+.empty_alerts img{
+  width: 70px;
+  margin: auto;
+  display: block;
+}
+.empty_alerts p{
+  width: 100%;
+  margin: 0px;
+  padding-top: 30px;
+  text-align: center;
+  font-family: Open Sans,sans-serif;
+  line-height: 2.5;
+  letter-spacing: 0.25px;
+  font-weight: 400;
+  font-size: 20px;
+  color: #bfc7d1;
+}*/
+.buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+    padding: 5px 0px !important;
+    font-size: 10px !important;
+    margin-left: 5px !important;
+}
+.notif_desc{
+  font-size: 13px;
+}
+#notifications p{
+  /*width: 100% !important;*/
+  max-width: 100% !important;
+}
+@media only screen and (max-width: 699px){
+  .header{
+    padding: 0px 15px 0px 15px;
+  }
+  .user_icon>p{
+    display: none !important;
+  }
+  .user_icon ul, .menu_icon ul{
+    left: -15px;
+  }
+  #notifications{
+    position: relative;
+    right: 0px;
+    margin-left: 0px;
+    width: 100%;
+    height: 100%;
+    padding: 0px !important;
+    padding-top: 10px !important;
+  }
+  li#notifications{
+    padding-top: 0px !important;
+  }
+  .notif_first_line{
+    width: 110px;
+  }
+  #notifications>a{
+    padding-top: 8px !important;
+    margin-right: 10px;
+  }
+  #notif_count{
+    margin-left: 10px !important;
+    margin-top: -38px !important;
+  }
+  #notifications p, #mobile_menu_icon p {
+       display: flex; 
+  }
+  .notif_tag{
+    display: table !important;
+      margin-bottom: 10px !important;
+      font-size: 9px;
+  }
+  .notif_second_line, .notif_second_line_cancel_order{
+    display: block !important;
+    width: 75% !important;
+  }
+  .notif_second_line_bottom{
+    padding: 5px 0px 0px 5px;
+  }
+  #cancel_order_notif_confirm{
+    font-size: 10px;
+      padding: 4px 18px;
+  }
+  .notif_first_line{
+    width: 25% !important;
+    /*display: flex !important;*/
+  }
+  #user_icon p, #more p, #notifications p, #mobile_menu_icon p{
+    white-space: pre-wrap;
+  }
+  .notif_time_stamp{
+    font-size: 10px;
+      padding: 3px 0px;
+      margin-bottom: 5px !important;
+  }
+  .notif_algo_name{
+    font-size: 10px;
+    margin-top: 10px !important;
+  }
+  .notif_window{
+    max-width: 100%;
+    margin: 10px;
+  }
+  .notif_header p{
+    display: block !important;
+  }
+  .notif_body{
+    padding: 15px 5px 35px 5px;
+  }
+  .radio_options p{
+    margin-right: 5px !important;
+  }
+  .radio_outer{
+    margin: 1px 1px 0px 0px !important;
+  }
+  .notif_options>div:first-child{
+    margin-right: 2%;
+  }
+  #buy, #sell, #cancel{
+    padding: 5px 0px;
+  }
+  .notifications li:hover{
+    background-color: #FFFFFF;
+  }
+  #notif_count{
+    border-radius: 50%;
+      padding: 5px;
+      margin: 0px;
+      display: block;
+      background-color: #ff7800;
+      color: #FFFFFF;
+      height: 13px;
+      width: 13px;
+      font-size: 11px;
+      text-align: center;
+      position: absolute;
+  }
+  #mobile_menu_icon>p, #counter{
+    /*display: none !important;*/
+  }
+  .menu{
+    width: auto;
+  }
+  .notifications img{
+    /*margin-top: 7px;*/
+  }
+  #notifications>span{
+    margin-left: -10px;
+    margin-top: -3px;
+  }
+  .buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+    padding: 3px 0px !important;
+    font-size: 9px !important;
+    margin-left: 5px !important;
+  }
+  .notif_desc{
+    font-size: 12px;
+  }
+}
+@media only screen and (max-width: 1024px) and (min-width: 700px){
+   .user_icon>p{
+    display: none !important;
+  }
+  #notifications{
+    position: relative;
+    right: 0px;
+    margin-left: 0px;
+    width: 100%;
+    height: 100%;
+    padding: 0px !important;
+    padding-top: 10px !important;
+  }
+  .menu:first-child{
+    /*float: left;*/
+  }
+  li#notifications{
+    padding-top: 0px !important;
+  }
+  .notif_first_line{
+    width: 110px;
+  }
+  #notifications>a{
+    padding-top: 8px !important;
+    margin-right: 10px;
+  }
+  #notif_count{
+    margin-left: 10px !important;
+    margin-top: -38px !important;
+  }
+  #notifications p, #mobile_menu_icon p {
+    display: flex; 
+  }
+  .notif_tag{
+    display: table !important;
+      margin-bottom: 10px !important;
+      font-size: 9px;
+  }
+  .notif_second_line, .notif_second_line_cancel_order{
+    display: block !important;
+    width: 75% !important;
+  }
+  .notif_second_line_bottom{
+    padding: 5px 0px 0px 5px;
+  }
+  #cancel_order_notif_confirm{
+    font-size: 10px;
+      padding: 4px 18px;
+  }
+  .notif_first_line{
+    width: 25% !important;
+    /*display: flex !important;*/
+  }
+  #user_icon p, #more p, #notifications p, #mobile_menu_icon p{
+    white-space: pre-wrap;
+  }
+  .notif_time_stamp{
+    font-size: 10px;
+      padding: 3px 0px;
+      margin-bottom: 5px !important;
+  }
+  .notif_algo_name{
+    /*font-size: 10px;*/
+    /*margin-top: 10px !important;*/
+  }
+  .notif_window{
+/*    max-width: 100%;
+    margin: 10px;*/
+  }
+  .notif_header p{
+    display: block !important;
+  }
+  .notif_body{
+    padding: 15px 5px 35px 5px;
+  }
+  .radio_options p{
+    margin-right: 5px !important;
+  }
+  .radio_outer{
+    margin: 1px 1px 0px 0px !important;
+  }
+  .notif_options>div:first-child{
+    margin-right: 2%;
+  }
+  #buy, #sell, #cancel{
+    padding: 5px 0px;
+  }
+  .notifications li:hover{
+    background-color: #FFFFFF;
+  }
+  #notif_count{
+    border-radius: 50%;
+      padding: 5px;
+      margin: 0px;
+      display: block;
+      background-color: #ff7800;
+      color: #FFFFFF;
+      height: 13px;
+      width: 13px;
+      font-size: 11px;
+      text-align: center;
+      position: absolute;
+  }
+  #mobile_menu_icon>p, #counter{
+    /*display: none !important;*/
+  }
+  .menu{
+    width: auto;
+  }
+  .notifications img{
+    /*margin-top: 7px;*/
+  }
+  #notifications>span{
+    margin-left: -10px;
+    margin-top: -3px;
+  }
+  /*.buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+    padding: 3px 0px !important;
+    font-size: 9px !important;
+    margin-left: 5px !important;
+  }
+  .notif_desc{
+    font-size: 12px;
+  }*/
+}
+@media screen and (max-width: 1100px) and (min-width: 1025px){
+  /*.notif_algo_name {
+    font-size: 10px;
+  }
+  .notif_desc{
+    font-size: 12px;
+  }
+  .buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+    font-size: 9px !important;
+  }*/
+}
+@media screen and (max-width: 1280px) and (min-width: 1101px){
+  /*.notif_algo_name {
+    font-size: 10px;
+  }
+  .notif_desc{
+    font-size: 12px;
+  }
+  .buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+    font-size: 9px !important;
+  }*/
+}
+@media screen and (max-width: 1366px) and (min-width: 1281px){
+  /*.notif_algo_name {
+    font-size: 12px;
+  }*/
+}
+@media screen and (max-width: 1440px) and (min-width: 1367px){
+  /*.notif_algo_name {
+    font-size: 10px;
+  }*/
+}

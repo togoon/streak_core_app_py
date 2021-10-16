@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Help, Methodology and FAQ {% endblock %}
+{% block page_css1 %} <link href="/static/css/help.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/help.js"></script> {% endblock %}
+
+{% block body %}
+<div class="help_outer">
+	<div class="help_page">
+		<div class="help_page_options_menu" style="display: none;">
+			<!-- <div class="help_page_menu_header">
+				<p>My Account</p>
+			</div> -->
+			<div class="help_page_menu_body">
+				<p id="help_option" class="help_page_options_menu_selected">Help</p>
+				<p id="faq_option">FAQ</p>
+				<p id="methodology_option">Methodology</p>
+			</div>
+		</div>
+		<div class="help_page_body" style="margin: auto !important; left: auto;border:none;width:100%;">
+			<div id="help" class="help">
+				<div class="help_body">
+					Help content goes here
+				</div>
+			</div>
+			<div id="faq" class="faq" style="display: none;">
+				<div class="faq_body">
+					FAQ content goes here
+				</div>
+			</div>
+			<div id="methodology" class="methodology" style="display: none;">
+				<div class="methodology_body" style="border:none;">
+					<h1>METHODOLOGY</h1>
+
+					<p class="warning">Disclaimer: Backtesting performance is not necessarily indicative of future results.</p>
+
+					<p>Backtesting results are hypothetical and are simulated on historical data. The performance results have certain inherent limitations. Unlike the results shown in an actual performance record, these results do not represent actual trading. These trades have not actually been executed and the results may have been under-or over-compensated for the impact especially when we have lack of liquidity in the market or news driven events or due to any other conditions. Simulated or hypothetical trading algos in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profits or losses similar to those backtested.</p>
+					<p>In addition, hypothetical trading does not involve financial risk, and no hypothetical trading record can completely account for the impact of financial risk in actual trading. For example, the ability to withstand losses or to adhere to a particular trading algo in spite of trading losses are material points which can also adversely affect actual trading results. There are numerous other factors related to the markets in general or to the implementation of any specific algo trade  which cannot be fully accounted for in the preparation of hypothetical performance results and all of which can adversely affect actual trading results.</p>
+
+					<!-- <h1>ASSUMPTIONS AND METHODS USED WHILE CALCULATING RESULTS</h1>
+
+					<p><span class="bold">Candle Intervals</span> define the time frame of each candle interval. We calculate the backtest result for any trading strategy on our site, hypothetical results are based on the assumption that you invested the starting amount shown on the strategy’s performance chart. In some cases, nominal dollar amounts on the equity chart have been re-scaled downward to make current go-forward trading sizes more manageable. In these cases, it may not have been possible to trade the strategy historically at the equity levels shown on the chart, and a higher minimum capital was required in the past.</p>
+
+					<p><span class="bold">All fees are included</span> When calculating cumulative returns, we try to estimate and include all the fees a typical trader incurs when AutoTrading using AutoTrade technology. This includes the subscription cost of the strategy, plus any per-trade AutoTrade fees, plus estimated broker commissions if any. Autotrade fees are $99/month. Subscription fees are set by the system manager, published on each system summary page, and range from $20-$200/month. Brokerage commissions are set by the individual brokers and subscribers may view performance based on the current available commission rates and structures under the ‘Statistics’ section of the System Page.</p>
+
+					<p><span class="bold">“Max Drawdown” Calculation Method</span> We calculate the Max Drawdown statistic as follows. Our computer software looks at the equity chart of the system in question and finds the largest percentage amount that the equity chart ever declines from a local “peak” to a subsequent point in time (thus this is formally called “Maximum Peak to Valley Drawdown.”) While this is useful information when evaluating trading systems, you should keep in mind that past performance does not guarantee future results. Therefore, future drawdowns may be larger than the historical maximum drawdowns you see here.</p>
+
+					<p><span class="bold">Profits are reinvested</span> We assume profits (when there are profits) are reinvested in the trading strategy.</p>
+
+					<h1>TRADING IS RISKY</h1>
+
+					<p>There is a substantial risk of loss in futures and forex trading. Online trading of stocks and options is extremely risky. Assume you will lose money. Don’t trade with money you cannot afford to lose.</p>
+ -->
+ 					<h1>ASSUMPTIONS AND METHODS USED WHEN CREATING ALGO</h1>
+ 					<h2>Creating an algo</h2>
+ 					<p>"Create" is a process to input entry and exit conditions involving technical indicators, stop loss percentage, take profit percentage, instrument, quantity of stocks etc and form a trading strategy, hereafter referred to as "trading algo" or "algo" or "algorithms".<br><br>
+ 					An "algo" on Streak is defined as a collection of conditions and input parameters entered by the user which determines the generation of a trade signal based on the stock movement.</p>
+ 					<h3>Entry</h3>
+ 					<p>Entry condition forms a logical point to generate an entry signal to take a position. Entry condition can comprise of one or more individual conditions which must be logically "true" to generate signal. An individual condition is created by comparing one value/parameter/indicator with another value/parameter/indicator,<br>
+ 					ex: 20 SMA (indicator) higher than (>) 10 SMA, <br>
+ 					here, we see that the condition will be logically True when the value of '20 SMA' is more than value of '10 SMA'. Upto 3 conditions can be combined together to generate a trading signal. The generation of a trading signal is determined by the combined logical combination of the conditions being true for the current candle and it being false in previous candle.</p>
+
+ 					<p><span class="bold">Creating  an entry signal</span><br>An entry signal is made up of multiple conditions. An entry signal must have at least one condition.<br><br>
+ 					<span class="bold">Forming a condition</span> Each individual condition in a trading algo has 3 parts:<br>
+					1. Indicator1 - A value such as a technical indicator, price, volume.<br>
+					2. Comparator - a logical comparator such as higher than, lower than etc.<br>
+					3. Indicator2 - Something to compare Indicator1 with, a value such as a technical indicator, price, volume.<br><br>
+
+					These 3 parts together form one condition in an algo. An algo can have multiple conditions and must have at least one condition.</p>
+
+					<p><span class="bold">Combining Conditions (with "AND"/"OR")</span><br>
+					When a trading algo has multiple conditions, these conditions are combined together using "AND"/"OR" to collectively form a single algo with a single entry point event.<br>The output of the combination of your conditions is based on digital logic operations.</p>
+
+					<h3>Exit</h3>
+ 					<p>Exit condition defines the point at which a position can be exited. An exit condition is defined by a target stop loss percentage and a target take profit percentage. After the algo enters a position, the target stop loss price and the target take price is calculated on the average price of the entry order.<br><br>
+ 					<span class="">Note:</span><br><br>
+ 					<span class="">1. During a backtest, if the close price crosses either of the exit prices point in the current candle, the hypothetical exit order is placed on the close price of the next candle.</span><br><br>
+ 					<span class="">2. For live algos (after an algo is deployed), if the the algo has entered a position in the market, if the LTP (last traded price) crosses either of the exit prices point, an actionable alert is sent to the user on which they can manual click on "buy/sell" to place a market order in the exchange.</span>
+ 					</p>
+
+ 					<p><span class="bold">Scrip/Instrument</span> is the equity or future contract on which users can run the backtest and deploy the algo.<br><br>
+ 					<span class="bold">Position</span> allows users to define the entry type (i.e. buy/sell) and the quantity of stocks to be used by the algo.</p>
+
+
+					<h1>ASSUMPTIONS AND METHODS USED WHILE CALCULATING BACKTEST RESULTS</h1>
+
+					<p>Backtesting on Streak, allows users to measure the hypothetical performance and returns of algos on historical market data of stock or contracts. All backtest results are a hypothetical representation of the performance and returns on an algo, based on some underlying assumptions (listed in the section below). These results do not provide any guarantee of future performance or returns, and all algos are subjected to market risks. The backtest page allows users to adjust and modify various input parameters which are used run a backtest. These parameters have been described below.</p>
+
+					<h2>Backtest input parameters</h2>
+
+					<p><span class="bold">Initial capital</span> represents the maximum capital allocated for the backtest of each equity/futures contract. This capital does not represent any capital held by the user and is for backtest purposes only. Initial capital acts as the maximum capital that will be used by the algo during a backtest to perform hypothetical trades.</p>
+
+					<p><span class="bold">Quantity</span> represents the trading quantity to be used by the algo. Quantity is a positive integer with defined absolute position size of an order, using which the algo performs hypothetical trades during the backtest. After the backtest is run with a quantity, the same quantity value is used when the algo is deployed.</p>
+
+					<p><span class="bold">Stop loss percentage</span> is the value used to calculate the stop loss price once the hypothetical entry position has been taken. An exit trigger is generated if the price hits/crosses the calculated stop loss price and the positions will be hypothetically exited at the close price of the subsequent candle.</p>
+
+					<p><span class="bold">Target profit percentage</span> is the value used by algo to calculate the target profit price once the hypothetical entry position has been taken. An exit trigger is generated if the price hits/crosses the calculated target profit price and the positions will be hypothetically exited at the close price of the subsequent candle.</p>
+
+					<p><span class="bold">Order type</span> can be MIS or CNC/NRML and represents the order type used to place hypothetical orders in a backtest. MIS is used for intraday margin trading, where the order will get squared off during the market close. CNC/NRML is used for overnight trading, where the stock/contract is held after the market close and can be carried forward to the next day. If CNC/NRML has been selected the order type, CNC will be used as the order type for equities and NRML for futures contracts, based on the tick symbol and instrument segment.</p>
+
+					<p><span class="bold">Candle Interval</span> is defined as the time frame of each candle interval. All backtest calculations are made using the close price of the selected candle interval.</p>
+
+					<p><span class="bold">Backtest period</span> is the lookback period to perform a backtest and is defined by slecting the start and stop date for the backtest. Backtest period can be modified to re-run backtests; however there are some backtest period ranges that are limited based on the candle period such as:<br><br>
+					For a min candle interval, the maximum backtest period is 1 month and the lookback date cannot be older than 30 days prior to the current date, i.e., user cannot select a start/stop date older than 30 days.<br><br>
+					For an hour candle interval, the maximum backtest period is one year and the lookback date cannot be older than one year prior to the current date, i.e., user cannot select a start/stop date older than one year.<br><br>
+					For a day candle interval, the maximum backtest period is five years and the lookback date cannot be older than five years prior to the current date, i.e., user cannot select a start/stop date older than five years.<br><br>
+					These limits are subject to change based on the availability of data. The backtest period and the data fetched is also subjected to technical limitations such as bandwidth, data availability, server load and various or technical implications.</p>
+
+					<p><span class="bold">Equities/future contracts</span> can be added/removed on the backtest page. Backtests are run individually for every equity/contract that has been added; therefore the backtest counter is updated to reflect this. For example: if 5 equities have been added and backtest is run, the counter will be updated as 5 backtests run. If no new equities/contracts have been added and backtest is run, the backtests are re-run on all the equities/contracts irrespective of its previous status.</p>
+
+					<h2>Backtest process and disclaimer</h2>
+
+					<p><!-- <span class="bold"></span>  -->On clicking the "Run backtest" button, a fresh backtest is run for each equity/contract by first fetching all the appropriate historical market data for the respective stock/contract and initializing all the user defined parameters. The historical market data is then processed to generate hypothetical trade signals and hypothetical trades are performed using the hypothetical initial capital.<br>
+					Based on these hypothetical trades, certain performance metrics such as hypothetical profit/loss, winning streak, losing streak etc are generated in an effort to provide a generalised and simplified understanding of the algo’s hypothetical returns and risk. All the hypothetical trades generated are shown in the transactions table along with profit/loss and portfolio values during every trade.<br>
+					The results of all the backtest are hypothetical and do not guarantee or portray in any form or manner any future performance or returns. The backtest results are a hypothetical representation of algo’s performance and do not provide any guarantee to accuracy in data and are subjects to technical accuracy limitations like rounding off, memory buffer limits, user's browser and system limitations.</p>
+
+					<h2>Backtest assumptions</h2>
+
+					<p><!-- <span class="bold">Backtest assumptions:</span>  -->During a backtest, hypothetical trades are generated with the following high level assumptions:<br><br>
+					1. During backtest, irrespective of the order type, no margins as assumed for any instrument. The user must enter the desired initial capital value such that it is higher than the product of quantity and the instruments close price (initial capital >= (quantity x close price)).<br><br>
+					2. During a backtest, any hypothetical signal to buy or sell is executed on the close of next candle irrespective of the actual volumes traded for that candle in the historical data. It can be considered as the maximum slippage.<br><br>
+					3. During a backtest, no form of averaging is done i.e., the algo does not take multiple consecutive entry positions before exiting the current position (entry position is taken only after the previous position has been exited i.e., when quantity at hand is zero).<br><br>
+					4. During a backtest, the algo only exists when either the target profit price or stop loss price is hit.<br><br>
+					5. During a backtest, there is no context nor is any consideration given to corporate actions such as stock splits, rights issues etc and no adjustments are made to stock/contract prices. The values OHLCV (Open , High, Low, Close and Volume) are taken directly as present in the historical candle data.<br><br>
+					6. During a backtest, a hypothetical buy signal is generated only if the condition is false in the previous candle and is true in the current candle.<br><br>
+					7. During a backtest the usage of Open, High, Low, Close is very specific to the candle OHLCV actually going higher lower or than the comparison value.<br><br>
+					8. During a backtest the profit/loss and the PNL chart values are calculated on the Close price of every candle when a position is held.<br><br>
+					9. During a backtest, if the order type is MIS, all open positions are hypothetically squared off at the open price of 3:15 pm candle, this is done to simulate a square offs done by the brokers for MIS orders.</p>
+
+					<h2>Backtest error messages</h2>
+
+					<p><!-- <span class="bold">Backtest error messages:</span> -->During a backtest, if any error occurs/proper results are not be generated, we try to show an appropriate message to help the user adjust the input parameters and run the backtest again. These error messages are explained below:<br><br>
+					1. "No trades happened" - This means that no hypothetical entry signals were generated for the algo and no hypothetical trades were performed for the backtest period selected by the user.  This could mean that the algo conditions were never met in the specified backtest period or that the conditions are syntactically/logically incorrect or are not expressed properly with the right indicator parameters.<br><br>
+					2. "No trades happened because initial capital is low" - This means that the algo conditions were met and trading signals were generated but due to insufficient hypothetical initial capital, hypothetical trades were not generated. It can be resolved by increasing the hypothetical initial capital or by decreasing the quantity and running the backtest agian.<br><br>
+					3. "Error while fetching data" - This means that an internal error occured while fetching historical data. It can be resolved by waiting for a few minutes and running the backtest again.<br><br>
+					4. Server timed out - This means that the user's browser is not able to connect to Streak servers due to internet connection error. It can be resolved by checking the internet connection and running the backtest again.</p>
+
+					<!-- <p><span class="bold">Anomalies:</span> During a backtest, and any anomalies in backtest data is not adjusted for, so backtest will not take in account any stock splits, dividend or stock issued or any other market event. During backtest, algo strictly relies on the OHLCV historical candle data to perform hypothetical trades and generate hypothetical performance and returns and various other metrics.</p> -->
+
+					<h1>ASSUMPTIONS AND PROCESS DURING DEPLOY</h1>
+
+					<h2>Deployment process and disclaimer</h2>
+
+					<p><!-- <span class="bold">Deployment process and disclaimer:</span>   -->Deploy allows users to take their algos live in stock market and to get actionable alerts based on the entry and exit conditions in their algo.<br>
+					On clicking the "Deploy" button in either the "Backtest" page or "Algos" page, a popup is rendered with a summary of the user's algo with the entry condition, exit condition and candle interval. The user also selects the field "Algo live for", which determines the period for which the algo will be live and our systems will track market movements. If "Intraday" is selected, the order type will be MIS and the algo will be live for that single day; if the user selects "Overnight", the order type will be CNC for equities and NRML for future contracts and the algo will be live for the next 30 days (or until the algo is stopped by the user or terminated due to some reason such as order rejection).<br>
+					By clicking on "Confirm", <!-- users agrees the terms of service and the disclaimer mentioned above the deploy button and completely understands the uncertainty and risk that trading and internet services hold.  --> the algo is taken live and our systems start tracking the market and periodically check for any signals being generated by the algo based on the entry and exit conditions in the algo.<br>
+					Once a signal is generated, we try to send this signal to the user's device over the internet. The delivery of these alerts are subject to network conditions of the user, internet services and technical issues.<br>
+					<!-- During deploy, user can selected the Algo once deployed starts waiting for the entry signal and waits for the first trigger event. Once the first signal is generated the actionable alerts are send and based on users actions various other alerts generated and an attempt is made to send it the user to notify the state of the algo or the algorithm(more details on this in algo deployment lifecycle below). --></p>
+
+					<h2>Algo deployment lifecycle</h2>
+					<p><!-- <span class="bold">Algo deployment lifecycle:</span>  -->Once an algo is deployed, the stocks are periodically tracked based on the conditions in the algo. The periodicity with which the market is tracked is the same as the candle interval selected by the user while backtesting the algo and shown in the algo summary before deployment. An algo's ideal life cycle and the tree of events that can occur during an algo's life cycle, called an "algo loop", has been explained below: </p>
+
+					<p>1. Waits for the first entry event as per the entry condition in the deployed algo.<br><br>
+					2. Once the entry event occurs, a entry signal (buy/sell) is triggered and an actionable alert is sent to the user.<br><br>
+					3. The user can choose to act on the alert by clicking buy/sell or choose to ignore the alert and cancel it (cancel will terminate the algo).<br><br>
+					4. If the user has clicked on buy/sell in the alert, a market order is sent to the exchange (NSE).<br><br>
+					5. The order will either be successfully placed by the exchange or it might get rejected due to resons such as insufficient capital. If the order gets rejected by the exchange, the algo gets terminated.<br><br>
+					6. After the successful placement of an order, the algo continues to track the stock waiting for the exit signal (SL or TP). Based on the entry price and the SL and TP percentages entered by the user, the SL and TP prices are calculated which are displayed to the user.<br><br>
+					7. When the SL or TP price occurs, an actionable notification is sent to the user again. The user can then chose to act on it bu clicking buy/sell or choose to ignore the alert and cancel it (cancel will terminate the algo).<br><br>
+					8. If the user has clicked on buy/sell in the alert, a market order is sent to the exchange (NSE) and the algo's life cycle is now complete.<!--  and moves to a 'complete' state. --><br><br>
+					<!-- 9. The cycle (steps 1 to 8) repeats for a second <br><br> -->
+					<span class="">Note:</span><br><br>
+					<span class="">1. The "algo loop" sequence defined above is an ideal sequence and is subject to market conditions and user behaviour. Based on the user's action or market conditions, the sequence might not completely occur in the same way as it is intended to, since this sequence may have been interrupted due to various reasons such as, user stopping the algo, order rejection by the exchange, network lag, network error etc.</span><br><br>
+					<span class="">2. For both intraday and overnight algos, the algo is looped twice (steps 1 to 9 are executed twice) after which the algo moves to a 'complete' state and is stopped.</span><br><br>
+					<span class="">3. Margins are not blocked till the user acts on the actionable alerts (buy/sell) and the order is sent to the exchange.</span><br><br>
+					<span class="">4.The algo can be stopped by the user at any time in the life cycle of the algo by clicking on the "Stop" button. If the algo has not entered a position, it will be directly stopped otherwise the user will be presented with an option to either stop the algo by keeping the positions open or to exit positions at market and stop the algo. The algo will no longer be tracked and no further alerts will be sent to the user for the respective algo.</span><br><br>
+					<span class="">5. In cases where the user stops the algo and chooses to keep positions open, the responsibility of closing any and all positions is solely on the user, and user will get no alerts for that deployed instrument once the algo is stopped.</span><br><br>
+					<span class="">6. For order type MIS, all algos will be stopped at 3:20 pm and the open positions, if any, will be squared off by the respective broker (example, Zerodha) before market close.</span><br><br>
+					<span class="">7. All actionable order alerts sent to the user can be used only once and will be active for only 5 minutes after which the alert expires and the algo is terminated.</span><br><br>
+					<span class="">8. All actionable alert orders are market orders and users can expect price variation from the price at which the alert was triggered to the price at which the the order is placed.</span><br><br>
+					<span class="">9. If the user's order is rejected due to various reasons such as shortage of funds, circuit limit hit, no liquidity in market, etc, the algo will be stopped and no further alerts will be sent for that algo. This is done in order to avoid unnecessary tracking of instruments where the order placement failed. However, the user can deploy the algo again, and take action on any new alerts that get generated.</span><br><br>
+					<span class="">10. Target profit and stop loss orders are not placed with the entry order. The algo tracks the stock for the stop loss and take profit prices only after entering a position. Once the stop loss or take profit price occurs, an actionable alert is sent to the user and once the user confirms to exit, the exit order (stop loss or take profit order) is placed at the exchange.</span><br><br>
+
+			<!-- 		<p><span class="bold">Deploy assumptions:</span> Once an algo is deployed, the following process assumptions are made by the algo in its live state:</p> -->
+
+					<!-- <p>Once the algo is deployed, user can see the currently live algorithms on deployed page and on Algo page. On the deployed page user is presented with the latest state of the algo is currently in. The P&L show here is the current profit/loss of the users positions taken only by acting on algo’s actionable alerts. All the actionable alerts are MARKET order, and are read only, upon clicking Buy/Sell a market order is placed with the details shown in the notification. If multiple algo’s are deployed on the same equity/contract, the position and P&L are calculated and displayed individually for each algo, the stop loss(SP) and target profit(TP) is shown for live algos, where the user have taken a position and the algo is waiting for exit opportunity. It very important for the users to note that, the stop loss and target profit prices are calculated on the last entry order’s average price and stop loss and target profit percentage in the algo, and for these stop loss and target profit prices an order has not been placed, till the prices have reached and the users takes action on the take profit and stop loss alert. Once the target profit or stop loss prices have been reached the algo will try to send user the exit position alert, with prefilled order details using which user can exit the positions taken only by that individual algo.</p> -->
+
+					<!-- <p><span class="bold">Anomalies:</span> During a backtest, and any anomalies in backtest data is not adjusted for, so backtest will not take in account any stock splits, dividend or stock issued or any other market event. During backtest, algo strictly relies on the OHLCV historical candle data to perform hypothetical trades and generate hypothetical performance and returns and various other metrics.</p> -->
+
+					<h1>ALGO ALERTS:</h1>
+					<p>Once the algo is live and an alert is generated based on the conditions in the algo, our systems attempt to deliver the alert to the user over the internet. By using this service, the user acknowledges they understand that the alerts' delivery is dependent on many factors such as the internet connection of the user, location, time of the day, server load, data availability, etc.<br>
+					We advice users to be logged in to streak.tech, keep it open in their browser and maintain an uninterrupted fast internet connection to their devices to see the best alerts delivery. <!-- At Streak we make it our highest priority to generate and deliver timely alerts to the user, however the accuracy and timely delivery can by effected by user's internet conditions, user's location, user’s device conditions, browsers and various other user side technical factors, overall internet connectivity in the region, traffic and load to Streak servers. --><br>
+					All actionable order alerts are read only market order alerts, where with a single click user can send the order to the exchange. The actionable order alerts are made read only in order to obtain consistency in the deployed and backtest results and to avoid any drastic increase in risk.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+  <div class="flex home_header">
+    <div class="flex home_logo">
+      <a id="home_logo_link" href="https://www.streak.tech/dashboard" onclick="ga('send', 'event', 'Home', 'Logo');">
+        <div><img src="/static/imgs/logosvg.svg"></div>
+        <div><p>STREAK<!-- <span>AI</span> --><!-- <span id="home_sub">&nbsp;Beta</span> --></p></div>
+      </a>
+    </div>
+  </div>

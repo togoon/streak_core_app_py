@@ -1,0 +1,89 @@
+- name: Coreapp setup
+  hosts: all
+  connection: local
+  tasks:
+    #- name: Update cache
+    #  apt:
+    #    update_cache: yes
+
+    - name: Setup supervisor conf
+      template:
+        src: /home/ubuntu/streak_core_app/deploy_scrips/supervisord.conf.j2
+        dest: /etc/supervisor/supervisord.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Git clone coreapp
+      git:
+        repo: git@github.com:StreakAI/streak_core_app.git
+        dest: /home/ubuntu/streak_core_app
+        update: yes
+        version: master_react
+        key_file: /home/ubuntu/.ssh/github
+        accept_hostkey: yes
+        force: yes
+
+    - name: Install requirements
+      pip:
+        requirements: /home/ubuntu/streak_core_app/requirements.txt
+
+#    - name: Change ownership
+#      command: chown -R ubuntu:ubuntu /home/ubuntu/streak_core_app/
+
+#    - name: Setting up virtualenv
+#      pip:
+#	 name: virtualenv
+#	 version: 15.1.0
+#      pip:
+#	 name: virtualenvwrapper
+#	 version: 4.7.2
+#      command: echo "export WORKON_HOME=/home/ubuntu/ENV" >> /home/ubuntu/.bashrc
+#      command: echo "source /usr/local/bin/virtualenvwrapper.sh" >> /home/ubuntu/.bashrc
+#      command: source /home/ubuntu/.bashrc
+#      command: mkvirtualenv PROD
+#      command: pip install -r requirements.txt
+
+    - name: Install requirements in virutalenv
+      pip:
+        requirements: /home/ubuntu/streak_core_app/requirements.txt
+        virtualenv: /home/ubuntu/ENV/PROD
+      
+    - name: Creates directory
+      file: path=/home/ubuntu/static state=directory
+
+    - name: Run collect static
+      command: /usr/bin/python /home/ubuntu/streak_core_app/streak_core/manage.py collectstatic --settings=streak_core.settings.production --noinput
+
+    - name: Run migrations
+      command: /usr/bin/python /home/ubuntu/streak_core_app/streak_core/manage.py migrate --settings=streak_core.settings.production --noinput
+
+    - name: Copy uwsgi ini file to /etc
+      copy:
+        src: /home/ubuntu/streak_core_app/nginx_config/dev_config/uwsgi_config_prod.ini
+        dest: /etc/uwsgi/apps-enabled/
+        remote_src: yes
+
+    - name: Setup core app in supervisor
+      template:
+        src: /home/ubuntu/streak_core_app/deploy_scrips/coreapp.conf.j2
+        dest: /etc/supervisor/conf.d/coreapp.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Restart supervisor
+      service:
+        name: supervisor
+        state: restarted
+
+    - name: Copy nginx config file
+      copy:
+        src: /home/ubuntu/streak_core_app/nginx_config/dev_config/default
+        dest: /etc/nginx/sites-enabled/
+        remote_src: yes
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

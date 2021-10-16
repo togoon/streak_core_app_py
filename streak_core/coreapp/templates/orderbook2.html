@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Orders {% endblock %}
+{% block page_css1 %} <link href="/static/css/orderbook2.css?v=2.4" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/orderbook2.js?v=2.4"></script> {% endblock %}
+{% block page_js2 %} <script src="/static/js/jquery-ui.min.js"> // this is for autocomplete </script> {% endblock %}
+{% block page_js3 %} <script src="/static/js/product_tour_orderbook.js"></script> {% endblock %}
+
+{% block body %}
+
+<div class="portfolio_outer">
+	<div class="portfolio">
+		<div class="portfolio_menu">
+			<div class="portfolio_menu_header">
+        <!-- <div class="header-holder">
+				  <p>Orderbook</p>
+          <span class="loading-dots-container" id="update_top_performance1">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+          <img title="Refresh" data-tooltip-top="Refresh" onclick="refresh_orderbook()" class="refresh" src="/static/imgs/refresh.png">
+        </div> -->
+        <div class="positions_details_sub_title" style="display: none!important">
+            <div>
+              <input id="portfolio_platform" value="Streak" readonly="">
+                <!-- <option>All</option>
+                <option>Streak</option>
+              </select> -->
+            </div>
+        </div>
+			</div>
+			<div class="portfolio_menu_body">
+				<p id="positions_option" class="portfolio_menu_selected">Open Orders</p>
+				<p id="holdings_option">Executed Orders</p>
+			</div>
+		</div>
+		<div class="portfolio_body">
+			<div id="positions" class="positions">
+        <div class="header_bar">
+          <div class="hc_p"><p id="open_orders_heading_title">Open orders</p>
+          <span class="loading-dots-container" id="update_top_performance1">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+        </div>
+          <div class="search_refresh_container">
+            <input type="text" name="open_orders_search" id="open_orders_search_input" onkeyup="search_open_orders()" placeholder="Search">
+            <p class="refresh_bar" onclick="refresh_orderbook()"><span><img src="/static/imgs/new/refresh_blue.svg">Refresh</span></p>
+          </div>
+        </div>
+				<div class="positions_body">
+					<div class="positions_details_title">
+            <div class="positions_row_product_title" id="positions_row_product_title1" onclick="sort_column(event)"><p>Time<img src="/static/imgs/new/dropdown.svg"></p></div>
+						<div class="positions_row_product_title" id="positions_row_product_title2" onclick="sort_column(event)"><p>Type<img src="/static/imgs/new/dropdown.svg"></p></div>
+						<div class="positions_row_instrument_title" id='positions_row_instrument_title3' onclick="sort_column(event)"><p>Instrument<img src="/static/imgs/new/dropdown.svg"></p></div>
+            <div class="positions_row_product_title" id="positions_row_product_title3" onclick="sort_column(event)"><p>Order placement<img src="/static/imgs/new/dropdown.svg"></p></div>
+						<div class="positions_row_quantity_title" id="positions_row_quantity_title4" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Qty</p></div>
+            <div class="positions_row_ltp_title" id="positions_row_ltp_title5" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">LTP</p></div>
+            <div class="positions_row_avg_price_title" id="positions_row_avg_price_title6" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Price</p></div>
+						<div class="positions_row_pnl_title" id="positions_row_pnl_title7" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Status</p></div>
+						<!-- <div class="positions_row_change_title"><p>Chg.</p></div> -->
+            <div class="positions_row_change_title" id="positions_row_change_title8" onclick="sort_column(event)"><p></p></div>
+						<div class="positions_row_order_details_title" id="positions_row_order_details_title" onclick="sort_column(event)"><p></p></div>
+					</div>
+					<!-- <div class="positions_details_row">
+						<div class="positions_row_product"><p>NRML</p></div>
+						<div class="positions_row_instrument"><p>CANBK<span>&nbsp;NSE</span><span data-tooltip-top="Looks like you have taken manual positions through Kite" class="exclamatory_mark">!</span></p></div>
+						<div class="positions_row_quantity"><p>+10000</p></div>
+						<div class="positions_row_avg_price"><p>234.56</p></div>
+						<div class="positions_row_ltp"><p>235.73</p></div>
+						<div class="positions_row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="positions_row_change"><p><span class="exit_all" id="exit_all" style="display: none;" onclick="$('.exit_all_popup').show();$('body').addClass('body_scroll');">Exit</span></p></div>
+						<div class="positions_row_order_details"><p onclick="$('.order_details_popup').show();$('body').addClass('body_scroll');">Details<span><img src="/static/imgs/icon-right-grey.png"></span></p></div>
+					</div> -->
+					<!-- <div class="positions_total_row">
+						<div class="positions_total">
+							<p>Total&nbsp;</p>
+							<p class="positions_total_pnl" style="color: #bfc7d1;font-weight: 400;">NA</p>
+						</div>
+					</div> -->
+				</div>
+			</div>
+			<div class="empty_positions" style="display: none;">
+      			<img src="/static/imgs/new/empty/orderbook-empty.svg">
+      			<p>No open orders</p>
+    		</div>
+			<div id="holdings" class="holdings" style="display: none;">
+        <div class="header_bar">
+          <div class="hc_p"><p id="executed_orders_heading_title">Executed orders</p>
+          <span class="loading-dots-container" id="update_top_performance1">
+            <div class="loading-dots">
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+                <div class="loading-dots--dot"></div>
+            </div>
+          </span>
+        </div>
+          <div class="search_refresh_container">
+            <input type="text" name="executed_orders_search" id="executed_orders_search_input" onkeyup="search_executed_orders()" placeholder="Search">
+            <p class="refresh_bar" onclick="refresh_orderbook()"><span><img src="/static/imgs/new/refresh_blue.svg">Refresh</span></p>
+          </div>
+        </div>
+				<div class="holdings_body">
+					<div class="holding_details_title">
+						<!-- <div class="row_instrument_title"><p>Instrument</p></div>
+						<div class="row_quantity_title"><p>Qty</p></div>
+						<div class="row_avg_cost_title"><p>Avg. Cost</p></div>
+						<div class="row_ltp_title"><p>LTP</p></div>
+						<div class="row_current_value_title"><p>Current Val</p></div>
+						<div class="row_pnl_title"><p>P&L</p></div>
+						<div class="row_net_change_title"><p>Net Chg.</p></div>
+						<div class="row_day_change_title"><p>Day Chg.</p></div> -->
+            <div class="positions_row_product_title" id="positions_row_product_title4" onclick="sort_column(event)"><p>Time<img src="/static/imgs/new/dropdown.svg"></p></div>
+            <div class="positions_row_product_title" id="positions_row_product_title5" onclick="sort_column(event)"><p>Type<img src="/static/imgs/new/dropdown.svg"></p></div>
+            <div class="positions_row_instrument_title" id="positions_row_product_title6" onclick="sort_column(event)"><p>Instrument<img src="/static/imgs/new/dropdown.svg"></p></div>
+            <div class="positions_row_quantity_title" id="positions_row_quantity_title7" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Qty</p></div>
+            <!-- <div class="positions_row_ltp_title"><p>LTP</p></div> -->
+            <div class="positions_row_avg_price_title" id="positions_row_avg_price_title8" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Avg. Price</p></div>
+            <div class="positions_row_product_title" id="positions_row_product_title9" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Order placement</p></div>
+            <div class="positions_row_pnl_title" id="positions_row_pnl_title10" onclick="sort_column(event)"><p><img src="/static/imgs/new/dropup.svg">Status</p></div>
+            <!-- <div class="positions_row_change_title"><p>Chg.</p></div> -->
+            <div class="positions_row_order_details_title"><p></p></div>
+					</div>
+					<!-- <div class="holding_details_row">
+						<div class="row_instrument"><p>CANBK<span>&nbsp;NSE</span></p></div>
+						<div class="row_quantity"><p>10000</p></div>
+						<div class="row_avg_cost"><p>234.56</p></div>
+						<div class="row_ltp"><p>235.73</p></div>
+						<div class="row_current_value"><p>2357300.00</p></div>
+						<div class="row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="row_net_change"><p>0.02%</p></div>
+						<div class="row_day_change"><p>0.05%</p></div>
+					</div>
+					<div class="holding_details_row">
+						<div class="row_instrument"><p>HDFC_OCT_FUT<span>&nbsp;NSE</span></p></div>
+						<div class="row_quantity"><p>10000</p></div>
+						<div class="row_avg_cost"><p>234.56</p></div>
+						<div class="row_ltp"><p>235.73</p></div>
+						<div class="row_current_value"><p>2357300.00</p></div>
+						<div class="row_pnl"><p class="loss">-15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="row_net_change"><p>0.02%</p></div>
+						<div class="row_day_change"><p>0.05%</p></div>
+					</div>
+					<div class="holding_details_row">
+						<div class="row_instrument"><p>NIFTYFIFTY<span>&nbsp;NSE</span></p></div>
+						<div class="row_quantity"><p>10000</p></div>
+						<div class="row_avg_cost"><p>234.56</p></div>
+						<div class="row_ltp"><p>235.73</p></div>
+						<div class="row_current_value"><p>2357300.00</p></div>
+						<div class="row_pnl"><p class="profit">+15735.90<span>&nbsp;(2.3%)</span></p></div>
+						<div class="row_net_change"><p>0.02%</p></div>
+						<div class="row_day_change"><p>0.05%</p></div>
+					</div> -->
+				</div>
+			</div>
+			<div class="empty_holdings" style="display: none;">
+      			<img src="/static/imgs/new/empty/orderbook-empty.svg">
+      			<p>No executed orders</p>
+    	</div>
+      <div class="app_positions" id="app_holdings" style="display: block;">
+        <div class="holdings_body" style="display: block;">
+          <div class="token__NSE_SBIN">
+            <div class="positions_details_row">
+              <div class="positions_details_row_top">
+                <div class="positions_row_product"><p class="sell_tag">SELL</p></div>
+                <div class="positions_row_pnl"><p class="complete_tag">COMPLETE<span>&nbsp;<!--(2.3%)--></span></p></div><div class="positions_row_product"><p>09:56:42</p></div>
+              </div>
+              <div class="positions_details_row_bottom">
+                <div class="positions_row_instrument"><p>SBIN<span>&nbsp;NSE</span></p></div>
+                <div class="positions_row_product"><p>MIS</p></div>
+                <div class="positions_row_quantity"><p>1/1</p></div>
+                <div class="positions_row_avg_price"><p>296.80</p></div>
+              </div>
+              <div class="positions_details_row_hidden">
+                <div class="positions_row_order_details"><p onclick="show_order_details({&quot;exchange_order_id&quot;:&quot;1300000001290906&quot;,&quot;order_timestamp&quot;:&quot;2018-02-09 09:56:42&quot;,&quot;market_protection&quot;:0,&quot;tradingsymbol&quot;:&quot;SBIN&quot;,&quot;tag&quot;:null,&quot;guid&quot;:&quot;10b2kjeInukY0J1F&quot;,&quot;order_type&quot;:&quot;LIMIT&quot;,&quot;variety&quot;:&quot;regular&quot;,&quot;cancelled_quantity&quot;:0,&quot;instrument_token&quot;:779521,&quot;status_message&quot;:null,&quot;status&quot;:&quot;COMPLETE&quot;,&quot;product&quot;:&quot;MIS&quot;,&quot;exchange&quot;:&quot;NSE&quot;,&quot;order_id&quot;:&quot;180209000568867&quot;,&quot;price&quot;:0,&quot;pending_quantity&quot;:0,&quot;validity&quot;:&quot;DAY&quot;,&quot;placed_by&quot;:&quot;YJ3548&quot;,&quot;disclosed_quantity&quot;:0,&quot;exchange_update_timestamp&quot;:null,&quot;parent_order_id&quot;:null,&quot;exchange_timestamp&quot;:&quot;2018-02-09 09:56:42&quot;,&quot;average_price&quot;:296.8,&quot;trigger_price&quot;:296.85,&quot;transaction_type&quot;:&quot;SELL&quot;,&quot;filled_quantity&quot;:1,&quot;user_uuid&quot;:&quot;eff87bd6-bbec-4db5-809c-740b0a828253&quot;,&quot;quantity&quot;:1})">Details<span><img src="/static/imgs/icon-right-grey.png"></span></p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="app_positions" id="app_positions" style="display: block;">
+        <div class="holdings_body" style="display: block;">
+          <div class="token__NSE_SBIN">
+            <div class="positions_details_row">
+              <div class="positions_details_row_top">
+              <div class="positions_row_product"><p class="sell_tag">SELL</p></div>
+              <div class="positions_row_pnl"><p class="complete_tag">COMPLETE<span>&nbsp;<!--(2.3%)--></span></p></div><div class="positions_row_product"><p>09:56:42</p></div>
+              </div>
+              <div class="positions_details_row_bottom">
+              <div class="positions_row_instrument"><p>SBIN<span>&nbsp;NSE</span></p></div>
+              <div class="positions_row_product"><p>MIS</p></div>
+              <div class="positions_row_quantity"><p>1/1</p></div>
+              <div class="positions_row_avg_price"><p>296.80</p></div>
+              </div>
+              <div class="positions_details_row_hidden">
+              <div class="positions_row_order_details"><p onclick="show_order_details({&quot;exchange_order_id&quot;:&quot;1300000001290906&quot;,&quot;order_timestamp&quot;:&quot;2018-02-09 09:56:42&quot;,&quot;market_protection&quot;:0,&quot;tradingsymbol&quot;:&quot;SBIN&quot;,&quot;tag&quot;:null,&quot;guid&quot;:&quot;10b2kjeInukY0J1F&quot;,&quot;order_type&quot;:&quot;LIMIT&quot;,&quot;variety&quot;:&quot;regular&quot;,&quot;cancelled_quantity&quot;:0,&quot;instrument_token&quot;:779521,&quot;status_message&quot;:null,&quot;status&quot;:&quot;COMPLETE&quot;,&quot;product&quot;:&quot;MIS&quot;,&quot;exchange&quot;:&quot;NSE&quot;,&quot;order_id&quot;:&quot;180209000568867&quot;,&quot;price&quot;:0,&quot;pending_quantity&quot;:0,&quot;validity&quot;:&quot;DAY&quot;,&quot;placed_by&quot;:&quot;YJ3548&quot;,&quot;disclosed_quantity&quot;:0,&quot;exchange_update_timestamp&quot;:null,&quot;parent_order_id&quot;:null,&quot;exchange_timestamp&quot;:&quot;2018-02-09 09:56:42&quot;,&quot;average_price&quot;:296.8,&quot;trigger_price&quot;:296.85,&quot;transaction_type&quot;:&quot;SELL&quot;,&quot;filled_quantity&quot;:1,&quot;user_uuid&quot;:&quot;eff87bd6-bbec-4db5-809c-740b0a828253&quot;,&quot;quantity&quot;:1})">Details<span><img src="/static/imgs/icon-right-grey.png"></span></p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+		</div>
+	</div>
+</div>
+<div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<!-- <div class="close_popup"><img onclick="close_order_details_popup();" src="/static/imgs/new/close.svg"></div> -->
+    	<div class="order_details_header">
+    		<!-- <div class="order_name">
+    			<p>CANBK17OCTFUT</p>
+    			<p>NRML/NFO</p>
+    		</div>
+    		<div class="order_net_qty">
+    			<p>Net Qty</p>
+    			<p>45000</p>
+    		</div>
+    		<div class="order_avg_price">
+    			<p>Avg. Price</p>
+    			<p>243.90</p>
+    		</div>
+    		<div class="order_pnl">
+    			<p>P&L</p>
+    			<p class="profit">+&nbsp;23417.98</p>
+    		</div> -->
+    	</div>
+    	<div class="order_details_body">
+    		<!-- <div class="order_details_row">
+    			<div>
+    				<p>Previous Close</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>LTP</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Day's P&L</p>
+    				<p class="profit">+&nbsp;23543.87</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Buy Qty.</p>
+    				<p>21000</p>
+    			</div>
+    			<div>
+    				<p>Buy Price</p>
+    				<p>234.98</p>
+    			</div>
+    			<div>
+    				<p>Buy Value</p>
+    				<p>6313563.89</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Sell Qty.</p>
+    				<p>-</p>
+    			</div>
+    			<div>
+    				<p>Sell Price</p>
+    				<p>-</p>
+    			</div>
+    			<div>
+    				<p>Sell Value</p>
+    				<p>-</p>
+    			</div>
+    		</div> -->
+    	</div>
+   	</div>
+</div>
+<div class="cancel_order_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<div class="close_popup"><img onclick="close_cancel_order_popup();" src="/static/imgs/new/close.svg"></div>
+    	<div class="exit_position animated fadeIn">
+              <p class="stop_heading cancel_order_heading">Cancel order</p>
+              <p class="stop_sub_heading cancel_order_det">CANBK<br><span>#180101001436347</span></p>
+              <div id="cancel_order_actions">
+                <button id="cancel_order_confirm" onclick="">Cancel order</button>
+                <button id="cancel_order_close" onclick="close_cancel_order_popup();">Close</button>
+              </div>
+              <!-- <p class="stop_sub_heading"><span><span></span>&nbsp;Algo 1</span><span><span></span>&nbsp;Algo 1</span>
+              <span><span></span>&nbsp;Algo 1</span></p> -->
+             <!--  <div class="exit_position_section">
+                  <div class="back">
+                      <p><span onclick="$('.exit_position, .algo_stopped').hide();$('.stop_options').show();"><img src="/static/imgs/icon-back.png">Back</span></p>
+                  </div>
+                  <div>
+                      <div class="exit_window">
+                          <div class="exit_header">
+                              <p>Buy 500 stocks at 243.39</p>
+                          </div>
+                          <div class="exit_body">
+                              <div class="exit_options">
+                                  <div>
+                                      <div class="radio_options">
+                                          <div>
+                                              <span id="buy_radio_option"></span>
+                                              <p id="option_selected">CNC</p>
+                                          </div>
+                                          <div>
+                                              <span></span>
+                                              <p>MIS</p>
+                                          </div>
+                                      </div>
+                                      <div class="exit_qty">
+                                          <p>Quantity</p>
+                                          <input type="number" name="">
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <div class="radio_options">
+                                          <div>
+                                              <span></span>
+                                              <p>MKT</p>
+                                          </div>
+                                          <div>
+                                              <span id="buy_radio_option"></span>
+                                              <p id="option_selected">LMT</p>
+                                          </div>
+                                      </div>
+                                      <div class="exit_price">
+                                          <p>Price</p>
+                                          <input type="number" name="">
+                                      </div>
+                                  </div>
+                              </div>
+                              <div>
+                                  <button id="buy" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Buy</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div> -->
+          </div>
+          <!-- <div class="algo_stopped animated tada" style="display: none;">
+              <img src="/static/imgs/new/algo_stopped.gif">
+              <p class="stop_heading">Algo stopped</p>
+              <p class="stop_sub_heading">This algo is no longer active.<br><!-- You exited at market price. --></p>
+          </div> -->
+   	</div>
+</div>
+<div class="fancy_filter">
+  <div class="fancy_filter_options">
+    <div onclick="platform_update(this,'Streak')">
+      <div class="name_tag"><p>Streak</p></div>
+      <div class="logo_tag"><img src="/static/imgs/new/logo_old.svg"></div>
+    </div>
+    <div onclick="platform_update(this,'All')">
+      <div class="name_tag"><p>All</p></div>
+      <div class="logo_tag"><img src="/static/imgs/new/kite.svg"></div>
+    </div>
+  </div>
+  <div class="fancy_filter_select">
+      <div class="logo_tag_big"><img src="/static/imgs/new/logo_old.svg"></div>
+  </div>
+</div>
+{% if request.session.first_time_orderbook %}
+  <script type="text/javascript">
+    var first_time_orderbook = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_orderbook');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_orderbook = "false";
+  </script>
+{% endif %}
+{% endblock %}

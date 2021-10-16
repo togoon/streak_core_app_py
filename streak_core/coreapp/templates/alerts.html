@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Alerts {% endblock %}
+{% block page_css1 %} <link href="/static/css/alerts.css?v=1.3" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/alerts.js?v=1.3"></script> {% endblock %}
+{% block page_js2 %} <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> {% endblock %}
+{% block body %}
+<script type="text/javascript">
+</script>
+<script type="text/javascript">
+    console.log($('.notifications'));
+    $('.menu #notification_details').remove();
+    $('#notification_details').show();
+    // update_android_session("{{request.session.user_is_auth}}","{{request.session.user_uuid}}");
+    
+    // try{
+    //   update_android_session("{{request.session.user_uuid}}");
+    //   Android.createUserSession("{{request.session.user_is_auth}}","{{request.session.user_uuid}}");
+    // }
+    // catch(e){
+    //   console.log(e);
+    // }
+</script>
+<div class="mobile_notification_holder">
+    <li class="notifications" id="notifications">
+      <!-- <img src="/static/imgs/alert_white.svg"><span id='notif_count'></span> -->
+      <ul class="notification_details" id="notification_details" class="card" style="display: block !important;">
+      </ul>
+    </li>
+</div>
+<div class="empty_alerts notif_empty" style="display: none;">
+    <img src="/static/imgs/new/empty/alerts-empty.svg">
+    <p>No notifications</p>
+</div>
+
+<!-- <div class="exit_window">
+    <div class="exit_header exit_header_buy">
+    	<p>Buy SBIN x1 Qty<br><span>₹ 314.40 on NSE</span></p>
+    </div>
+    <div class="exit_body">
+       	<div class="exit_options">
+        	<div>
+        		<div class="radio_options">
+        			<div><span class="radio_outer"><span class="radio_inner"></span></span><p>CNC</p></div>
+        			<div><span id="buy_radio_option" class="radio_outer"><span class="radio_inner"></span></span><p>MIS</p></div>
+        		</div>
+        		<div class="exit_qty"><p>Quantity</p><input type="number" id="position_qty" name="" value="1"></div>
+        	</div>
+        	<div>
+        		<div class="radio_options">
+        			<div><span id="sell_radio_option" class="radio_outer"><span class="radio_inner"></span></span><p id="option_selected">MKT</p></div>
+        			<div><span class="radio_outer"><span class="radio_inner"></span></span><p>LMT</p></div>
+        		</div>
+        		<div class="exit_price"><p>Price</p><input type="number" id="position_price" name="" value="0"></div>
+        	</div>
+        </div>
+        <div id="notif_actions"><button id="sell" onclick="exit_position_now_force_stop('051f0a27-f3c9-4b90-ac8b-cba1108666e1','NSE','SBIN',1,'MARKET','SELL','MIS','DAY','de47abd2-e22c-417f-940f-4a345e39c2d2','Test - 15');">Sell</button><button id="cancel" onclick="close_orders_popup();">Cancel</button>
+        </div>
+    </div>
+</div> -->
+{% endblock %}
+
+
+<!-- Before:
+
+<div class="notif">
+    <div class="notif_first_line"> 
+        <p class="notif_time_stamp">6:02:55 am</p> 
+        <p class="notif_algo_name">Test 301</p> 
+    </div> 
+    <div class="notif_second_line"> 
+            <p class="notif_tag buy_alert_tag">BUY alert</p> 
+            <p class="notif_desc">BUY 1 shares of SBIN at &nbsp;₹ 10.00</p> 
+    </div>
+</div>
+
+
+
+After:
+<div class="notif">
+    <div class="notif_first_line"> 
+        <span><img src="/static/imgs/new/orderlog/entry_buy_alert.svg"></span>
+        <p class="notif_tag buy_alert_tag">BUY alert</p>
+        <span><img src="/static/imgs/new/alert_blue.gif"></span>
+    </div> 
+    <div class="notif_second_line"> 
+        <div class="notif_second_line_desc_container">
+            <p class="notif_desc">BUY 1 shares of SBIN at &nbsp;₹ 10.00</p>
+            <p class="notif_algo_name">Test 301</p> 
+        </div>
+        <div class="notif_second_line_algoname_container">
+            <p class="notif_take_act">Take action</p>
+            <p class="notif_time_stamp">6:02:55 am</p>
+        </div>
+    </div>
+</div> -->

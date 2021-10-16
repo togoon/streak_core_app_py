@@ -1,0 +1,186 @@
+"algo_state": {
+	"scrollEnabled": true,
+	"editMode": false,
+	"disabled": false,
+	"algoNameValid": true,
+	"algo_name": "Check w",
+	"candleInterval": "1 Hour",
+	"stopLoss": "0.2",
+	"takeProfit": "0.2",
+	"exitIndicators": [
+		{
+			"indicator": "Indicator",
+			"compareIndicator": "Indicator",
+			"id": 1527498780073,
+			"comparator": "Comparator"
+		}
+	],
+	"entryIndicators": [
+		{
+			"indicator": "Supertrend(7,3)",
+			"indicatorItem": {
+					"html_tags": "ti_tags",
+					"name": "Supertrend",
+					"allowed_comparision": [
+						"Price",
+						"Supertrend"
+						],
+					"classtype": "supertrend",
+					"function_group": "Supertrend",
+					"description": "Supertrend",
+					"tooltip": "Supertrend",
+					"syntax": "Supertrend(<period>,<multiplier>)",
+					"tag": "technical_indicator",
+					"params": [
+						[
+						"period",
+						7,
+						true
+						],
+						[
+						"multiplier",
+						3,
+						true
+						]
+					],
+					"examples": [
+						"Supertrend(7,3)"
+						],
+					"class": "supertrend",
+					"suffix": [
+						"comparator"
+						]
+				},
+			"andor": "and",
+			"comparator": "lower than",
+			"compareIndicatorValid": true,
+			"indicatorValid": true,
+			"indicatorDetails": {
+				"period": "7",
+				"multiplier": "3"
+			},
+			"compareIndicator": "Supertrend(5,3)",
+			"selected_candle_interval": null,
+			"comparatorItem": {
+				"name": "lower than"
+			},
+			"compareIndicatorDetails": {
+				"period": "5",
+				"multiplier": "3"
+			},
+			"id": 1527498780073,
+			"compareIndicatorItem": {
+				"html_tags": "ti_tags",
+				"name": "Supertrend",
+				"allowed_comparision": [
+					"Price",
+					"Supertrend"
+				],
+				"classtype": "supertrend",
+				"function_group": "Supertrend",
+				"description": "Supertrend",
+				"tooltip": "Supertrend",
+				"syntax": "Supertrend(<period>,<multiplier>)",
+				"tag": "technical_indicator",
+				"params": [
+					[
+					"period",
+					7,
+					true
+					],
+					[
+					"multiplier",
+					3,
+					true
+					]
+				],
+				"examples": [
+					"Supertrend(7,3)"
+				],
+				"class": "supertrend",
+				"suffix": [
+					"comparator"
+				]
+			}
+		},
+		{
+			"indicator": "Price @ 110 in range of 0.5%",
+			"indicatorItem": {
+				"html_tags": "special_tags",
+				"name": "Trade At Price",
+				"allowed_comparision": [],
+				"classtype": "at_price",
+				"function_group": "Condition",
+				"tooltip": "Buy at a specific price in range",
+				"syntax": "Price @ <price> in range of <range_percentage>%",
+				"tag": "condition",
+				"params": [
+					[
+					"price",
+					0
+					],
+					[
+					"range_percentage",
+					"0.5",
+					false,
+					"",
+					"0.01"
+					]
+				],
+				"examples": [
+				"Last trading price @ 100 in range of 0.1%"
+				],
+				"suffix": [],
+				"class": "at_price",
+				"description": "Buy at a price in a given range"
+			},
+			"andor": "and",
+			"comparator": "N/A",
+			"compareIndicatorValid": false,
+			"indicatorValid": true,
+			"indicatorDetails": {
+				"price": "110",
+				"range_percentage": "0.5"
+			},
+			"compareIndicator": "N/A",
+			"selected_candle_interval": null,
+			"comparatorItem": {},
+			"id": 1527626213570,
+			"compareIndicatorItem": {}
+			}
+	],
+	"showScripModal": false,
+	"scripList": [
+		{
+		"symbol": "SBIN",
+		"segment": "NSE"
+		},
+		{
+		"symbol": "ICICIBANK",
+		"segment": "NSE"
+		},
+		{
+		"symbol": "CANBK",
+		"segment": "NSE"
+		},
+		{
+		"symbol": "PNB",
+		"segment": "NSE"
+		}
+	],
+	"showScripList": false,
+	"exitValid": true,
+	"csrftoken": "xwaLOoTk0fuXLmckwkqIZmS4c24rDaHlRiF0oKnGTYzvYZZJ9lbnJOfuYqYW3Fra",
+	"scripValid": true,
+	"entryValid": true,
+	"scripValue": "",
+	"positionType": "Buy",
+	"positionValid": true,
+	"quantity": "1"
+}
+
+
+"entry_logic": "Supertrend(7,3) lower than Supertrend(5,3)",
+
+
+{ "scrollEnabled" : true, "editMode" : false, "disabled" : false, "algoNameValid" : true, "algo_name" : "30may", "candleInterval" : "1 Minute", "stopLoss" : "1", "takeProfit" : "3", "algo_obj" : { "trade_time_given" : "True", "take_profit" : "3", "trading_stop_time" : "15:30", "min_candle_freq" : 10, "stop_loss" : "1", "holding_type" : "MIS", "equities" : "7b2248494e44414c434f223a224e5345227d", "time_frame" : "min", "algo_uuid" : "", "trading_start_time" : "09:15", "position_type" : "Buy", "position_qty" : "15", "chart_type" : "candlestick", "algo_state" : {  }, "entry_logic" : "MACD(12,26,9) crosses above MACD signal(12,26,9)", "csrfmiddlewaretoken" : "h9vR5Hy0pUfU1jt0kYzFi6Uezm8N86JkNVBA1jw3mYi74nsZiOiGYkQbx31dTFvs", "html_block" : "", "algo_name" : "30may", "exit_logic" : "", "algo_desc" : "null" }, "exitIndicators" : [ { "indicator" : "Indicator", "compareIndicator" : "Indicator", "id" : { "$numberLong" : "1527599453920" }, "comparator" : "Comparator" } ], "entryIndicators" : [ { "indicator" : "MACD(12,26,9)", "indicatorItem" : { "html_tags" : "ti_tags", "name" : "MACD", "allowed_comparision" : [ "Numbers", "MACD" ], "classtype" : "macd", "function_group" : "MACD", "tooltip" : "Moving Average Convergence / Divergence Oscillator", "syntax" : "MACD(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>)", "function_type" : "Momentum Indicators", "tag" : "technical_indicator", "params" : [ [ "Fast_MA_period", 12, true ], [ "Slow_MA_period", 26, true ], [ "Signal_period", 9, true ] ], "examples" : [ "2 days ago 5min MACD(12,26,9)" ], "suffix" : [ "comparator" ], "class" : "macd", "description" : "Moving Average Convergence/Divergence" }, "andor" : "and", "comparator" : "crosses above", "compareIndicatorValid" : true, "indicatorValid" : true, "indicatorDetails" : { "Slow_MA_period" : "26", "Signal_period" : "9", "Fast_MA_period" : "12" }, "compareIndicator" : "MACD signal(12,26,9)", "selected_candle_interval" : null, "comparatorItem" : { "name" : "crosses above" }, "compareIndicatorDetails" : { "Slow_MA_period" : "26", "Signal_period" : "9", "Fast_MA_period" : "12" }, "id" : { "$numberLong" : "1527599453920" }, "compareIndicatorItem" : { "html_tags" : "ti_tags", "name" : "MACD-signal", "allowed_comparision" : [ "Numbers", "MACD" ], "classtype" : "macd_signal", "function_group" : "MACD", "tooltip" : "MACD signal", "syntax" : "MACD signal(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>)", "function_type" : "Momentum Indicators", "tag" : "technical_indicator", "params" : [ [ "Fast_MA_period", 12, true ], [ "Slow_MA_period", 26, true ], [ "Signal_period", 9, true ] ], "examples" : [ "2 days ago 5min MACDsignal(12,26,9)" ], "suffix" : [ "comparator" ], "class" : "macd_signal", "description" : "MACD signal" } } ], "showScripModal" : false, "scripList" : [ { "symbol" : "HINDALCO", "segment" : "NSE" } ], "showScripList" : false, "exitValid" : true, "notifications" : [  ], "csrftoken" : "h9vR5Hy0pUfU1jt0kYzFi6Uezm8N86JkNVBA1jw3mYi74nsZiOiGYkQbx31dTFvs", "scripValid" : true, "entryValid" : true, "scripValue" : "", "positionType" : "Buy", "positionValid" : true, "quantity" : "15" }

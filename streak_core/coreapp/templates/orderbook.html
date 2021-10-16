@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Orders {% endblock %}
+{% block page_css1 %} <link href="/static/css/orders.css?v=1.7.1" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/orderbook.js?v=1.7.1"></script> {% endblock %}
+{% block page_js6 %}<script type="text/javascript" src="/static/js/chart.bundle.min.js"></script><script type="text/javascript">
+ $(document).ready(function() {
+});
+	</script> 
+{% endblock %}
+{% block page_js7 %}<script src="/static/js/product_tour_orders.js"></script>{% endblock %}
+{% block body %}
+
+<div class="block sec_main">
+	<div class="orders_main">
+			<div class="orders_top">
+				<div class="orders_top_inner">
+				<div class="status_select">
+					<select class="algo_status">
+						<option class="live_strategies" value="0" >All</option>
+						<option value="1">Streak</option>
+					</select>
+					<!-- <p>Instrument</p> -->
+				</div>
+				<div class="strategy_name_title">
+					<p>Type</p>
+				</div>
+				<!-- <div class="deployed_time_title">
+					<p>Deployed at</p>
+				</div> -->
+				<div class="instrument_title">
+					<p>Intrument</p>
+				</div>
+				<div class="notif_title">
+					<p>Qty</p>
+				</div>
+				<div class="target_prices_title">
+					<p>Avg. price</p>
+				</div>
+				<div class="pnl_title">
+					<p>Product</p>
+				</div>
+				<div class="actions_title">
+					<p>Status</p>
+				</div>
+			   </div>
+			</div>
+			<div class="orders_right">
+			<div class="empty_orders_right" style="display: none;">
+      			<img src="/static/imgs/empty-orders.png">
+      			<!-- <p>No algorithm live yet.<br>Go to <a href="/dashboard">backtest results</a> to deploy an algorithm.</p> -->
+      			<p><a href="/dashboard">No algos</a></p>
+    		</div>
+	</div>
+	<!-- <div class="show_more_eq" onclick="show_more_click()" style="text-align: center;cursor:pointer;display:none"><p>Show more&nbsp;&nbsp;&nbsp;<img src="/static/imgs/icon-dashboard-show-more.png"></p></div> -->
+</div>
+<div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<div class="close_popup"><img onclick="close_order_details_popup();" src="/static/imgs/icon-deploy-close.png"></div>
+    	<div class="order_details_header">
+    		<!-- <div class="order_name">
+    			<p>CANBK17OCTFUT</p>
+    			<p>NRML/NFO</p>
+    		</div>
+    		<div class="order_net_qty">
+    			<p>Net Qty</p>
+    			<p>45000</p>
+    		</div>
+    		<div class="order_avg_price">
+    			<p>Avg. Price</p>
+    			<p>243.90</p>
+    		</div>
+    		<div class="order_pnl">
+    			<p>P&L</p>
+    			<p class="profit">+&nbsp;23417.98</p>
+    		</div> -->
+    	</div>
+    	<div class="order_details_body">
+    		<!-- <div class="order_details_row">
+    			<div>
+    				<p>Previous Close</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>LTP</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Day's P&L</p>
+    				<p class="profit">+&nbsp;23543.87</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Buy Qty.</p>
+    				<p>21000</p>
+    			</div>
+    			<div>
+    				<p>Buy Price</p>
+    				<p>234.98</p>
+    			</div>
+    			<div>
+    				<p>Buy Value</p>
+    				<p>6313563.89</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Sell Qty.</p>
+    				<p>-</p>
+    			</div>
+    			<div>
+    				<p>Sell Price</p>
+    				<p>-</p>
+    			</div>
+    			<div>
+    				<p>Sell Value</p>
+    				<p>-</p>
+    			</div>
+    		</div> -->
+    	</div>
+   	</div>
+</div>
+<div class="force_stop_popup" style="display: none;">
+      <div class="card animated pulse">
+        <div class="close_popup"><img id="close_orders_popup_div" onclick="close_orders_popup();" src="/static/imgs/icon-deploy-close.png"/></div>
+        <div class="stop_options animated fadeIn" style="display: none;">
+        	<p class="stop_heading">Stop Algo</p>
+        	<p class="stop_sub_heading">You can choose to close your position at market or exit manually later.</p>
+        	<div class="options_section">
+        		<div>
+        			<!-- <button id="keep_positions_open" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Keep positions open</button> -->
+        			<button id="keep_positions_open">Keep positions open</button>
+        			<p>Stop the algo and close position manually.</p>
+        		</div>
+        		<div>
+        			<button id="exit_positions_now" onclick="$('.stop_options, .algo_stopped').hide();$('.exit_position').show();">Exit positions now</button>
+        			<p>Stop the algo and exit position now at market.</p>
+        		</div>
+        	</div>
+        </div>
+        <div class="exit_position animated fadeIn" style="display: none;">
+        	<p class="stop_heading">Stop algo</p>
+        	<p class="stop_sub_heading">Exit now at market</p>
+        	<div class="exit_position_section">
+        		<div class="back">
+        			<p><span onclick="$('.exit_position, .algo_stopped').hide();$('.stop_options').show();"><img src="/static/imgs/icon-back.png">Back</span></p>
+        		</div>
+        		<div>
+        			<div class="exit_window">
+            			<div class="exit_header">
+              				<p>Buy 500 stocks at 243.39</p>
+            			</div>
+            			<div class="exit_body">
+              				<div class="exit_options">
+                				<div>
+                 					<div class="radio_options">
+                    					<div>
+                      						<span id="buy_radio_option"></span>
+                      						<p id="option_selected">CNC</p>
+                    					</div>
+                    					<div>
+                      						<span></span>
+                      						<p>MIS</p>
+                    					</div>
+                  					</div>
+                  					<div class="exit_qty">
+                    					<p>Quantity</p>
+                    					<input type="number" name="">
+                  					</div>
+                				</div>
+                				<div>
+                  					<div class="radio_options">
+                    					<div>
+                      						<span></span>
+                      						<p>MKT</p>
+                    					</div>
+                    					<div>
+                      						<span id="buy_radio_option"></span>
+                      						<p id="option_selected">LMT</p>
+                    					</div>
+                  					</div>
+                  					<div class="exit_price">
+                   						<p>Price</p>
+                   			 			<input type="number" name="">
+                  					</div>
+                				</div>
+              				</div>
+              				<div>
+                				<button id="buy" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Buy</button>
+              				</div>
+            			</div>
+          			</div>
+        		</div>
+        	</div>
+        </div>
+        <div class="algo_stopped animated tada" style="display: none;">
+        	<img src="/static/imgs/new/algo_stopped.gif">
+        	<p class="stop_heading">Algorithm Stopped</p>
+        	<p class="stop_sub_heading">This algorithm is no longer active.<br><!-- You exited at market price. --></p>
+        </div>
+      </div>
+</div>
+<!-- <div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<div class="close_popup"><img onclick="close_order_details_popup();" src="/static/imgs/icon-deploy-close.png"></div>
+    	<div class="order_details_header">
+    	</div>
+    	<div class="order_details_body">
+    	</div>
+   	</div>
+</div> -->
+  {% if request.session.first_time_orders %}
+  <script type="text/javascript">
+    var first_time_orders = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_orders');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_orders = "false";
+  </script>
+  {% endif %}
+{% csrf_token %}
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

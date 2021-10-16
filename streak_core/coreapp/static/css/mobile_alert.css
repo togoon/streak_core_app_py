@@ -1,0 +1,294 @@
+.home_menu, .user_icon>p, .footer_home{
+	display: none !important;
+}
+html, body, .main{
+	max-width: 100%;
+	min-height: 100%;
+	max-height: 100%;
+	min-width: 100%;
+}
+.header{
+	background-color: #FFFFFF;
+	border-bottom: none;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.body{
+	background-color: #FFFFFF;
+	height: 100vh;
+}
+.mobile_notification_holder{
+	height: 100%;
+    margin-top: 50px;
+}
+#notifications{
+	position: relative;
+	right: 0px;
+	margin-left: 0px;
+	width: 100%;
+    height: 100%;
+    padding: 0px !important;
+}
+#notification_details{
+	max-height: 100%;
+	min-height: 100%;
+	max-width: 100%;
+	min-width: 100%;
+	margin: 0px !important;
+}
+.empty_alerts{
+  height: 100%;
+  width: 100%;
+  padding-top: 130px;
+  display: block;
+}
+.notif_empty{
+  display: block !important;
+  cursor: auto;
+}
+.notif_empty p{
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  display: block;
+  text-align: center;
+  font-size: 16px !important;
+  margin: 15px 0px 0px 0px !important;
+}
+.notif_empty img{
+  height: 150px !important;
+  display: block;
+  margin: auto;
+  cursor: auto;
+}
+/*.empty_alerts img{
+  width: 53px;
+  height: 69px;
+  margin: auto;
+  display: block;
+}
+.empty_alerts img{
+  width: 70px;
+  margin: auto;
+  display: block;
+}
+.empty_alerts p{
+  width: 100%;
+  margin: 0px;
+  padding-top: 30px;
+  text-align: center;
+  font-family: Open Sans,sans-serif;
+  line-height: 2.5;
+  letter-spacing: 0.25px;
+  font-weight: 400;
+  font-size: 20px;
+  color: #bfc7d1;
+}*/
+.buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+		padding: 5px 0px !important;
+		font-size: 10px !important;
+		margin-left: 5px !important;
+}
+.notif_desc{
+	font-size: 13px;
+}
+@media only screen and (max-width: 699px){
+	.header{
+		padding: 0px 5px 0px 15px;
+	}
+	.user_icon ul, .menu_icon ul{
+		left: -15px;
+	}
+	#notifications p, #mobile_menu_icon p {
+    	 display: flex; 
+	}
+	.notif_tag{
+		display: table !important;
+    	margin-bottom: 10px !important;
+    	font-size: 9px;
+	}
+	.notif_second_line, .notif_second_line_cancel_order{
+		display: block !important;
+		width: 75% !important;
+	}
+	.notif_second_line_bottom{
+		padding: 5px 0px 0px 5px;
+	}
+	#cancel_order_notif_confirm{
+		font-size: 10px;
+    	padding: 4px 18px;
+	}
+	.notif_first_line{
+		width: 25% !important;
+		/*display: flex !important;*/
+	}
+	#user_icon p, #more p, #notifications p, #mobile_menu_icon p{
+		white-space: pre-wrap;
+	}
+	.notif_time_stamp{
+		font-size: 10px;
+    	padding: 3px 0px;
+    	margin-bottom: 5px !important;
+	}
+	.notif_algo_name{
+		font-size: 10px;
+		margin-top: 10px !important;
+	}
+	.notif_window{
+		max-width: 100%;
+		margin: 10px;
+	}
+	.notif_header p{
+		display: block !important;
+	}
+	.notif_body{
+		padding: 15px 5px 35px 5px;
+	}
+	.radio_options p{
+		margin-right: 5px !important;
+	}
+	.radio_outer{
+		margin: 1px 1px 0px 0px !important;
+	}
+	.notif_options>div:first-child{
+		margin-right: 2%;
+	}
+	#buy, #sell, #cancel{
+		padding: 5px 0px;
+	}
+	.notifications li:hover{
+		background-color: #FFFFFF;
+	}
+	#notif_count{
+		border-radius: 50%;
+    	padding: 5px;
+    	margin: 0px;
+    	display: block;
+    	background-color: #ff7800;
+    	color: #FFFFFF;
+    	height: 13px;
+    	width: 13px;
+    	font-size: 11px;
+    	text-align: center;
+    	margin-left: -11px;
+    	margin-top: -11px;
+    	position: absolute;
+	}
+	#mobile_menu_icon>p, #counter{
+		display: none !important;
+	}
+	.menu{
+		width: auto;
+	}
+	.notifications img{
+		/*margin-top: 7px;*/
+	}
+	#notifications>span{
+		margin-left: -10px;
+		margin-top: -3px;
+	}
+	.buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+		padding: 3px 0px !important;
+		font-size: 9px !important;
+		margin-left: 5px !important;
+	}
+	.notif_desc{
+		font-size: 12px;
+	}
+}
+@media only screen and (max-width: 1024px) and (min-width: 700px){
+	#notifications p, #mobile_menu_icon p {
+    	 display: flex; 
+	}
+	.notif_tag{
+		display: table !important;
+    	margin-bottom: 10px !important;
+    	font-size: 9px;
+	}
+	.notif_second_line, .notif_second_line_cancel_order{
+		display: block !important;
+		width: 75% !important;
+	}
+	.notif_second_line_bottom{
+		padding: 5px 0px 0px 5px;
+	}
+	#cancel_order_notif_confirm{
+		font-size: 10px;
+    	padding: 4px 18px;
+	}
+	.notif_first_line{
+		width: 25% !important;
+		/*display: flex !important;*/
+	}
+	#user_icon p, #more p, #notifications p, #mobile_menu_icon p{
+		white-space: pre-wrap;
+	}
+	.notif_time_stamp{
+		font-size: 10px;
+    	padding: 3px 0px;
+    	margin-bottom: 5px !important;
+	}
+	.notif_algo_name{
+		font-size: 10px;
+		margin-top: 10px !important;
+	}
+	.notif_window{
+		max-width: 100%;
+		margin: 10px;
+	}
+	.notif_header p{
+		display: block !important;
+	}
+	.notif_body{
+		padding: 15px 5px 35px 5px;
+	}
+	.radio_options p{
+		margin-right: 5px !important;
+	}
+	.radio_outer{
+		margin: 1px 1px 0px 0px !important;
+	}
+	.notif_options>div:first-child{
+		margin-right: 2%;
+	}
+	#buy, #sell, #cancel{
+		padding: 5px 0px;
+	}
+	.notifications li:hover{
+		background-color: #FFFFFF;
+	}
+	#notif_count{
+		border-radius: 50%;
+    	padding: 5px;
+    	margin: 0px;
+    	display: block;
+    	background-color: #ff7800;
+    	color: #FFFFFF;
+    	height: 13px;
+    	width: 13px;
+    	font-size: 11px;
+    	text-align: center;
+    	margin-left: -7px;
+    	margin-top: -12px;
+	}
+	#mobile_menu_icon>p, #counter{
+		display: none !important;
+	}
+	.menu{
+		width: auto;
+	}
+	.notifications img{
+		/*margin-top: 7px;*/
+	}
+	#notifications>span{
+		margin-left: -10px;
+		margin-top: -3px;
+	}
+	.buy_tag, .notif_tag, .sell_tag, .complete_tag, .rejected_tag, .pending_tag, .cancel_tag, .open_tag{
+		padding: 3px 0px !important;
+		font-size: 9px !important;
+		margin-left: 5px !important;
+	}
+	.notif_desc{
+		font-size: 12px;
+	}
+}

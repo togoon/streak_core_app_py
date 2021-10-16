@@ -1,0 +1,98 @@
+- name: Base setup
+  hosts: all
+  connection: local
+  vars:
+    - resolv_conf_nameserver:
+        - 8.8.8.8
+        - 8.8.4.4
+    - resolv_conf_options:
+        - single-request-reopen
+    - users:
+        - username: root
+
+  tasks:
+    - name: System info
+      debug: msg="System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }} {{ ansible_user_id }}"
+
+    - name: Set sysctl config (fs.file-max)
+      sysctl:
+        name: fs.file-max
+        value: 1000000
+        reload: yes
+        state: present
+
+    - name: Set sysctl config (net.ipv4.ip_local_port_range)
+      sysctl:
+        name: net.ipv4.ip_local_port_range
+        value: "22768 61000"
+        reload: yes
+        state: present
+
+    # Limits conf
+    - name: Set soft nofile for root
+      pam_limits:
+        domain: root
+        limit_type: soft
+        limit_item: nofile
+        value: 1000000
+
+    - name: Set hard nofile for root
+      pam_limits:
+        domain: root
+        limit_type: hard
+        limit_item: nofile
+        value: 1000000
+
+    - name: Set soft nofile for all
+      pam_limits:
+        domain: "*"
+        limit_type: soft
+        limit_item: nofile
+        value: 1000000
+
+    - name: Set hard nofile for all
+      pam_limits:
+        domain: "*"
+        limit_type: hard
+        limit_item: nofile
+        value: 1000000
+
+    - name: Set soft nproc for root
+      pam_limits:
+        domain: root
+        limit_type: soft
+        limit_item: nproc
+        value: 30000
+
+    - name: Set hard nproc for root
+      pam_limits:
+        domain: root
+        limit_type: hard
+        limit_item: nproc
+        value: 30000
+
+    - name: Set soft nproc for all
+      pam_limits:
+        domain: "*"
+        limit_type: soft
+        limit_item: nproc
+        value: 30000
+
+    - name: Set hard nproc for all
+      pam_limits:
+        domain: "*"
+        limit_type: hard
+        limit_item: nproc
+        value: 30000
+
+    - name: Install list of packages
+      apt: name={{item}} state=installed
+      with_items:
+         - htop
+         - screen
+         - ncdu
+         - telnet
+         - vim
+         - nano
+         - iftop
+         - supervisor

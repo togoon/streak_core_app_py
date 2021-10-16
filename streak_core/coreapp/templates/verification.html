@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Forgot Password {% endblock %}
+{% block page_css1 %} <link href="/static/css/verification.css?v=1.7.1" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/verification.js?v=1.7.1"></script> {% endblock %}
+
+{% block body %}
+
+<!-- <div class="block sec_main">
+	<div class="signup_sec">
+		<p>Create a {---} Account</p>
+		
+		<p id="login_link">Already have an account?&nbsp;&nbsp;&nbsp;<a href="/login" onclick="ga('send', 'event', 'Login', 'Link', 'SignUp page');">Login</a></p>
+	</div>
+</div> -->
+<div class="block sec_main">
+	<div class="signup_left" style="display: none;">
+		<div class="design_sec">
+			
+		</div>
+	</div>
+	<div class="signup_right">
+		<div class="signup_sec">
+			<div class="signup_logo"><img src="/static/imgs/logo.png"></div>
+			<p class="signup_title">{{msg_title}}</p>
+			<p class="signup_sub_title">{{msg_content}}</p>
+			<button type="submit" onclick="ga('send', 'event', 'Signup', 'Submit Click'); window.location='/login'; ">Log&nbsp;&nbsp;in</button>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block errorblock %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		{% if error_msg and error_msg.strip %}
+			$('#error_message').text('{{error_msg}}');
+			$("#error_box").show();
+			$(".body").css({"margin-top": "5px"});
+		{% endif %}
+		{% for e in error %}
+			$('#error_message').append('{{e}}<br>');
+			$("#error_box").show();
+			$(".body").css({"margin-top": "5px"});
+		{% endfor %}
+	});
+
+</script>
+{% endblock %}

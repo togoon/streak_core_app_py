@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Login {% endblock %}
+{% block page_css1 %}{% endblock %}
+{% block page_js1 %}{% endblock %}
+
+{% block body %}
+<a href="/broker_login">
+<img src="/static/imgs/kite.png">
+</a>
+<script type="text/javascript">
+	$(window).load(function() {
+    // Animate loader off screen
+    	$(".loader_parent").fadeOut();
+	});
+	{% if popup %}
+		function preloadFunc(){
+			if(window.location.href.indexOf('status=success&request_token=')!=-1){
+				window.close();
+			}
+		}
+		window.onpaint = preloadFunc();
+	{% endif %}
+</script>
+{% endblock %}

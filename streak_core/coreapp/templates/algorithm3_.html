@@ -1,0 +1,992 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Create Algo{% endblock %}
+    {% block meta_keywords %} 
+    <meta name="keywords" content="Streak, Streak Tech, Streak AI, Create algo, technical indicators, SMA, EMA, RSI, Create Algorithm, Trading algo, Trading Algorithm, Write Algorithm, Natural Language Processing, Natural Strategy Processing, Streak Algorithm, algorithmic trading, trading strategy, strategizing investments, Streak.ai, Streak, Zerodha">
+    {% endblock %}
+    {% block meta_desc %} 
+    <meta name="description" content="Create a Streak Trading Strategy in plain English and covert into executable code. Use technical indicators such as moving averages like SMA, EMA, volume based indicators like OBV, MACD, supertrend amd much more">
+    {% endblock %} 
+{% block page_css1 %} <link href="/static/css/algorithm3_.css?v=2.3" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/algorithm3_1.js?v=2.9"></script> {% endblock %}
+{% block page_js2 %} <script src="/static/js/jquery-ui.min.js"></script> {% endblock %}
+{% block page_js3 %}<script src="/static/js/product_tour_create_algorithm.js?v=2.0"></script>{% endblock %}
+{% load jsonify %}
+{% block body %}
+    {% csrf_token %}
+    <div class="block sec_main">
+    <div class="mobile_message">
+      <p>Please use a Laptop or a Desktop to Create Strategy.<br>We apologize for the inconvenience.<br><br>We are working on a brand new page for your mobile device!</p>
+    </div>
+    <div class="left_main">
+        <!-- <p>Hello There!</p> -->
+        <div class="card" style="display: none;">
+        <div class="drag_container" id="drag_container1">
+          <!-- <div class="drag_heading">
+            <p>Technical Indicators:</p>
+          </div> -->
+          <div class="drag_tech_elements" id="drag_tech_elements">
+          <span draggable="true" onclick="custom_click(event)" ondragstart="drag(event);" class="ti special_tags" id="at_price">&nbsp;Take position At Price</span>
+         <!--  <span draggable="true" ondragstart="drag(event);" class="ti special_tags" id="percentage">&nbsp;Higher by/ Lower by</span> --><br>
+          <!-- <span draggable="true" onclick="custom_click(event)" ondragstart="drag(event);" class="ti field_tags" id="price">&nbsp;Price</span>
+          <span draggable="true" onclick="custom_click(event ondragstart="drag(event);" class="ti field_tags" id="number">&nbsp;Number</span>
+          <span draggable="true" onclick="custom_click(event)" ondragstart="drag(event);" class="ti field_tags" id="volume">&nbsp;Volume</span> -->
+          </div>
+          </div>
+        </div>
+        <div class="card">
+        <div class="drag_container" id="drag_container2">
+          <div class="drag_heading">
+            <div id="add_indicators_text"><p>Indicators</p></div>
+            <div class="search_ti"><input type="text" name="search_ti" id="search_ti" placeholder=""></div>
+          </div>
+          <div class="drag_tech_elements" id="drag_tech_elements">
+            <span draggable="true" ondragstart="drag(event);" class="ti compare_eq_tag" id="">&nbsp;+ ADD & COMPARE EQUITY</span>
+            <br>
+            <br>
+            <!-- <div class="tooltip_top" id="tooltip">
+              <div class="tt_container">
+                <div class="tt_header">
+                 <p>Simple Moving Average</p>
+                </div>
+                <div class="tt_body">
+                 <div class="tt_content">
+                   <p>
+                   Simple moving average (SMA) is an arithmetic moving average calculated by adding the closing price of the security for a number of time periods and then dividing this total by the number of time periods.
+                   </p>
+                 </div>
+                </div>
+              </div>
+            </div> -->
+            <!-- <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="sma">&nbsp;SMA</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="ema">&nbsp;EMA</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="rsi">&nbsp;RSI</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="macd">&nbsp;MACD</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="ubb">&nbsp;UBB</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="lbb">&nbsp;LBB</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="mbb">&nbsp;MBB</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="adx">&nbsp;ADX</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="di_plus">&nbsp;DI+</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="di_minus">&nbsp;DI-</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="tr">&nbsp;TR</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="atr">&nbsp;ATR</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="macd">&nbsp;MACD</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="aroon_up">&nbsp;Aroon Up</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ti_tags" id="aroon_down">&nbsp;Aroon Down</span>
+            <br>
+            <br>
+            <span draggable="true" ondragstart="drag(event);" class="ti ohlcv_tags" id="open">&nbsp;Open</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ohlcv_tags" id="high">&nbsp;High</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ohlcv_tags" id="low">&nbsp;Low</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ohlcv_tags" id="close">&nbsp;Close</span>
+            <span draggable="true" ondragstart="drag(event);" class="ti ohlcv_tags" id="volume">&nbsp;Volume</span>
+            <br>
+            <br>
+            <span class="more_ti">+ more</span> -->
+          </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="drag_container" id="drag_container3">
+          <div class="drag_heading">
+            <p>Comparators</p>
+          </div>
+          <div class="drag_comp_elements" id="drag_comp_elements">
+            <!-- <span draggable="true" ondragstart="drag(event);" class="co comparator_tags" id="above">&nbsp;higher than</span>
+            <span draggable="true" ondragstart="drag(event);" class="co comparator_tags" id="below">&nbsp;lower than</span>
+            <span draggable="true" ondragstart="drag(event);" class="co comparator_tags" id="equal">&nbsp;equal to</span>
+            <span draggable="true" ondragstart="drag(event);" class="co comparator_tags" id="gte">&nbsp;higher than or equal to</span>
+            
+            //<span draggable="true" ondragstart="drag(event);" class="co" id="hithan">&nbsp;higher than</span>
+            //<span draggable="true" ondragstart="drag(event);" class="co" id="lothan">&nbsp;lower than</span>
+            
+            <span draggable="true" ondragstart="drag(event);" class="co comparator_tags" id="lte">&nbsp;lower than or equal to</span> -->
+          
+          
+          </div>
+          </div>
+        </div>
+        <!-- <div class="card"></div> -->
+    </div>
+    <!-- <div class="tooltip" id="tooltip" style="display: none;">
+      <div class="tt_container">
+        <div class="tt_header">
+          <p><span>SMA&nbsp;</span>-&nbsp;Simple Moving Average</p>
+        </div>
+        <div class="tt_body">
+          <div class="tt_content">
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="right_main">
+
+      <div class="right_main_inner">
+      <div class="progress_section">
+      <div class="prompter">
+         <div class="adding_equities_section" id="adding_equities_section">
+          <div>
+            <p>Scrip</p>
+          </div>
+          <div>
+              <span></span><!-- equities_input -->
+          </div>
+          <div>
+            <!-- <div id="labels_for_exit"><p>Instruments</p><p>Candle interval</p></div> -->
+            <div class="equities_interval_section">
+              <input type="text" name="search_eq" id="equities_input" placeholder="Add instruments">
+              <input id="ip_interval" data-val-text="1 Hour" value="1 Hour" readonly>
+              </input>
+              <!-- <select id="ip_interval">
+                <option value="min">1 Minute</option>
+                <option value="3min">3 Minutes</option>
+                <option value="5min">5 Minutes</option>
+                <option value="10min">10 Minutes</option>
+                <option value="15min">15 Minutes</option>
+                <option value="30min">30 Minutes</option>
+                <option value="hour" selected>1 Hour</option>
+                <option value="day">1 Day</option>
+              </select> -->
+            </div>
+              <!-- <datalist style="display: block"id="equities_input_datalist"></datalist> -->
+            <div class="added_equities">
+            </div>
+          </div>
+         </div>
+         <div class="write_strategy_section" id="write_strategy_section">
+          <div>
+            <!-- <p>Take position</p> -->
+            <p>Position</p>
+          </div>
+          <div>
+              <span></span>
+          </div>
+          <div class="buy_sell">
+              <!-- <input type="text" name="Enter when" placeholder="Buy/Sell"> -->
+              <!-- <select id="ip_position_type"><option>Buy</option><option>Sell</option></select> -->
+              <input id="ip_position_type" value="Buy" data-val-text="Buy" readonly=""></input>
+              <!-- <select><option>Buy</option><option>Sell</option></select> -->
+              <input type="number" id="ip_position_qty" name="Enter when" placeholder="Quantity"> 
+          </div>
+         </div> 
+         <div class="enter_strategy_section" id="enter_strategy_section">
+          <div>
+            <p>Entry</p>
+          </div>
+          <div>
+              <span></span>
+          </div>
+          <div class="conditions">
+            <div class="prompter_text"><div class="brokerage_section"><p><label class="switch"><input class="brokerage_toggle" id="" type="checkbox"><span class="slider" id="auto_assist"></span></label>&nbsp;&nbsp;&nbsp;<span data-tooltip-top="This feature will autocomplete your strategy after you enter the first indicator.">Assist<span class="assist_help"><a href="https://help.streak.tech/indicators/#assist-supported-indicators" target="_blank">i</a></span></span></p></div></div>
+            <div class='display_condition input_condition2' id='display_condition1'>
+              <!-- <div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div> -->
+                <!-- <input readonly type="text" name="Enter when" placeholder="Indicator &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comparator &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Indicator" ondrop="drop(event);" ondragover="allowDrop(event);"> -->
+                <!-- <p class="input_condition"><span>Indicator</span><span>Comparator</span><span>Indicator</span></p> -->
+                <div class="input_divs"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA"></div>
+                <div class="input_divs"><input type="text" name="search_co" class="search_co" placeholder="Comparator ex: higher than"></div>
+                <div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Indicator ex: EMA"></div>
+                <span class="clear" onclick="clear_condition_first(event)">Clear</span>
+            </div>
+            <!-- <div class="search_ti"><input type="text" name="search_ti" id="search_ti" placeholder=""></div> -->
+          <div class="another_condition">
+            <p onclick="insert_condition3(event);">+ Add another condition</p>
+          </div>
+          <!-- <div class="display_condition">
+          <div class="and_or">
+            <select><option>and</option><option>or</option></select>
+              <input readonly type="text" name="Enter when" placeholder="condition 2">
+              <p class="input_condition" ondrop="drop(event);" ondragover="allowDrop(event);"><span>Indicator</span><span>Comparator</span><span>Indicator</span></p>
+          </div>
+          <div class="another_condition">
+            <p onclick="insert_condition();$(this).hide();">+ Add another condition</p>
+          </div>
+          </div> -->
+          </div>
+         </div>
+         <div class="exit_strategy_section" id="exit_strategy_section">
+          <div>
+            <p>Exit</p>
+          </div>
+          <div>
+              <span></span>
+          </div>
+          <div class="conditions_exit">
+            <div class="prompter_text_exit" id="prompter_text_exit" style="margin-bottom: 0px !important;"><p onclick="show_exit_div(event);" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div>
+            <div class='display_condition_exit input_condition2' id='display_condition1_exit' style="display: none;">
+              <!-- <div class="and_or" onchange="and_or_select_change(event)"><select id="andor"><option>and</option><option>or</option></select></div> -->
+                <!-- <input readonly type="text" name="Enter when" placeholder="Indicator &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comparator &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Indicator" ondrop="drop(event);" ondragover="allowDrop(event);"> -->
+                <!-- <p class="input_condition"><span>Indicator</span><span>Comparator</span><span>Indicator</span></p> -->
+               <!--  <div class="input_divs"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA"></div>
+                <div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit" placeholder="Comparator ex: higher than"></div>
+                <div class="input_divs"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA"></div>
+                <span class="clear" onclick="clear_condition_first_exit(event)">Clear</span> -->
+            </div>
+            <!-- <div class="search_ti"><input type="text" name="search_ti" id="search_ti" placeholder=""></div> -->
+          <div class="another_condition_exit" style="display: none;">
+            <p onclick="insert_condition3_exit(event);">+ Add another condition</p>
+          </div>
+          <!-- <div class="display_condition">
+          <div class="and_or">
+            <select><option>and</option><option>or</option></select>
+              <input readonly type="text" name="Enter when" placeholder="condition 2">
+              <p class="input_condition" ondrop="drop(event);" ondragover="allowDrop(event);"><span>Indicator</span><span>Comparator</span><span>Indicator</span></p>
+          </div>
+          <div class="another_condition">
+            <p onclick="insert_condition();$(this).hide();">+ Add another condition</p>
+          </div>
+          </div> -->
+            <!-- <div>
+                <div id="labels_for_exit"><p>Stop loss %</p><p>Target profit %</p></div>
+                    <input type="number" min="0" name="Enter when" id="ip_stop_loss" placeholder="Stop Loss %">
+                    <input type="number" min="0" name="Enter when" id="ip_take_profit" placeholder="Target Profit %">
+            </div> -->
+          </div>
+
+         </div>
+          <div class="exit_strategy_section1" id="exit_strategy_section1">
+            <div>
+              <p id="exit_strategy_section_title" style="display: none;">Exit</p>
+            </div>
+            <div>
+                <span id="exit_strategy_section_bubble" style="display: none;"></span>
+            </div>
+            <div>
+                <!-- <div id="labels_for_exit"><p>Stop loss %</p><p>Target profit %</p></div> -->
+                <input type="" min="0" name="Enter when" id="ip_stop_loss" placeholder="Stop Loss %">
+                <input type="" min="0" name="Enter when" id="ip_take_profit" placeholder="Target Profit %">
+            </div>
+          </div>
+          <div class="advanced_options_section" id="advanced_options_section">
+          <div>
+            <!-- <p>Take position</p> -->
+            <p>Advanced</p>
+          </div>
+          <div>
+              <span></span>
+          </div>
+          <div>
+            <div id="labels_for_advanced"><p>Chart type</p><p id='ip_holding_type_title'>Order type</p></div>
+            <div class="advanced_details_row">
+              <!-- <select id="ip_chart_type">
+                <option value="candlestick" selected>Candlestick chart</option>
+                <option value="heikinAshi">Heikin-Ashi chart</option>
+              </select> -->
+              <div class="ip_chart_type_div">
+              <input id="ip_chart_type" value="Candlestick" readonly>
+              </input>
+              </div>
+              <!-- <select id="ip_holding_type">
+                <option value="MIS" selected>MIS</option>
+                <option value="CNC">CNC/NRML</option>
+              </select> -->
+              <div class="ip_holding_type_div">
+              <input id="ip_holding_type" value="MIS" readonly></input></div>
+            </div> 
+            <div id="labels_for_advanced" class="labels_for_advanced"><p>Enter trade between</p><p></p></div>
+            <div class="advanced_details_row">
+              <input type="time" name="start_time" id="trading_start_time" value="00:00">     
+              <input type="time" name="stop_time" id="trading_stop_time" value="23:59">
+            </div>
+          </div>
+          </div>
+           <div class="naming_strategy_section" id="naming_strategy_section">
+          <div>
+            <p>Strategy Name</p>
+          </div>
+          <div>
+              <span></span>
+          </div>
+          <div>
+              <input type="text" name="ip_strategy_name" id="ip_strategy_name" placeholder="ex: My golden crossover" maxlength="40">
+              <input type="text" name="ip_strategy_desc" style="display: none;" value='null' id="ip_strategy_desc" placeholder="Description" maxlength="20">
+          </div>
+         </div>  
+         <div class="finish_section">
+          <div>
+            <p>Finish</p>
+          </div>
+          <div>
+              <span></span>
+          </div>
+          <div id="algo_submit">
+              <button class="save_backtest" type="submit">Backtest</button>
+          </div>
+          
+                  <!-- <button class="save_backtest" type="submit" onclick="save_algorithm_new();">Save & Run Backtest&nbsp;<img src="/static/imgs/icon-forward.png"></button> -->
+                  
+          </div>
+      </div>
+      <div class="progress_line"></div>
+      </div>
+      <!-- <div class="create_strategy" style="display: none;">
+            <div class="block create_title" id="create_title">
+            <div class="create_img"><img src="/static/imgs/create.png"></div>
+            <div class="algo_name_desc"><label for="algo_name">Algorithm Name:</label><input type="text" id="algo_name" value="{{action.action_name|capfirst}}{{action_name|capfirst}}" name="" placeholder="" maxlength="50"><br>
+            <label for="algo_description">Description:</label>
+            <input type="text" name="" id="algo_description" placeholder="" maxlength="200" value="{{action.action_desc|capfirst}}{{action_desc|capfirst}}">
+            </div>
+            </div>
+            <div class="block create_segment">
+            {% if algo %}
+              {% autoescape off %}{{ algo.create_segment_html|safe }}{% endautoescape %}
+            {% else %}
+                     <div class="hidden_inputs" style="display: none;"><input id="action_name" type="text" name="" placeholder="Exchange" value="{{action.action_name}}{{action_name}}" style="display: none;"><input id="action_desc" type="text" name="" placeholder="Exchange" value="{{action.action_desc}}{{action_desc}}" style="display: none;"><input id="action_id" type="text" name="" placeholder="Equity" value="{{action.action_uuid}}" style="display: none;"></div>
+            {% endif %}
+            </div>
+      </div> -->
+              <div class="submit_strategy_div" style="display: none !important;">
+                <div class="strategy_details">
+                  <div class="strategy_icon">
+                    <img src="/static/imgs/icon-strategy.png">
+                  </div>
+                  <div class="strategy_name_desc">
+                    <div class="strategy_name">
+                    <p>Algorithm Name </p>
+                    </div>
+                    <div class="strategy_desc">
+                    <p>Algorithm description</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="entry_summary">
+                  <div class="entry_title">
+                    <p>Entry</p>
+                  </div>
+                  <div class="entry">
+                    <p>When something interesting happens !</p>
+                  </div>
+                </div>
+                <div class="exit_summary">
+                  <div class="exit_title">
+                    <p>Exit</p>
+                  </div>
+                  <div class="exit">
+                    <p>To Close Position do something !</p>
+                  </div>
+                </div>
+                <!-- <div id="cover_position" style="display: none">
+                  <button type="submit" id="close_position_toggle" onclick="close_position_toggle();">+ Add a Close Position</button>
+                </div> -->
+                <div id="algo_submit">
+                  <!-- <button class="save_backtest" type="submit" onclick="save_algorithm_new();">Save & Run Backtest&nbsp;<img src="/static/imgs/icon-forward.png"></button> -->
+                  <button class="save_backtest" type="submit">Backtest</button>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="title1"><p>Team</p></div> -->
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      try{
+        u = new URL(window.location.href);
+        stock=u.searchParams.get('stock');
+        stock = "{{equities|default:None}}";
+        if(stock=='None'){
+          stock=u.searchParams.get('stock');
+        }
+        if(stock!==null){
+          stock = stock.split(',');
+          for(var s=0;s<stock.length;s++){
+            [seg,sym] = stock[s].split(':');
+            if(equity_added[sym]==null && seg!=undefined && sym!=undefined){
+              if(['NSE', 'NFO', 'CDS','MCX'].indexOf(seg) < 0){
+                show_snackbar(null,'Instrument is not supported');
+                continue;
+              }
+              if(seg=='CDS'||seg=='NFO'){
+                if(sym.endsWith('FUT')){
+                  seg=seg+'-FUT';
+                }
+                else{
+                  show_snackbar(null,'Instrument is not supported');
+                  continue;
+                }
+              }
+              $('.added_equities').append('<span><span data-syms="'+sym+'_'+seg+'">'+sym+' '+seg+'</span><span><img src="/static/imgs/new/close.svg"></span></span>');
+              equity_added[sym]=seg;
+            }
+          }
+
+          if(Object.keys(equity_added).length>0){
+            $($('.adding_equities_section div span')[0]).css("background-color", "#06d092");
+            $($('.adding_equities_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+
+          $(".added_equities img").click(function(){
+            // $(this).parentsUntil('.added_equities').hide();
+            x = $($($(this).parentsUntil('.added_equities')).find('span')[0]).data('syms');
+            if(x!=null){
+              [sym,seg] = x.split('_');
+              delete equity_added[sym];
+            }
+            $(this).parentsUntil('.added_equities').remove();
+            
+            if(Object.keys(equity_added).length==0){
+              $($('.adding_equities_section div span')[0]).css("background-color", "#ADADAD");
+              $($('.adding_equities_section div span')[0]).css("border-color", "#F3F3F3");
+            }
+            footer_updater();
+          });
+        }
+      }
+      catch(e){
+        console.log(e);
+      }
+    });
+
+  </script>
+  {% if algo %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+        
+        var interval_mapping_rev = {"min":'1 Minute',"3min":'3 Minutes',"5min":'5 Minutes',"10min":'10 Minutes',"15min":'15 Minutes',"30min":'30 Minutes',"hour":'1 Hour',"day":'1 Day'};
+        var chart_type_maping_rev = {"candlestick":'Candlestick',"heikinAshi":'Heikin-Ashi'};
+        var holding_type_mapping_rev = {'MIS':"MIS","CNC":'CNC/NRML'};
+
+        $('#ip_strategy_name').val("{{algo.algo_name}}");
+        $('#ip_strategy_desc').val("{{algo.algo_desc}}");
+
+        $('#ip_stop_loss').val("{{algo.stop_loss}}");
+        $('#ip_take_profit').val("{{algo.take_profit}}");
+        $('#ip_position_qty').val("{{algo.quantity}}");
+        min_candle_freq = {{algo.min_candle_freq|default:1000}};
+        selected_val="Buy";
+        {% if algo.position_type == -1 %}
+        selected_val="Sell";
+        {% endif %}
+        {% if algo.position_type == 1 %}
+        selected_val="Buy";
+        {% endif %}
+        $("#ip_position_type").val(selected_val);
+        $("#ip_position_type").data('val-text',selected_val);
+
+        $("#ip_interval").val(interval_mapping_rev["{{algo.time_frame}}"]);
+        $("#ip_interval").data('val-text',interval_mapping_rev["{{algo.time_frame}}"]);
+
+      algo_state = {{algo.algo_state|default:"{}"|jsonify|safe}}
+
+      /////////////////// populating algo state ////////////////////
+      if(algo_state.scripList!=undefined)
+      {
+        $('.added_equities').html('');
+        for(var i=0;i<algo_state.scripList.length;i++)
+        {
+          $('.added_equities').append('<span><span data-syms="'+algo_state.scripList[i].symbol+'_'+algo_state.scripList[i].segment+'">'+algo_state.scripList[i].symbol+' '+algo_state.scripList[i].segment+'</span><span><img src="/static/imgs/new/close.svg"></span></span>');
+        }
+        // if(algo_state.scripList.length>0){
+        //   $($('.adding_equities_section div span')[0]).css("background-color", "#FFFFFF");
+        //   $($('.adding_equities_section div span')[0]).css("border-color", "#dee7f1");
+        // }
+      }
+
+      // Entry condition
+
+      var conditions = $('.conditions');
+      conditions.html('<div class="prompter_text" style=""><div class="brokerage_section"><p><label class="switch"><input class="brokerage_toggle" id="" type="checkbox"><span class="slider" id="auto_assist"></span></label>&nbsp;&nbsp;&nbsp;<span data-tooltip-top="This feature will autocomplete your strategy after you enter the first indicator.">Assist<span class="assist_help"><a href="https://help.streak.tech/indicators/#assist-supported-indicators" target="_blank">i</a></span></span></p></div></div>');
+      if(algo_state.entryIndicators != undefined){
+        if(algo_state.entryIndicators.length>0){
+          if(algo_state.entryIndicators[0].indicator!="Indicator"){
+            for(var j=0;j<algo_state.entryIndicators.length;j++){
+              class_tag = algo_state.entryIndicators[j].indicatorItem.class;
+              if(algo_state.entryIndicators[j].indicatorItem.class=='close')
+                class_tag = 'close_';
+
+              inplace_click = 'onclick="custom_click_inplace(event)"';
+              if(algo_state.entryIndicators[j].indicatorDetails!=undefined)
+                if(Object.keys(algo_state.entryIndicators[j].indicatorDetails).length==0){
+                  inplace_click = '';
+                }
+
+              comparator_inplace_click = 'onclick="custom_click_inplace(event)"';
+              try{
+                if(Object.keys(algo_state.entryIndicators[j].compareIndicatorDetails).length==0){
+                comparator_inplace_click = '';
+                }
+              }catch(e){
+
+              }
+
+              if(j==0)
+                {
+                  if(algo_state.entryIndicators[j].comparator=='N/A' && algo_state.entryIndicators[j].compareIndicator=='N/A')
+                    ind1 = '<div class="display_condition input_condition2" id="display_condition1"><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+                  else
+                    ind1 = '<div class="display_condition input_condition2" id="display_condition1"><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+                }
+              else
+                {
+                  and_or = algo_state.entryIndicators[j-1].andor
+                  if(and_or=="or")
+                    and_or_html = '<select id="andor"><option>and</option><option selected>or</option></select>';
+                  else
+                    and_or_html = '<select id="andor"><option selected>and</option><option>or</option></select>';
+
+                    if(algo_state.entryIndicators[j].comparator=='N/A' && algo_state.entryIndicators[j].compareIndicator=='N/A')
+                      ind1 = '<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+                    else
+                      ind1 = '<div class="display_condition" id="display_condition1"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1" class="search_ti1" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.entryIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.entryIndicators[j].indicatorItem.tag+'" '+inplace_click+'></div>';
+
+                }
+
+              if(algo_state.entryIndicators[j].comparator=='N/A')
+                comp1 = '<div class="input_divs" style="display: none;"><input type="text" name="search_co" class="search_co ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off"></div>';
+              else
+                comp1 = '<div class="input_divs"><input type="text" name="search_co" class="search_co ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off" data-val-text="'+algo_state.entryIndicators[j].comparator+'"></div>';
+
+              if(algo_state.entryIndicators[j].compareIndicator=='N/A')
+                ind2 = '<div class="input_divs" style="display: none;"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2 ui-autocomplete-input" placeholder="Indicator ex: EMA" autocomplete="off"></div>'
+              else
+                {
+                  class_tag_comp = algo_state.entryIndicators[j].compareIndicatorItem.class;
+                  if(algo_state.entryIndicators[j].compareIndicatorItem.class=='close')
+                    class_tag_comp = 'close_';
+                  ind2 = '<div class="input_divs '+class_tag_comp+'"><span class="third_ip_close" onclick="clear_third_indicator(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2" class="search_ti2" placeholder="Indicator ex: EMA" data-val-text="'+algo_state.entryIndicators[j].compareIndicator+'" readonly="readonly" data-params="" '+comparator_inplace_click+'></div>'
+                }
+
+              if(j==0)
+                clear_t = '<span class="clear" onclick="clear_condition_first(event)">Clear</span></div>'
+              else
+                clear_t = '<span class="clear" onclick="clear_condition(event)">Remove</span></div>'
+              if(j==algo_state.entryIndicators.length-1)
+                add_another = '<div class="another_condition"><p onclick="insert_condition3(event);">+ Add another condition</p></div>';
+              else
+                add_another = '<div class="another_condition"><p onclick="insert_condition3(event);" style="display: none;">+ Add another condition</p></div>';
+
+              conditions.append($(ind1+comp1+ind2+clear_t));
+              conditions.append($(add_another));
+            }
+          }
+        }
+      }
+
+      update_autocomplete_all();
+      
+      // Exit condition
+
+      var exit_conditions = $('.conditions_exit');
+      if(algo_state.exitIndicators != undefined){
+        if(algo_state.exitIndicators.length>0){
+          if(algo_state.exitIndicators[0].indicator!="Indicator"){
+            exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="hide_exit_div(event)" style="cursor: pointer;">Remove exit condition<span>(optional)</span></p></div>');
+            for(var j=0;j<algo_state.exitIndicators.length;j++){
+              class_tag = algo_state.exitIndicators[j].indicatorItem.class;
+              if(algo_state.exitIndicators[j].indicatorItem.class=='close')
+                class_tag = 'close_';
+
+              inplace_click_exit = 'onclick="custom_click_inplace_exit(event)"';
+              if(algo_state.exitIndicators[j].indicatorDetails!=undefined)
+              if(Object.keys(algo_state.exitIndicators[j].indicatorDetails).length==0){
+                inplace_click_exit = '';
+              }
+
+              comparator_inplace_click_exit = 'onclick="custom_click_inplace_exit(event)"';
+
+              try{
+                if(Object.keys(algo_state.exitIndicators[j].compareIndicatorDetails).length==0){
+                comparator_inplace_click_exit = '';
+                }
+              }catch(e){
+
+              }
+
+              if(j==0)
+                {
+                  if(algo_state.exitIndicators[j].comparator=='N/A' && algo_state.exitIndicators[j].compareIndicator=='N/A')
+                    ind1 = '<div class="display_condition_exit input_condition2" id="display_condition1_exit"><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                  else
+                    ind1 = '<div class="display_condition_exit input_condition2" id="display_condition1_exit"><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                }
+              else
+                {
+                  and_or = algo_state.exitIndicators[j-1].andor
+                  if(and_or=="or")
+                    and_or_html = '<select id="andor"><option>and</option><option selected>or</option></select>';
+                  else
+                    and_or_html = '<select id="andor"><option selected>and</option><option>or</option></select>';
+
+                  if(algo_state.exitIndicators[j].comparator=='N/A' && algo_state.exitIndicators[j].compareIndicator=='N/A')
+                    ind1 = '<div class="display_condition_exit" id="display_condition1_exit"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'" style="width: 100%;"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+                  else
+                    ind1 = '<div class="display_condition_exit" id="display_condition1_exit"><div class="and_or" onchange="and_or_select_change(event)">'+and_or_html+'</div><div class="input_divs '+class_tag+'"><input type="text" name="search_ti1_exit" class="search_ti1_exit" placeholder="Indicator ex: SMA" data-val-text="'+algo_state.exitIndicators[j].indicator+'" readonly="readonly" data-params="" data-tag="'+algo_state.exitIndicators[j].indicatorItem.tag+'" '+inplace_click_exit+'></div>';
+
+                }
+
+              if(algo_state.exitIndicators[j].comparator=='N/A')
+                comp1 = '<div class="input_divs" style="display: none;"><input type="text" name="search_co_exit" class="search_co_exit ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off"></div>';
+              else
+                comp1 = '<div class="input_divs"><input type="text" name="search_co_exit" class="search_co_exit ui-autocomplete-input" placeholder="Comparator ex: higher than" autocomplete="off" data-val-text="'+algo_state.exitIndicators[j].comparator+'"></div>';
+
+              if(algo_state.exitIndicators[j].compareIndicator=='N/A')
+                ind2 = '<div class="input_divs" style="display: none;"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit ui-autocomplete-input" placeholder="Indicator ex: EMA" autocomplete="off"></div>'
+              else
+                {
+                  class_tag_comp = algo_state.exitIndicators[j].compareIndicatorItem.class;
+                  if(algo_state.exitIndicators[j].compareIndicatorItem.class=='close')
+                    class_tag_comp = 'close_';
+                  ind2 = '<div class="input_divs '+class_tag_comp+'"><span class="third_ip_close" onclick="clear_third_indicator_exit(event)" style="display: none;"><img src="/static/imgs/icon-force-stop.png"></span><input type="text" name="search_ti2_exit" class="search_ti2_exit" placeholder="Indicator ex: EMA" data-val-text="'+algo_state.exitIndicators[j].compareIndicator+'" readonly="readonly" data-params="" '+comparator_inplace_click_exit+'></div>'
+                }
+
+              if(j==0)
+                clear_t = '<span class="clear" onclick="clear_condition_first_exit(event)">Clear</span></div>'
+              else
+                clear_t = '<span class="clear" onclick="clear_condition_exit(event)">Remove</span></div>'
+              if(j==algo_state.exitIndicators.length-1)
+                add_another = '<div class="another_condition_exit"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>';
+              else
+                add_another = '<div class="another_condition_exit"><p onclick="insert_condition3_exit(event);" style="display: none;">+ Add another condition</p></div>';
+
+              exit_conditions.append($(ind1+comp1+ind2+clear_t));
+              exit_conditions.append($(add_another));
+            }
+          }
+          else{
+            exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="show_exit_div(event)" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div><div class="display_condition_exit input_condition2" id="display_condition1_exit" style="display: none;"></div><div class="another_condition_exit" style="display: none;"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+          }
+        }else{
+           exit_conditions.html('<div class="prompter_text_exit" id="prompter_text_exit" style=""><p onclick="show_exit_div(event)" style="cursor: pointer;">Click to add exit condition<span>(optional)</span></p></div><div class="display_condition_exit input_condition2" id="display_condition1_exit" style="display: none;"></div><div class="another_condition_exit" style="display: none;"><p onclick="insert_condition3_exit(event);">+ Add another condition</p></div>');
+        }
+      }
+
+      update_autocomplete_all_exit();
+      show_close();
+      //////////////////////////////////////////////////////////////
+        $(".and_or").each(function(e){ 
+          andor1 = $(this).find("#andor");
+          // andor1_input = $(this).find("#andor1_input").val()
+          andor_save = $(this).find("#andor_save").text();
+          if (andor_save!='')
+            $(andor1[0]).val(andor_save);
+        });
+
+      x = $('.added_equities').find('span');
+        for(var i=0;i<x.length;i+=3){
+          console.log();
+          v = $($(x[i]).find('span')[0]).data('syms');
+          if(v!=null){
+            [sym,seg] = v.split('_');
+            equity_added[sym]=seg;
+          }
+        }
+
+      if(Object.keys(equity_added).length>0){
+        $($('.adding_equities_section div span')[0]).css("background-color", "#06d092");
+        $($('.adding_equities_section div span')[0]).css("border-color", "#bdfbe8");
+      }
+
+      $(".added_equities img").click(function(){
+        // $(this).parentsUntil('.added_equities').hide();
+        x = $($($(this).parentsUntil('.added_equities')).find('span')[0]).data('syms');
+        if(x!=null){
+          [sym,seg] = x.split('_');
+          delete equity_added[sym];
+        }
+        $(this).parentsUntil('.added_equities').remove();
+        
+        if(Object.keys(equity_added).length==0){
+          $($('.adding_equities_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.adding_equities_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+        footer_updater();
+      });
+
+      if(section_complete(['ip_position_type','ip_position_qty'])){
+          $($('.write_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.write_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+      else{
+          $($('.write_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.write_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      if(section_complete(['ip_strategy_name','ip_strategy_desc'])){
+          $($('.naming_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.naming_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+
+      if(section_complete(['ip_take_profit','ip_stop_loss'])){
+          $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.exit_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.exit_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+
+      $("#ip_position_qty").on('focus change input',function(){
+        // console.log('out');
+          if(section_complete(['ip_position_type','ip_position_qty'])){
+          $($('.write_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.write_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.write_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.write_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      });
+      $("#ip_position_type").on('focus change input',function() {
+        // console.log('out');
+          if(section_complete(['ip_position_type','ip_position_qty'])){
+            $($('.write_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.write_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.write_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.write_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      });
+      
+      $("#ip_strategy_name").on('focus change input',function(){
+        // console.log('out');
+          if(section_complete(['ip_strategy_name','ip_strategy_desc'])){
+            $($('.naming_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.naming_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      });
+      $("#ip_strategy_desc").on('focus change input',function() {
+        // console.log('out');
+          if(section_complete(['ip_strategy_name','ip_strategy_desc'])){
+            $($('.naming_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.naming_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      });
+
+      $("#ip_stop_loss").on('focus change input',function(){
+        // console.log('out');
+          if(section_complete(['ip_take_profit','ip_stop_loss'])){
+            $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+          else{
+          $($('.exit_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.exit_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      });
+      $("#ip_take_profit").on('focus change input',function(){
+        // console.log('out');
+          if(section_complete(['ip_take_profit','ip_stop_loss'])){
+            $($('.exit_strategy_section div span')[0]).css("background-color", "#06d092");
+          $($('.exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+          }
+        else{
+          $($('.exit_strategy_section div span')[0]).css("background-color", "#ADADAD");
+          $($('.exit_strategy_section div span')[0]).css("border-color", "#F3F3F3");
+        }
+      });
+
+      // if($('.display_condition').length-1==0) // to account for default .display condition
+      //   cursor_loc = 3*($('.display_condition').length);
+      // else
+      //   cursor_loc = 3*($('.display_condition').length);
+      
+      $('.display_condition .input_divs input').each(function(e,obj){
+        if($(obj).data('val-text')!="" && $(obj).data('val-text')!=undefined && e%3==0){
+          cursor_loc += 3;
+        }
+      })
+      // cursor_loc = parseInt(cursor_loc/3);
+
+      for(var i=0;i<$('.display_condition').length;i++){
+        $($('.display_condition')[i]).find('input').each(function(e,obj){
+          if($(obj).attr('data-val-text')){
+            $(obj).val($(obj).attr('data-val-text'));
+            if(!['higher than','lower than','crosses above','crosses below'].includes($(obj).attr('data-val-text')))
+              {
+                try{
+                  lastest_item.shift();
+                  item_class = $(obj).parent()[0].classList[1];
+                  if(item_class=='close_'){
+                    item_class = 'close'; // the class list for close is close_
+                  }
+                  $(obj).autocomplete("destroy");
+                  lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+                }catch(e){
+                  $.ajax({
+                    dataType: "json",
+                    url: '/static/js_parsing_tree.json?v=1.6.7',
+                    async: false,
+                    success: function(data) {
+                      //data is the JSON string
+                    console.log("tree loaded");
+                    js_parsing_tree = data;
+                    }
+                  });
+                  lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+                }
+              }
+          }
+        });
+      }
+
+      if(cursor_loc>=3 && cursor_loc%3==0){
+        $($('.enter_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('.enter_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      }
+
+      // exit condition
+      // if($('.display_condition_exit').length-1==0) // to account for default .display condition
+      //   exit_cursor_loc = 3*($('.display_condition_exit').length);
+      // else
+      //   exit_cursor_loc = 3*($('.display_condition_exit').length);
+
+      // if($('.display_condition_exit .input_divs').length==0){
+      //     exit_cursor_loc = 0;
+      // }
+      // else if($($('.display_condition_exit .input_divs input')[0]).data('val-text')==""){
+      //     exit_cursor_loc = 0; // to account for empty exit condition
+      // }
+      $('.display_condition_exit .input_divs input').each(function(e,obj){
+        if($(obj).data('val-text')!="" && $(obj).data('val-text')!=undefined && e%3==0){
+          exit_cursor_loc += 3;
+        }
+      })
+      // exit_cursor_loc = parseInt(exit_cursor_loc/3);
+
+      for(var i=0;i<$('.display_condition_exit').length;i++){
+        $($('.display_condition_exit')[i]).find('input').each(function(e,obj){
+          if($(obj).attr('data-val-text')){
+            $(obj).val($(obj).attr('data-val-text'));
+            if(!['higher than','lower than','crosses above','crosses below'].includes($(obj).attr('data-val-text')))
+              {
+                try{
+                exit_lastest_item.shift();
+                item_class = $(obj).parent()[0].classList[1];
+                if(item_class=='close_'){
+                  item_class = 'close'; // the class list for close is close_
+                }
+                  $(obj).autocomplete("destroy");
+                  exit_lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+                }catch(e){
+                  $.ajax({
+                    dataType: "json",
+                    url: '/static/js_parsing_tree.json?v=1.6.6',
+                    async: false,
+                    success: function(data) {
+                      //data is the JSON string
+                    console.log("tree loaded");
+                    js_parsing_tree = data;
+                    }
+                  });
+                  exit_lastest_item.push(js_parsing_tree.main.indicator[item_class]);
+                }
+              }
+          }
+        });
+      }
+
+      if(exit_cursor_loc>=3 && exit_cursor_loc%3==0){
+        $($('#exit_strategy_section div span')[0]).css("background-color", "#06d092");
+        $($('#exit_strategy_section div span')[0]).css("border-color", "#bdfbe8");
+      }
+      $('.brokerage_toggle:checkbox').on('change',function(e){
+        if($(e.target).is(':checked')){
+          auto_assist = true;
+          try{
+              ga('send', {hitType: 'event', eventCategory: 'Assist', eventAction: 'Assist turned on', eventLabel: 'Edit page', eventValue: 1});
+            }catch(e){
+              
+            }
+        }
+        else{
+          auto_assist = false;
+          try{
+              ga('send', {hitType: 'event', eventCategory: 'Assist', eventAction: 'Assist turned off', eventLabel: 'Edit page', eventValue: 1});
+            }catch(e){
+              
+            }
+        }
+      });
+
+      // populating advanced fields
+      $('#ip_holding_type').val(holding_type_mapping_rev["{{algo.holding_type|default:'MIS'}}"]);
+      $("#ip_holding_type").data('val-text',holding_type_mapping_rev["{{algo.holding_type|default:'MIS'}}"]);
+
+      // $('#ip_chart_type').val(chart_type_maping_rev["{{algo.chart_type|default:'candlestick'}}"]);
+      // $('#ip_chart_type').data('val-text',chart_type_maping_rev["{{algo.chart_type|default:'candlestick'}}"]);
+      var ip_chart_type = "{{algo.chart_type|default:'candlestick'}}";
+      if(ip_chart_type.includes('enko')){
+        $('#ip_chart_type').val(ip_chart_type);
+        $('#ip_chart_type').data('val-text',ip_chart_type); 
+      }
+      else{
+        $('#ip_chart_type').val(chart_type_maping_rev[ip_chart_type]);
+        $('#ip_chart_type').data('val-text',chart_type_maping_rev[ip_chart_type]);
+      }
+      $('#trading_start_time').val("{{algo.trading_start_time|default:'09:00'}}");
+      $('#trading_stop_time').val("{{algo.trading_stop_time|default:'23:30'}}");
+      adv_holding_type = "{{algo.holding_type|default:'MIS'}}";
+      adv_chart_type = "{{algo.chart_type|default:'candlestick'}}";
+      adv_trading_start_time = "{{algo.trading_start_time|default:'00:00'}}";
+      adv_trading_stop_time = "{{algo.trading_stop_time|default:'23:59'}}";
+      // -------------------------- //
+      $("#ip_position_qty, #ip_take_profit, #ip_stop_loss, #ip_strategy_name").removeClass('empty_input_field');
+
+      $('#ip_strategy_name').removeAttr('readonly');
+      {% if not cloned %}
+      $('body').append('<input id="algo_uuid" type="text" name="" placeholder="Equity" value="{{algo.algo_uuid}}" style="display: none;"></div>');
+        {% if algo.algo_uuid|default:False %}
+          submit_algo_type = 'edit';
+          $('#ip_strategy_name').attr('readonly','');
+        {% endif %}
+      {% else %}
+        submit_algo_type = 'similar';
+        $('#ip_strategy_name').removeAttr('readonly');
+      {% endif %}
+      if(window.location.href.indexOf('#sample')>-1)
+        {
+          $('#ip_strategy_name').removeAttr('readonly');
+          $('#ip_strategy_name').val('');
+          $($('.naming_strategy_section div span')[0]).css("background-color", "hsla(162, 14%, 94%, 1)");
+          $($('.naming_strategy_section div span')[0]).css("border-color", "#dee7f1");
+          hopscotch.startTour(go_algo_tour());
+        }
+
+      // $("#exchanges_input").val('NSE');
+      // $("#exchanges_input").prop("readonly", true);
+      footer_updater();
+    });
+  </script>
+  {% endif %}
+  {% if request.session.first_time_create_algorithm %}
+  <script type="text/javascript">
+    var first_time_create_algorithm = "true";
+    ss = '{{request.session.session_secret}}';
+    first_login_complete(ss,'first_time_create_algorithm');
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    var first_time_create_algorithm = "false";
+  </script>
+  {% endif %}
+{% endblock %}
+{% block errorblock %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    {% if msg and msg.strip %}
+      $('#error_message').text('{{msg}}');
+      $("#error_box").show();
+      $(".body").css({"margin-top": "5px"});
+    {% endif %}
+    {% for e in error %}
+      $('#error_message').append('{{e}}<br>');
+      $("#error_box").show();
+      $(".body").css({"margin-top": "5px"});
+    {% endfor %}
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,785 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Orders {% endblock %}
+{% block page_css1 %} <link href="/static/css/orders.css" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/orders.js"></script> {% endblock %}
+
+{% block body %}
+
+<div class="block sec_main">
+	<div class="orders_main">
+			<!-- <div class="orders_left">
+				<div class="algo_section">
+					<div class="algo_title">
+						<p class="highlighted"><span class="arrow_show"><img src="/static/imgs/icon-arrow-right.png">&nbsp;&nbsp;&nbsp;</span>AlgoTest</p>
+					</div>
+					<div class="equities">
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer highlighted_pointer"></span></td>
+									<td class="equity_name highlighted">CANBK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name highlighted">HDFCBANK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name highlighted">ICICIBANK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name highlighted">NIFTY</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name highlighted">INFY</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="algo_section">
+					<div class="algo_title">
+						<p><span class="arrow_show"><img src="/static/imgs/icon-arrow-right.png" style="display: none;">&nbsp;&nbsp;&nbsp;</span>AlgoTest</p>
+					</div>
+					<div class="equities">
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">CANBK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">HDFCBANK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">ICICIBANK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">NIFTY</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">INFY</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="algo_section">
+					<div class="algo_title">
+						<p><span class="arrow_show"><img src="/static/imgs/icon-arrow-right.png" style="display: none;">&nbsp;&nbsp;&nbsp;</span>AlgoTest</p>
+					</div>
+					<div class="equities">
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">CANBK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">HDFCBANK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">ICICIBANK</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">NIFTY</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+						<div class="equities_row">
+							<table>
+								<tr>
+									<td><span class="equity_pointer"></span></td>
+									<td class="equity_name">INFY</td>
+									<td class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span>321.21</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<div class="orders_top">
+				<div class="strategy_name_title">
+					<p>Strategy Name</p>
+				</div>
+				<div class="deployed_time_title">
+					<p>Deploy Time</p>
+				</div>
+				<div class="status_select">
+					<p>Stock</p>
+					<select>
+						<option class="live_strategies">(Live)</option>
+						<option>(Stopped)</option>
+						<option>(Archived)</option>
+					</select>
+				</div>
+				<div class="notif_title">
+					<p>Status</p>
+				</div>
+				<div class="pnl_title">
+					<p>P&L</p>
+				</div>
+				<div class="actions_title">
+					<p>Actions</p>
+				</div>
+			</div>
+			<div class="orders_right">
+				{% for algo,data in grouped_orders.items %}
+				<div class="orders_details">
+					<div class="orders_details_title_outer">
+						<div class="orders_details_title">
+							<div class="">
+										<div>
+											<p class="algo_name">Golden Crossover</p>
+										</div>
+										<div>
+											<p class="deployed_date">11:45AM 12/05/2017</p>
+										</div>
+										<div>
+											<p class="algo_status_live">{% if data.0.status == 0 %}Live
+											{% elif data.0.status == 1 %}Done
+											{% elif data.0.status == -1 %}Stopped
+											{% endif %}</p>
+										</div>
+										<div>
+											<p class="eq_name">{{data.0.segment_symbol.1}}<span>&nbsp;{{data.0.segment_symbol.0}}</span></p>
+										</div>
+										<div>
+											<p class="ltp"><span class="sub_title">LTP:&nbsp;&nbsp;</span>319.65</p>
+										</div>
+										<div class="recent_notif">
+											<div class="icon-order-log" data-tooltip-top="View order log">
+												<img src="/static/imgs/icon-view-order-details.png">
+											</div>
+											<div class="notif_message">
+											<p>Order complete partial.</p>
+											<p class="bought">Bought 250 stocks at INR 243.39</p>
+											</div>
+											<div class="view_order_log" style="display: none;">
+												<button>View Order log</button>
+											</div>
+										</div>
+										<div>
+											<p class="pnl"><span class="sub_title">P&L:&nbsp;&nbsp;</span><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>{{pnl|default:"NA"}}&nbsp;</span><span>({{returns|default:"NA"}}%)&nbsp;</span></p>
+											<div class="streak">
+												<div class="streak_body">
+													<div class="wins"></div>
+													<div class="losses"></div>
+												</div>
+											</div>
+										</div>
+										<div><button class="force_stop" onclick="$('.exit_position, .algo_stopped').hide();$('.force_stop_popup, .stop_options').show();$('body').addClass('body_scroll');"><img src="/static/imgs/icon-force-stop.png">&nbsp;&nbsp;Stop</button>
+										<button class="bt_graph"><img src="/static/imgs/icon-bt-graph-brown.png"></button>
+											<div class="results_section" style="display: none;">
+												<div class="chart_section">
+													<div class="chart_header">
+														<div class="equity_section">
+															<p class="company_name">Canara Bank Ltd</p>
+															<p class="exc_symbol">NSE: CANBK</p>
+														</div>
+													</div>
+													<div class="chart_body">
+														<canvas id="pnl_chartContainer_new"></canvas>
+													</div>
+												</div>
+												<div class="pnl_section">
+													<div class="chart_pnl">
+															<p>P&L&nbsp;<span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p>
+													</div>
+													<div class="streak_chart">
+														<div class="streak_chart_body">
+															<div class="wins"></div>
+															<div class="losses"></div>
+														</div>
+													</div>
+												<div class="results_table">
+													<table>
+														<tr>
+															<td>Alpha</td>
+															<td>0.079</td>
+														</tr>
+														<tr>
+															<td>Beta</td>
+															<td>0.597</td>
+														</tr>
+														<tr>
+															<td>Volatility</td>
+															<td>34.61%</td>
+														</tr>
+														<tr>
+															<td>Sharpe Ratio</td>
+															<td>36.69</td>
+														</tr>
+														<tr>
+															<td>Sortino</td>
+															<td>7.89</td>
+														</tr>
+														<tr>
+															<td>Max Drawdown</td>
+															<td>0.23%</td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										</div>
+									
+							</div>
+						</div>
+					</div>
+					<div class="orders_details_body">
+						<div class="progress_section">
+      						<div class="prompter">
+      							<div class="status_row">
+          							<div class="status_tag">
+            						<p></p>
+          							</div>
+          							<div>
+              						<!-- <span></span> -->
+          							</div>
+         		 					<div class="status_detail">
+              						<p></p>
+              						<p></p>
+          							</div>
+         						</div>
+         						{% for l in data.0.logs%}
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>{{l.log_tag}}</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>{{l.log_message}}</p>
+              						<p>{{l.create_at|date:"H:i on m-M-Y"}}</p>
+          							</div>
+         						</div>
+         						{% endfor %}
+        						<!-- <div class="status_row">
+          							<div class="status_tag">
+            						<p><span>Waiting</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Waiting for first trigger event...</p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>Buy Trigger</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Notification sent!&nbsp;<span>Buy 500 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>At Exchange</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Order sent to exchange.&nbsp;<span>Buy 500 stocks at 243.39</span><span id="rejected" onclick="$('.order_details_popup').show();$('body').addClass('body_scroll');">Rejected<img src="/static/imgs/icon-right-grey.png"></span> </p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span class="bought_tag">Bought</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Order complete partial.&nbsp;<span class="bought">Buy 250 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span class="bought_tag">Bought</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Order complete partial.&nbsp;<span class="bought">Buy 250 stocks at 244.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span class="sold_tag">Sold</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Exited position.&nbsp;<span class="sold">Sell 500 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>Waiting</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Waiting for first trigger event...</p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div> -->
+							</div>
+      						<div class="progress_line"></div>
+      					</div>
+					</div>
+				</div>
+				{% endfor %}
+				<div class="orders_details">
+					<div class="orders_details_title_outer">
+						<div class="orders_details_title">
+							<div class="orders_details_left">
+								<table>
+									<tr>
+										<td>
+											<p class="algo_status_live">Live</p>
+										</td>
+										<td>
+											<p class="eq_name">CANBK<span>&nbsp;NSE</span></p>
+										</td>
+									</tr>
+								</table>					
+							</div>
+							<div class="orders_details_middle">
+								<table>
+									<tr>
+										<td>
+											<p class="ltp">319.65</p>
+										</td>
+										<td>
+											<p class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p>
+										</td>
+										<td>
+											<div class="streak">
+												<div class="streak_body">
+													<div class="wins"></div>
+													<div class="losses"></div>
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="orders_details_right">
+								<table>
+									<tr>
+										<td><button class="force_stop"><img src="/static/imgs/icon-force-stop.png">&nbsp;&nbsp;Stop</button></td>
+										<td>
+											<button class="bt_graph"><img src="/static/imgs/icon-bt-graph-brown.png"></button>
+											<div class="results_section" style="display: none;">
+												<div class="chart_section">
+													<div class="chart_header">
+														<div class="equity_section">
+															<p class="company_name">Canara Bank Ltd</p>
+															<p class="exc_symbol">NSE: CANBK</p>
+														</div>
+													</div>
+													<div class="chart_body">
+														<canvas id="pnl_chartContainer_new"></canvas>
+													</div>
+												</div>
+												<div class="pnl_section">
+													<div class="chart_pnl">
+															<p>P&L&nbsp;<span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p>
+													</div>
+													<div class="streak">
+														<div class="streak_body">
+															<div class="wins"></div>
+															<div class="losses"></div>
+														</div>
+													</div>
+												<div class="results_table">
+													<table>
+														<tr>
+															<td>Alpha</td>
+															<td>0.079</td>
+														</tr>
+														<tr>
+															<td>Beta</td>
+															<td>0.597</td>
+														</tr>
+														<tr>
+															<td>Volatility</td>
+															<td>34.61%</td>
+														</tr>
+														<tr>
+															<td>Sharpe Ratio</td>
+															<td>36.69</td>
+														</tr>
+														<tr>
+															<td>Sortino</td>
+															<td>7.89</td>
+														</tr>
+														<tr>
+															<td>Max Drawdown</td>
+															<td>0.23%</td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<!-- <table>
+                       	 	<tr>
+                            <td><p class="algo_status_live">Live</p></td>
+                            <td><p class="eq_name">CANBK<span>&nbsp;NSE</span></p></td>
+                            <td><p class="ltp">319.65</p></td>
+                            <td><p class="pnl"><span><img src="/static/imgs/icon-arrow-up-green.png">&nbsp;</span><span>0.85&nbsp;</span><span>(0.24%)&nbsp;</span></p></td>
+                            <td><button class="force_stop"><img src="/static/imgs/icon-force-stop.png">&nbsp;&nbsp;Stop</button></td>
+                        	</tr>
+                    		</table> -->
+						</div>
+					</div>
+					<div class="orders_details_body">
+						<div class="progress_section">
+      						<div class="prompter">
+      							<div class="status_row">
+          							<div class="status_tag">
+            						<p></p>
+          							</div>
+          							<div>
+              						<!-- <span></span> -->
+          							</div>
+         		 					<div class="status_detail">
+              						<p></p>
+              						<p></p>
+          							</div>
+         						</div>
+        						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>Waiting</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Waiting for first trigger event...</p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>Buy Trigger</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Notification sent!&nbsp;<span>Buy 500 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>At Exchange</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Order sent to exchange.&nbsp;<span>Buy 500 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span class="bought_tag">Bought</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Order complete partial.&nbsp;<span class="bought">Buy 250 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span class="bought_tag">Bought</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Order complete partial.&nbsp;<span class="bought">Buy 250 stocks at 244.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span class="sold_tag">Sold</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Exited position.&nbsp;<span class="sold">Sell 500 stocks at 243.39</span></p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+         						<div class="status_row">
+          							<div class="status_tag">
+            						<p><span>Waiting</span></p>
+          							</div>
+          							<div>
+              						<span></span>
+          							</div>
+         		 					<div class="status_detail">
+              						<p>Waiting for first trigger event...</p>
+              						<p>10:24 on 24/04/2017</p>
+          							</div>
+         						</div>
+							</div>
+      						<div class="progress_line"></div>
+      					</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+<div class="force_stop_popup" style="display: none;">
+      <div class="card animated pulse">
+        <div class="close_popup"><img onclick="close_orders_popup();" src="/static/imgs/icon-deploy-close.png"></div>
+        <div class="stop_options animated fadeIn" style="display: none;">
+        	<p class="stop_heading">Stop Strategy</p>
+        	<p class="stop_sub_heading">This will stop your strategy. You can choose to close your positions manually later or exit positions now at market.</p>
+        	<div class="options_section">
+        		<div>
+        			<button id="keep_positions_open" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Keep positions open</button>
+        			<p>Stop the algorithm and close position manually later.</p>
+        		</div>
+        		<div>
+        			<button id="exit_positions_now" onclick="$('.stop_options, .algo_stopped').hide();$('.exit_position').show();">Exit positions now</button>
+        			<p>Stop the algorithm and exit position now at market.</p>
+        		</div>
+        	</div>
+        </div>
+        <div class="exit_position animated fadeIn" style="display: none;">
+        	<p class="stop_heading">Stop Strategy</p>
+        	<p class="stop_sub_heading">Exit now at market.</p>
+        	<div class="exit_position_section">
+        		<div class="back">
+        			<p><span onclick="$('.exit_position, .algo_stopped').hide();$('.stop_options').show();"><img src="/static/imgs/icon-back.png">Back</span></p>
+        		</div>
+        		<div>
+        			<div class="exit_window">
+            			<div class="exit_header">
+              				<p>Buy 500 stocks at 243.39</p>
+            			</div>
+            			<div class="exit_body">
+              				<div class="exit_options">
+                				<div>
+                 					<div class="radio_options">
+                    					<div>
+                      						<span id="buy_radio_option"></span>
+                      						<p id="option_selected">CNC</p>
+                    					</div>
+                    					<div>
+                      						<span></span>
+                      						<p>MIS</p>
+                    					</div>
+                  					</div>
+                  					<div class="exit_qty">
+                    					<p>Quantity</p>
+                    					<input type="number" name="">
+                  					</div>
+                				</div>
+                				<div>
+                  					<div class="radio_options">
+                    					<div>
+                      						<span></span>
+                      						<p>MKT</p>
+                    					</div>
+                    					<div>
+                      						<span id="buy_radio_option"></span>
+                      						<p id="option_selected">LMT</p>
+                    					</div>
+                  					</div>
+                  					<div class="exit_price">
+                   						<p>Price</p>
+                   			 			<input type="number" name="">
+                  					</div>
+                				</div>
+              				</div>
+              				<div>
+                				<button id="buy" onclick="$('.exit_position, .stop_options').hide();$('.algo_stopped').show();">Buy</button>
+              				</div>
+            			</div>
+          			</div>
+        		</div>
+        	</div>
+        </div>
+        <div class="algo_stopped animated tada" style="display: none;">
+        	<img src="/static/imgs/new/algo_stopped.gif">
+        	<p class="stop_heading">Strategy Stopped</p>
+        	<p class="stop_sub_heading">This strategy is no longer active.<br><!-- You exited at market price. --></p>
+        </div>
+      </div>
+</div>
+<div class="order_details_popup" style="display: none;">
+    <div class="card animated fadeIn">
+    	<div class="close_popup"><img onclick="close_order_details_popup();" src="/static/imgs/icon-deploy-close.png"></div>
+    	<div class="order_details_header">
+    		<div class="order_name">
+    			<p>CANBK<span>NSE</span></p>
+    			<p>Buy 500 stocks at INR 243. 39</p>
+    		</div>
+    		<div class="order_avg_price">
+    			<p>Avg. Price</p>
+    			<p>243.90</p>
+    		</div>
+    		<div class="order_filled_qty">
+    			<p>Filled Quantity</p>
+    			<p>21 of 50</p>
+    		</div>
+    	</div>
+    	<div class="order_details_body">
+    		<div class="order_details_row">
+    			<div>
+    				<p>Price</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Trigger Price</p>
+    				<p>243.39</p>
+    			</div>
+    			<div>
+    				<p>Order placed by</p>
+    				<p>YJ3548</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Order Type</p>
+    				<p>Market</p>
+    			</div>
+    			<div>
+    				<p>Product Validity</p>
+    				<p>CNC/DAY</p>
+    			</div>
+    			<div>
+    				<p>Time</p>
+    				<p>2017-10-04 15:56:19</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div>
+    				<p>Order ID</p>
+    				<p>12345678910</p>
+    			</div>
+    			<div>
+    				<p>Exchange order ID</p>
+    				<p>12345678910</p>
+    			</div>
+    			<div>
+    				<p>Exchange Time</p>
+    				<p>2017-10-04 15:56:19</p>
+    			</div>
+    		</div>
+    		<div class="order_details_row">
+    			<div class="status">
+    				<p>Status</p>
+    				<p>Rejected</p>
+    			</div>
+    			<div id="status_message">
+    				<p>Exchange order ID</p>
+    				<p>rms:rule: check holdings ,no holdings present for entity account-yj3548 across exchange across segment across product</p>
+    			</div>
+    		</div>
+    	</div>
+   	</div>
+</div>
+{% endblock %}
+{% block confirm %}Continue{% endblock %}

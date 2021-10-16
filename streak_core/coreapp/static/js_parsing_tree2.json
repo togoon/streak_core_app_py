@@ -1,0 +1,1748 @@
+{
+	"main":
+	{
+		"indicator":{
+			"moving_average":{
+				"name":"Moving average",
+				"description":"Moving average",
+				"syntax":"Moving average(<period>,<field>,<type>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",20,true],["field","close",true,"dropdown",["open","high","low","close"]],["type","simple",true,"dropdown",["simple","exponential","weighted","triple","triangular","double","hull","kaufman"]],["offset",0,true,"offset"]],
+				"class":"moving_average",
+				"classtype":"moving_average",
+				"tooltip":"Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"moving_average_volume":{
+				"name":"Moving average volume",
+				"description":"Moving average volume",
+				"syntax":"Moving average(<period>,<field>,<type>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",20,true],["field","volume",true,"dropdown",["volume"]],["type","simple",true,"dropdown",["simple","exponential","weighted","triple","triangular","double","hull","kaufman"]],["offset",0,true,"offset"]],
+				"class":"moving_average_volume",
+				"classtype":"moving_average_volume",
+				"tooltip":"Moving Average Volume",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Indicators","Numbers","Volume"]
+			},
+			"rsi_moving_average":{
+				"name":"RSI Moving average",
+				"description":"Moving average",
+				"syntax":"RSI MA(<RSI_period>,<field>,<type>,<period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["RSI_period",20,true],["field","close",true,"dropdown",["open","high","low","close"]],["type","simple",true,"dropdown",["simple","exponential","weighted","triple","triangular","double","hull","kaufman"]],["period",20,true],["offset",0,true,"offset"]],
+				"class":"rsi_moving_average",
+				"classtype":"rsi_moving_average",
+				"tooltip":"RSI Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"RSI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","RSI"]
+			},
+			"choppiness_index_moving_average":{
+				"name":"Choppiness Index Moving Average",
+				"description":"Choppiness Index Moving Average",
+				"syntax":"Choppiness MA(<choppiness_period>,<type>,<period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["choppiness_period",20,true],["type","simple",true,"dropdown",["simple","exponential","weighted","triple","triangular","double","hull","kaufman"]],["period",20,true],["offset",0,true,"offset"]],
+				"class":"choppiness_index_moving_average",
+				"classtype":"choppiness_index_moving_average",
+				"tooltip":"Choppiness Index Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Choppiness Index",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Choppiness Index"]
+			},
+			"sma":{
+				"name":"SMA",
+				"description":"Simple moving average",
+				"syntax":"<period> SMA",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",20,true]],
+				"class":"sma",
+				"classtype":"sma",
+				"tooltip":"Simple Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"ema":{
+				"name":"EMA",
+				"description":"Exponential moving average",
+				"syntax":"<period> EMA",
+				"examples":[
+					"2 min ago 20 min ema",
+					"20 min ema"
+				],
+				"params":[["period",20,true]],
+				"class":"ema",
+				"classtype":"ema",
+				"tooltip":"Exponetial Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"wma":{
+				"name":"WMA",
+				"description":"Weighted moving average",
+				"syntax":"<period> WMA",
+				"examples":[
+					"2 min ago 20 min wma",
+					"20 min wma"
+				],
+				"params":[["period",20,true]],
+				"class":"wma",
+				"classtype":"wma",
+				"tooltip":"Weighted Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"tma":{
+				"name":"TMA",
+				"description":"Triangular moving average",
+				"syntax":"<period> TMA",
+				"examples":[
+					"2 min ago 20 min tma",
+					"20 min tma"
+				],
+				"params":[["period",20,true]],
+				"class":"tma",
+				"classtype":"tma",
+				"tooltip":"Triangular Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"tema":{
+				"name":"TEMA",
+				"description":"Triple Exponential moving average",
+				"syntax":"<period> TEMA",
+				"examples":[
+					"2 min ago 20 min tema",
+					"20 min tema"
+				],
+				"params":[["period",20,true]],
+				"class":"tema",
+				"classtype":"tema",
+				"tooltip":"Triple Exponential Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"dema":{
+				"name":"DEMA",
+				"description":"Double Exponential moving average",
+				"syntax":"<period> DEMA",
+				"examples":[
+					"2 min ago 20 min dema",
+					"20 min dema"
+				],
+				"params":[["period",20,true]],
+				"class":"dema",
+				"classtype":"dema",
+				"tooltip":"Double Exponential Moving Average",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"rsi":{
+				"name":"RSI",
+				"description":"Relative strength index",
+				"syntax":"<period> RSI",
+				"examples":[
+					"5 min backs 15 min RSI",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"rsi",
+				"classtype":"rsi",
+				"tooltip":"Relative Strength Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"RSI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","RSI"]
+			},
+			"rsi2":{
+				"name":"RSI With Offset",
+				"description":"Relative strength index",
+				"syntax":"RSI2(<period>,<offset>)",
+				"examples":[
+					"5 min backs 15 min RSI",
+					"9 day RSI"
+				],
+				"params":[["period",14,true],["offset",0,true,"offset"]],
+				"class":"rsi2",
+				"classtype":"rsi2",
+				"tooltip":"Relative Strength Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"RSI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","RSI"]
+			},
+			"mom":{
+				"name":"MOM",
+				"description":"Momentum indicator",
+				"syntax":"<period> MOM",
+				"examples":[
+					"5 min backs 15 min MOM",
+					"9 day MOM"
+				],
+				"params":[["period",14,true]],
+				"class":"mom",
+				"classtype":"mom",
+				"tooltip":"Momentum indicator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"MOM",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","MOM"]
+			},
+			"cmo":{
+				"name":"CMO",
+				"description":"Chande momentum oscillator",
+				"syntax":"<period> CMO",
+				"examples":[
+					"5 min backs 15 min CMO",
+					"9 day CMO"
+				],
+				"params":[["period",9,true]],
+				"class":"cmo",
+				"classtype":"cmo",
+				"tooltip":"Chande momentum oscillator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"CMO",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","CMO"]
+			},
+			"ultimate_oscillator":{
+				"name":"Ultimate oscillator",
+				"description":"Ultimate oscillator",
+				"syntax":"Ultimate oscillator(<Cycle_1>,<Cycle_2>,<Cycle_3>,<offset>)",
+				"examples":[
+					"5 min backs 15 min CMO",
+					"9 day CMO"
+				],
+				"params":[["Cycle_1",7,true],["Cycle_2",14,true],["Cycle_3",28,true],["offset",0,false,"offset"]],
+				"class":"ultimate_oscillator",
+				"classtype":"ultimate_oscillator",
+				"tooltip":"Ultimate oscillator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"Ultimate oscillator",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Ultimate oscillator"]
+			},
+			"proc":{
+				"name":"PROC",
+				"description":"Price rate of change",
+				"syntax":"<period> PROC",
+				"examples":[
+					"5 min backs 15 min PROC",
+					"9 day PROC"
+				],
+				"params":[["period",14,true]],
+				"class":"proc",
+				"classtype":"proc",
+				"tooltip":"Price rate of change",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"PROC",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers"]
+			},
+			"trix":{
+				"name":"TRIX",
+				"description":"1 day ROC of Triple smooth EMA",
+				"syntax":"<period> TRIX",
+				"examples":[
+					"5 min backs 15 min TRIX",
+					"9 day TRIX"
+				],
+				"params":[["period",14,true]],
+				"class":"trix",
+				"classtype":"trix",
+				"tooltip":"TRIX",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"TRIX",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","TRIX"]
+			},
+			"macd":{
+				"name":"MACD",
+				"description":"Moving Average Convergence/Divergence",
+				"syntax":"MACD(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>,<offset>)",
+				"examples":[
+					"2 days ago 5min MACD(12,26,9)"
+				],
+				"params":[["Fast_MA_period",12,true],["Slow_MA_period",26,true],["Signal_period",9,true],["offset",0,false,"offset"]],
+				"class":"macd",
+				"classtype":"macd",
+				"tooltip":"Moving Average Convergence / Divergence Oscillator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"MACD",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","MACD"]
+			},
+			"macd_signal":{
+				"name":"MACD-signal",
+				"description":"MACD signal",
+				"syntax":"MACD signal(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>,<offset>)",
+				"examples":[
+					"2 days ago 5min MACDsignal(12,26,9)"
+				],
+				"params":[["Fast_MA_period",12,true],["Slow_MA_period",26,true],["Signal_period",9,true],["offset",0,false,"offset"]],
+				"class":"macd_signal",
+				"classtype":"macd_signal",
+				"tooltip":"MACD signal",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"MACD",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","MACD"]
+			},
+			"macd_histogram":{
+				"name":"MACD-histogram",
+				"description":"MACD histogram",
+				"syntax":"MACD HISTOGRAM(<Fast_MA_period>,<Slow_MA_period>,<Signal_period>,<offset>)",
+				"examples":[
+					"2 days ago 5min MACDsignal(12,26,9)"
+				],
+				"params":[["Fast_MA_period",12,true],["Slow_MA_period",26,true],["Signal_period",9,true],["offset",0,false,"offset"]],
+				"class":"macd_histogram",
+				"classtype":"macd_histogram",
+				"tooltip":"MACD histogram",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"MACD",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","MACD"]
+			},
+			"parabolic_sar":{
+				"name":"Parabolic SAR",
+				"description":"Parabolic SAR",
+				"syntax":"Parabolic SAR(<Minimum_AF>,<Maximum_AF>,<offset>)",
+				"examples":[
+					"2 days ago 5min Parabolic SAR(0.02,0.2)"
+				],
+				"params":[["Minimum_AF",0.02,true],["Maximum_AF",0.2,true],["offset",0,false,"offset"]],
+				"class":"parabolic_sar",
+				"classtype":"parabolic_sar",
+				"tooltip":"Parabolic SAR",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Overlap Studies",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"cci":{
+				"name":"Commodity Channel Index",
+				"description":"Commodity Channel Index",
+				"syntax":"<period> CCI",
+				"examples":[
+					"20 CCI"
+				],
+				"params":[["period",20,true]],
+				"class":"cci",
+				"classtype":"cci",
+				"tooltip":"Commodity Channel Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators CCI",
+				"function_group":"Momentum Indicators CCI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators CCI"]
+			},
+			"cci2":{
+				"name":"CCI With Offset",
+				"description":"Commodity Channel Index",
+				"syntax":"CCI(<period>,<offset>)",
+				"examples":[
+					"20 CCI"
+				],
+				"params":[["period",20,true],["offset",0,false,"offset"]],
+				"class":"cci2",
+				"classtype":"cci2",
+				"tooltip":"Commodity Channel Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators CCI",
+				"function_group":"Momentum Indicators CCI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators CCI"]
+			},
+			"mfi":{
+				"name":"Money Flow Index",
+				"description":"Money Flow Index",
+				"syntax":"<period> MFI",
+				"examples":[
+					"14 MFI"
+				],
+				"params":[["period",20,true]],
+				"class":"mfi",
+				"classtype":"mfi",
+				"tooltip":"Money Flow Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Momentum Indicators",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers"]
+			},
+			"obv":{
+				"name":"OBV",
+				"description":"On balance Volume",
+				"syntax":"OBV(<offset>)",
+				"examples":[
+					"5 min backs 15 min RSI",
+					"9 day RSI"
+				],
+				"params":[["offset",0,false,"offset"]],
+				"class":"obv",
+				"classtype":"obv",
+				"tooltip":"On Balance Volume",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volume Indicators","Volume"]
+			},
+			"tr":{
+				"name":"TR",
+				"description":"True range",
+				"syntax":"TR",
+				"examples":[
+					"5 min backs TR(14)",
+					"TR"
+				],
+				"params":[],
+				"class":"tr",
+				"classtype":"tr",
+				"tooltip":"True Range",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volatility Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volatility Indicators"]	
+			},
+			"atr":{
+				"name":"ATR",
+				"description":"Average true range",
+				"syntax":"<period> ATR",
+				"examples":[
+					"5 min backs 15 min ATR(14)",
+					"9 day ATR"
+				],
+				"params":[["period",14,true]],
+				"class":"atr",
+				"classtype":"atr",
+				"tooltip":"Average True Range",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volatility Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volatility Indicators"]	
+			},
+			"atr_offset":{
+				"name":"ATR Offset",
+				"description":"Atr with Offset",
+				"syntax":"ATR Offset(<period>,<offset>)",
+				"examples":[
+					"5 min backs 15 min ATR(14)",
+					"9 day ATR"
+				],
+				"params":[["period",14,true],["offset",0,false,"offset"]],
+				"class":"atr_offset",
+				"classtype":"atr_offset",
+				"tooltip":"Average True Range",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volatility Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volatility Indicators"]	
+			},
+			"atr_trailing_stoploss":{
+				"name":"ATR Trailing Stoploss",
+				"description":"ATR Trailing Stoploss",
+				"syntax":"ATR Trailing Stoploss(<multiplier>,<period>,<offset>)",
+				"examples":[
+					"5 min backs 15 min ATR(14)",
+					"9 day ATR"
+				],
+				"params":[["multiplier",3,true],["period",21,true],["offset",0,false,"offset"]],
+				"class":"atr_trailing_stoploss",
+				"classtype":"atr_trailing_stoploss",
+				"tooltip":"ATR Trailing Stoploss",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands","Supertrend","Math operators"]	
+			},
+			"natr":{
+				"name":"NATR",
+				"description":"Normalised average true range",
+				"syntax":"<period> NATR",
+				"examples":[
+					"5 min backs 15 min NATR(14)",
+					"9 day NATR"
+				],
+				"params":[["period",14,true]],
+				"class":"natr",
+				"classtype":"natr",
+				"tooltip":"Normalised average True Range",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volatility Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Volatility Indicators"]	
+			},
+			"atr_bands_top":{
+				"name":"ATR Bands Top",
+				"description":"ATR Bands Top",
+				"syntax":"ATR Bands Top(<period>,<shift>,<field>,<offset>)",
+				"examples":[
+					"5 min backs 15 min ATR band top(14)",
+					"9 day ATR"
+				],
+				"params":[["period",5,true],["shift",3,true],["field","Close",true,"dropdown",["Open","High","Low","Close"]],["offset",0,false,"offset"]],
+				"class":"atr_bands_top",
+				"classtype":"atr_bands_top",
+				"tooltip":"Average True Range Bands Top",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Overlap Studies",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Numbers","Price","Supertrend"]	
+			},
+			"atr_bands_bottom":{
+				"name":"ATR Bands Bottom",
+				"description":"ATR Bands Bottom",
+				"syntax":"ATR Bands Bottom(<period>,<shift>,<field>,<offset>)",
+				"examples":[
+					"5 min backs 15 min ATR band top(14)",
+					"9 day ATR"
+				],
+				"params":[["period",5,true],["shift",3,true],["field","Close",true,"dropdown",["Open","High","Low","Close"]],["offset",0,false,"offset"]],
+				"class":"atr_bands_bottom",
+				"classtype":"atr_bands_bottom",
+				"tooltip":"Average True Range Bands Bottom",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_type":"Overlap Studies",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Numbers","Price","Supertrend"]	
+			},
+			"ehler_fisher":{
+				"name":"Ehler Fisher",
+				"description":"Ehler Fisher",
+				"syntax":"EhlerFisher(<line>,<period>,<offset>)",
+				"examples":[
+					"EhlerFisher(EF,7,3)"
+				],
+				"params":[["line","EF",true,"dropdown",["EF","Trigger"]],["period",14,true],["offset",0,false,"offset"]],
+				"class":"ehler_fisher",
+				"classtype":"ehler_fisher",
+				"tooltip":"Ehler Fisher",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"EhlerFisher",
+				"suffix":["comparator"],
+				"allowed_comparision":["EhlerFisher","Numbers"]	
+			},
+			"supertrend":{
+				"name":"Supertrend",
+				"description":"Supertrend",
+				"syntax":"Supertrend(<period>,<multiplier>,<offset>)",
+				"examples":[
+					"Supertrend(7,3)"
+				],
+				"params":[["period",7,true],["multiplier",3,true],["offset",0,false,"offset"]],
+				"class":"supertrend",
+				"classtype":"supertrend",
+				"tooltip":"Supertrend",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Supertrend",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","Supertrend","Overlap Studies","BollingerBand","Numbers","ATR Bands","Supertrend"]	
+			},
+			"ubb":{
+				"name":"UBB",
+				"description":"Upper Bollinger Band",
+				"syntax":"UBB(<period>,<standard_deviations>,<offset>)",
+				"examples":[
+					"UBB(7,3)"
+				],
+				"params":[["period",20,true],["standard_deviations",2,true],["offset",0,false,"offset"]],
+				"class":"ubb",
+				"classtype":"ubb",
+				"tooltip":"Upper Bollinger Band",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"BollingerBand",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","BollingerBand","Overlap Studies","ATR Bands"]
+			},
+			"mbb":{
+				"name":"MBB",
+				"description":"Middle Bollinger Band",
+				"syntax":"MBB(<period>,<standard_deviations>,<offset>)",
+				"examples":[
+					"MBB(7,3)"
+				],
+				"params":[["period",20,true],["standard_deviations",2,true],["offset",0,false,"offset"]],
+				"class":"mbb",
+				"classtype":"mbb",
+				"tooltip":"Middle Bollinger Band",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"BollingerBand",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","BollingerBand","Overlap Studies","ATR Bands"]	
+			},
+			"lbb":{
+				"name":"LBB",
+				"description":"Lower Bollinger Band",
+				"syntax":"LBB(<period>,<standard_deviations>,<offset>)",
+				"examples":[
+					"LBB(7,3)"
+				],
+				"params":[["period",20,true],["standard_deviations",2,true],["offset",0,false,"offset"]],
+				"class":"lbb",
+				"classtype":"lbb",
+				"tooltip":"Lower Bollinger Band",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"BollingerBand",
+				"suffix":["comparator"],
+				"allowed_comparision":["Price","BollingerBand","Overlap Studies","ATR Bands"]	
+			},
+			"bollinger_bandwidth":{
+				"name":"Bollinger Bandwidth",
+				"description":"Bollinger Bandwidth",
+				"syntax":"Bollinger Bandwidth(<field>,<period>,<standard_deviations>,<offset>)",
+				"examples":[
+					"LBB(7,3)"
+				],
+				"params":[["field","Close",true,"dropdown",["Open","High","Low","Close"]],["period",20,true],["standard_deviations",2,true],["offset",0,true,"offset"]],
+				"class":"bollinger_bandwidth",
+				"classtype":"bollinger_bandwidth",
+				"tooltip":"Bollinger Bandwidth",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Bollinger Bandwidth",
+				"suffix":["comparator"],
+				"allowed_comparision":["Bollinger Bandwidth","Numbers"]	
+			},
+			"adx":{
+				"name":"ADX",
+				"description":"Average Directional Index",
+				"syntax":"ADX(<period>,<offset>)",
+				"examples":[
+					"5 min backs 15 min ADX(14)"
+				],
+				"params":[["period",14,true],["offset",0,false,"offset"]],
+				"class":"adx",
+				"classtype":"adx",
+				"tooltip":"Average Directional Movement Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators ADX",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators +DI","Momentum Indicators -DI","Momentum Indicators ADX"]	
+			},
+			"plus_di":{
+				"name":"+DI",
+				"description":"+DI, Plus Directional Index",
+				"syntax":"+DI(<period>,<offset>)",
+				"examples":[
+					"5 min backs 15 min +DI(14)"				],
+				"params":[["period",14,true],["offset",0,false,"offset"]],
+				"class":"plus_di",
+				"classtype":"plus_di",
+				"tooltip":"Plus Directional Indicators",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators +DI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators -DI","Momentum Indicators +DI","Momentum Indicators ADX"]	
+			},
+			"minus_di":{
+				"name":"-DI",
+				"description":"-DI, Minus Directional Index",
+				"syntax":"-DI(<period>,<offset>)",
+				"examples":[
+					"5 min backs 15 min -DI(14)"
+				],
+				"params":[["period",14,true],["offset",0,false,"offset"]],
+				"class":"minus_di",
+				"classtype":"minus_di",
+				"tooltip":"Minus Directional Indicators",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators -DI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","Momentum Indicators +DI","Momentum Indicators -DI","Momentum Indicators ADX"]	
+			},
+			"willr":{
+				"name":"Williams %R",
+				"description":"Williams %R",
+				"syntax":"<period> Williams %R",
+				"examples":[
+					"5 min backs 15 min Williams %R(14)",
+					"9 day Williams %R"
+				],
+				"params":[["period",14,true]],
+				"class":"willr",
+				"classtype":"willr",
+				"tooltip":"Williams %R",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers"]	
+			},
+			"aroon_up":{
+				"name":"Aroon-Up",
+				"description":"Aroon up",
+				"syntax":"<period> Aroon-Up",
+				"examples":[
+					"5 min backs 15 min Aroon-Up(14)",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"aroon_up",
+				"classtype":"aroon_up",
+				"tooltip":"Aroon-Up",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"AROON",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","AROON"]	
+			},
+			"aroon_down":{
+				"name":"Aroon-Down",
+				"description":"Aroon down",
+				"syntax":"<period> Aroon-Down",
+				"examples":[
+					"5 min backs 15 min Aroon-Up(14)",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"aroon_down",
+				"classtype":"aroon_down",
+				"tooltip":"Aroon-Down",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"AROON",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","AROON"]	
+			},
+			"aroon_oscillator":{
+				"name":"Aroon Oscillator",
+				"description":"Aroon oscillator",
+				"syntax":"<period> Aroon oscillator",
+				"examples":[
+					"5 min backs 15 min Aroon-Up(14)",
+					"9 day RSI"
+				],
+				"params":[["period",14,true]],
+				"class":"aroon_oscillator",
+				"classtype":"aroon_oscillator",
+				"tooltip":"Aroon Oscillator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Momentum Indicators",
+				"suffix":["comparator"],
+				"allowed_comparision":["Numbers","AROON"]	
+			},
+			"stochastic":{
+				"name":"Stochastic",
+				"description":"Stochastic",
+				"syntax":"Stochastic(<period>,<type>,<smoothen>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",14,true],["type","Fast",true,"dropdown",["Fast","Slow"]],["smoothen","Yes",true,"dropdown",["Yes","No"]],["offset",0,false,"offset"]],
+				"class":"stochastic",
+				"classtype":"stochastic",
+				"tooltip":"Stochastic",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Stochastic",
+				"suffix":["comparator"],
+				"allowed_comparision":["Stochastic","Numbers"]
+			},
+			"stochastic_rsi":{
+				"name":"Stochastic RSI",
+				"description":"Stochastic RSI",
+				"syntax":"Stochastic RSI(<period>,<field>,<type>,<K_period>,<D_period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",14,true],["field","Close",true,"dropdown",["Open","High","Low","Close"]],["type","Fastk",true,"dropdown",["Fastk","FastD"]],["K_period",3,true],["D_period",3,true],["offset",0,false,"offset"]],
+				"class":"stochastic_rsi",
+				"classtype":"stochastic_rsi",
+				"tooltip":"Stochastic RSI",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Stochastic RSI",
+				"suffix":["comparator"],
+				"allowed_comparision":["Stochastic RSI","Numbers"]
+			},
+			"stochastic_mtm":{
+				"name":"Stochastic Momentum Index",
+				"description":"Stochastic Momentum Index",
+				"syntax":"Stochastic MTM(<type>,<%K_periods>,<%K_smoothening_periods>,<%K_double_smoothening_periods>,<%D_smoothening_periods>,<%D_MA>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["type","%K",true,"dropdown",["%K","%D"]],["%K_periods",10,true],["%K_smoothening_periods",3,true],["%K_double_smoothening_periods",3,true],["%D_smoothening_periods",10,true],["%D_MA","EMA",true,"dropdown",["SMA","EMA","Weighted","Triple","Triangular","Double","Hull"]],["offset",0,true,"offset"]],
+				"class":"stochastic_mtm",
+				"classtype":"stochastic_mtm",
+				"tooltip":"Stochastic Momentum Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"StochasticMTM",
+				"suffix":["comparator"],
+				"allowed_comparision":["StochasticMTM","Numbers"]
+			},
+			"ichimoku":{
+				"name":"Ichimoku",
+				"description":"Ichimoku",
+				"syntax":"Ichimoku(<conversion_line_period>,<base_line_period>,<leading_span_b_period>,<lagging_span_period>,<line>,<cloud_shift>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["conversion_line_period",9,true],["base_line_period",26,true],["leading_span_b_period",52,true],["lagging_span_period",26,true],["line","Conversion line",true,"dropdown",["Conversion line","Base line","Leading span a","Leading span b"]],["cloud_shift","yes",true,"dropdown",["yes","no"]],["offset",0,true,"offset"]],
+				"class":"ichimoku",
+				"classtype":"ichimoku",
+				"tooltip":"ichimoku",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Supertrend","Overlap Studies","BollingerBand","Numbers","ATR Bands","Numbers","Price"]
+			},
+			"alligator":{
+				"name":"Alligator",
+				"description":"Alligator",
+				"syntax":"Alligator(<signal>,<jaw_period>,<jaw_offset>,<teeth_period>,<teeth_offset>,<lips_period>,<lips_offset>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["signal","Jaw",true,"dropdown",["Jaw","Teeth","Lips"]],["jaw_period",13,true],["jaw_offset",8,true],["teeth_period",8,true],["teeth_offset",5,true],["lips_period",5,true],["lips_offset",3,true],["offset",0,true,"offset"]],
+				"class":"alligator",
+				"classtype":"alligator",
+				"tooltip":"Alligator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands","Supertrend","Math operators"]
+			},
+			"pivot_points":{
+				"name":"Pivot points",
+				"description":"pivot_points",
+				"syntax":"Pivot point(<signal>,<type>,<continous>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["signal","r1",true,"dropdown",["r3","r2","r1","pp","s1","s2","s3"]],["type","standard",true,"dropdown",["standard","fibonacci"]],["continous","No",true,"dropdown",["No","Yes"]]],
+				"class":"pivot_points",
+				"classtype":"pivot_points",
+				"tooltip":"Pivot points",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","BollingerBand","Math operators","Numbers","Price","ATR Bands"]
+			},
+			"prev_n":{
+				"name":"Previous N",
+				"description":"Previous N candle",
+				"syntax":"Prev N(<field>,<offset>,<candle>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["field","High",true,"dropdown",["Open","High","Low","Close"]],["offset",-1,true,"offset"],["candle","day",true,"dropdown",["min","3min","5min","10min","15min","30min","hour","day"]]],
+				"class":"prev_n",
+				"classtype":"prev_n",
+				"tooltip":"Previou N candle",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"prev_n_vol":{
+				"name":"Previous N Volume",
+				"description":"Previous N candle Volume",
+				"syntax":"Prev N(Volume,<offset>,<candle>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["offset",-1,true,"offset"],["candle","day",true,"dropdown",["min","3min","5min","10min","15min","30min","hour","day"]]],
+				"class":"prev_n_vol",
+				"classtype":"prev_n_vol",
+				"tooltip":"Previou N candle Volume",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Indicators","Numbers","Volume"]
+			},
+			"coppock_curve":{
+				"name":"Coppock Curve",
+				"description":"Coppock Curve",
+				"syntax":"Coppock Curve(<field>,<short_roc>,<long_roc>,<period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["field","Close",true,"dropdown",["Open","High","Low","Close"]],["short_roc",11,true],["long_roc",14,true],["period",10,true],["offset",0,false,"offset"]],
+				"class":"coppock_curve",
+				"classtype":"coppock_curve",
+				"tooltip":"Coppock curve",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Coppock Curve",
+				"suffix":["comparator"],
+				"allowed_comparision":["Coppock Curve","Numbers"]
+			},
+			"opening_range":{
+				"name":"Opening Range",
+				"description":"Opening Range",
+				"syntax":"Opening Range(<field>,<range>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["field","High",true,"dropdown",["Open","High","Low","Close"]],["range","day",true,"dropdown",["min","3min","5min","10min","15min","30min","45min","hour","day"]]],
+				"class":"opening_range",
+				"classtype":"opening_range",
+				"tooltip":"Opening Range",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"opening_range_volume":{
+				"name":"Opening Range Volume",
+				"description":"Opening Range Volume",
+				"syntax":"Opening Range(Volume,<range>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["range","day",true,"dropdown",["min","3min","5min","10min","15min","30min","45min","hour","day"]]],
+				"class":"opening_range_volume",
+				"classtype":"opening_range_volume",
+				"tooltip":"Opening Range Volume",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Indicators","Numbers","Volume"]
+			},
+			"nth_candle":{
+				"name":"Nth Candle",
+				"description":"Nth candle",
+				"syntax":"Nth candle(<field>,<range>,<candle_number>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["field","High",true,"dropdown",["Open","High","Low","Close"]],["range","Hour",true,"dropdown",["min","3min","5min","10min","15min","30min","45min","hour"]],["candle_number",1,true]],
+				"class":"nth_candle",
+				"classtype":"nth_candle",
+				"tooltip":"Nth candle",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"nth_candle_volume":{
+				"name":"Nth Candle Volume",
+				"description":"Nth Candle Volume",
+				"syntax":"Nth candle(Volume,<range>,<candle_number>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["range","Hour",true,"dropdown",["min","3min","5min","10min","15min","30min","45min","hour"]],["candle_number",1,true]],
+				"class":"nth_candle_volume",
+				"classtype":"nth_candle_volume",
+				"tooltip":"Nth candle volume",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Indicators","Numbers","Volume"]
+			},
+			"cfo":{
+				"name":"Chande Forecast Oscillator",
+				"description":"Chande Forecast Oscillator",
+				"syntax":"cfo(<period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",14,true],["offset",0,false,"offset"]],
+				"class":"cfo",
+				"classtype":"cfo",
+				"tooltip":"Chande Forecast Oscillator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"CFO",
+				"suffix":["comparator"],
+				"allowed_comparision":["CFO","Numbers"]
+			},
+			"pvi":{
+				"name":"Positive Volume Index",
+				"description":"Positive Volume Index",
+				"syntax":"PVI(<period>,<field>,<ma_type>,<signal>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",255,true],["field","close",true,"dropdown",["open","low","close","high"]],["ma_type","simple",true,"dropdown",["simple","exponential","weighted","triple","triangular","double","hull","kaufman"]],["signal","index",true,"dropdown",["index","ma"]],["offset",0,false,"offset"]],
+				"class":"pvi",
+				"classtype":"pvi",
+				"tooltip":"Positive Volume Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume Index",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Index","Numbers"]
+			},
+			"nvi":{
+				"name":"Negative Volume Index",
+				"description":"Negative Volume Index",
+				"syntax":"NVI(<period>,<field>,<ma_type>,<signal>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",255,true],["field","close",true,"dropdown",["open","low","close","high"]],["ma_type","simple",true,"dropdown",["simple","exponential","weighted","triple","triangular","double","hull","kaufman"]],["signal","index",true,"dropdown",["index","ma"]],["offset",0,false,"offset"]],
+				"class":"nvi",
+				"classtype":"nvi",
+				"tooltip":"Negative Volume Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Volume Index",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Index","Numbers"]
+			},
+			"vortex_indicator":{
+				"name":"Vortex Indicator",
+				"description":"Vortex Indicator",
+				"syntax":"Vortex(<period>,<signal>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",14,true],["signal","+vi",true,"dropdown",["+vi","-vi"]],["offset",0,false,"offset"]],
+				"class":"vortex_indicator",
+				"classtype":"vortex_indicator",
+				"tooltip":"Vortex Indicator",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Vortex Indicator",
+				"suffix":["comparator"],
+				"allowed_comparision":["Vortex Indicator","Numbers"]
+			},
+			"trend_intensity_index":{
+				"name":"Trend Intensity Index",
+				"description":"Trend Intensity Index",
+				"syntax":"Trend Int(<field>,<type>,<period>,<signal_period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["field","close",true,"dropdown",["open","high","low","close"]],["type","TII",true,"dropdown",["TII","Signal"]],["period",14,true],["signal_period",9,true],["offset",0,false,"offset"]],
+				"class":"trend_intensity_index",
+				"classtype":"trend_intensity_index",
+				"tooltip":"Trend Intensity Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Trend Intensity Index",
+				"suffix":["comparator"],
+				"allowed_comparision":["Trend Intensity Index","Numbers"]
+			},
+			"choppiness_index":{
+				"name":"Choppiness Index",
+				"description":"Choppiness Index",
+				"syntax":"Choppiness Index(<period>,<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["period",14,true],["offset",0,false,"offset"]],
+				"class":"choppiness_index",
+				"classtype":"choppiness_index",
+				"tooltip":"Choppiness Index",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Choppiness Index",
+				"suffix":["comparator"],
+				"allowed_comparision":["Choppiness Index","Numbers"]
+			},
+			"volume_profile":{
+				"name":"Volume Profile",
+				"description":"Volume Profile",
+				"syntax":"Volume Profile(<field>,<VA_pct>,<offset>,<period>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["field","POC",true,"dropdown",["POC","PHigh","PLow","VAH","VAL","BT"]],["VA_pct",70,true],["offset",-1,false,"offset"],["period","day",true,"dropdown",["hour","day","week","month","year"]]],
+				"class":"volume_profile",
+				"classtype":"volume_profile",
+				"tooltip":"Volume Profile",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Overlap Studies",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"vwap":{
+				"name":"VWAP",
+				"description":"Volume weighted Average Price",
+				"syntax":"VWAP(<offset>)",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["offset",0,false,"offset"]],
+				"class":"vwap",
+				"classtype":"vwap",
+				"tooltip":"Volume weighted Average Price",
+				"html_tags":"ti_tags",
+				"tag":"technical_indicator",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"number":{
+				"name":"Number",
+				"description":"Number",
+				"syntax":"<number>",
+				"examples":["120000"],
+				"params":[["number","0.0",true]],
+				"class":"number",
+				"classtype":"enter_float",
+				"tooltip":"Number",
+				"html_tags":"field_tags",
+				"tag":"constants",
+				"function_group":"Numbers",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Volume Indicators","Volume","Numbers"]
+			},
+			"open":{
+				"name":"Open",
+				"description":"Open price",
+				"syntax":"Open",
+				"examples":["1 mins back open"],
+				"params":[],
+				"class":"open",
+				"classtype":"enter_float",
+				"tooltip":"Open price",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"high":{
+				"name":"High",
+				"description":"High price",
+				"syntax":"High",
+				"examples":["1 mins back high"],
+				"params":[],
+				"class":"high",
+				"classtype":"enter_float",
+				"tooltip":"High",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"low":{
+				"name":"Low",
+				"description":"Low price",
+				"syntax":"Low",
+				"examples":["1 mins back low"],
+				"params":[],
+				"class":"low",
+				"classtype":"enter_float",
+				"tooltip":"Low",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"close":{
+				"name":"Close",
+				"description":"Close price",
+				"syntax":"Close",
+				"examples":["1 mins back close"],
+				"params":[],
+				"class":"close_",
+				"classtype":"enter_float",
+				"tooltip":"Close",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","Supertrend","BollingerBand","ATR Bands"]
+			},
+			"prev_open":{
+				"name":"Previous Open",
+				"description":"Previous candle's open price",
+				"syntax":"previous Open",
+				"examples":["1 mins back open"],
+				"params":[],
+				"class":"prev_open",
+				"classtype":"enter_float",
+				"tooltip":"Open price",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend","ATR Bands"]
+			},
+			"prev_high":{
+				"name":"Previous High",
+				"description":"Previous candle's high price",
+				"syntax":"previous High",
+				"examples":["1 mins back high"],
+				"params":[],
+				"class":"prev_high",
+				"classtype":"enter_float",
+				"tooltip":"High",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend","ATR Bands"]
+			},
+			"prev_low":{
+				"name":"Previous Low",
+				"description":"Previous candle's low price",
+				"syntax":"previous Low",
+				"examples":["1 mins back low"],
+				"params":[],
+				"class":"prev_low",
+				"classtype":"enter_float",
+				"tooltip":"Low",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend","ATR Bands"]
+			},
+			"prev_close":{
+				"name":"Previous Close",
+				"description":"Previous candle's close price",
+				"syntax":"previous Close",
+				"examples":["1 mins back close"],
+				"params":[],
+				"class":"prev_close",
+				"classtype":"enter_float",
+				"tooltip":"Close",
+				"html_tags":"ohlcv_tags",
+				"tag":"Price",
+				"function_group":"Price",
+				"suffix":["comparator"],
+				"allowed_comparision":["Overlap Studies","Momentum Indicators","Numbers","Price","BollingerBand","Supertrend","ATR Bands"]
+			},
+			"volume":{
+				"name":"Volume",
+				"description":"Volume of a candle",
+				"syntax":"Volume",
+				"examples":["1 mins back volume"],
+				"params":[],
+				"class":"volume",
+				"classtype":"enter_float",
+				"tooltip":"Number",
+				"html_tags":"ohlcv_tags",
+				"tag":"constants",
+				"function_group":"Volume",
+				"suffix":["comparator"],
+				"allowed_comparision":["Volume Indicators","Numbers","Volume"]
+			},
+			"at_price":{
+				"name":"Trade At Price",
+				"description":"Buy at a price in a given range",
+				"syntax":"Price @ <price> in range of <range_percentage>%",
+				"examples":["Last trading price @ 100 in range of 0.1%"],
+				"params":[["price",0.0],["range_percentage","0.5",false,"","0.01"]],
+				"class":"at_price",
+				"classtype":"at_price",
+				"tooltip":"Buy at a specific price in range",
+				"html_tags":"special_tags",
+				"tag":"condition",
+				"function_group":"Condition",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"engulfing":{
+				"name":"Engulfing",
+				"description":"Engulfing candle pattern",
+				"syntax":"Engulfing(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"engulfing",
+				"classtype":"engulfing",
+				"tooltip":"Engulfing",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"spinningtop":{
+				"name":"Spinningtop",
+				"description":"Spinningtop candle pattern",
+				"syntax":"Spinningtop(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"spinningtop",
+				"classtype":"spinningtop",
+				"tooltip":"Spinningtop",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"kicking":{
+				"name":"Kicking",
+				"description":"Kicking candle pattern",
+				"syntax":"Kicking(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"kicking",
+				"classtype":"kicking",
+				"tooltip":"Kicking",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"morning_star":{
+				"name":"Morning Star",
+				"description":"Morning Star candle pattern",
+				"syntax":"Morning star(<trend>,<penetration>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["penetration","0.0",true,"penetration"],["offset","0.0",true,"offset"]],
+				"class":"morning_star",
+				"classtype":"morning_star",
+				"tooltip":"Morning Star",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"morning_doji_star":{
+				"name":"Morning Doji Star",
+				"description":"Morning Doji Star candle pattern",
+				"syntax":"Morning doji star(<trend>,<penetration>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["penetration","0.3",true,"penetration"],["offset","0.0",true,"offset"]],
+				"class":"morning_doji_star",
+				"classtype":"morning_doji_star",
+				"tooltip":"Morning Doji Star",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"homing_pigeon":{
+				"name":"Homing pigeon",
+				"description":"Homing Pigeon candle pattern",
+				"syntax":"Homing pigeon(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"homing_pigeon",
+				"classtype":"homing_pigeon",
+				"tooltip":"Homing pigeon",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"doji_star":{
+				"name":"Doji Star",
+				"description":"Doji Star candle pattern",
+				"syntax":"Doji Star(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"doji_star",
+				"classtype":"doji_star",
+				"tooltip":"Doji Star",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"three_white_soldiers":{
+				"name":"Three White Soldiers",
+				"description":"Three White Soldiers pattern",
+				"syntax":"Three White Soldiers(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"three_white_soldiers",
+				"classtype":"three_white_soldiers",
+				"tooltip":"Three White Soldiers",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"abandoned_baby":{
+				"name":"Abandoned baby",
+				"description":"Abandoned baby pattern",
+				"syntax":"Abandoned baby(<trend>,<penetration>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["penetration","0.3",true,"penetration"],["offset",0,true,"offset"]],
+				"class":"abandoned_baby",
+				"classtype":"abandoned_baby",
+				"tooltip":"Abandoned baby pattern",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"tri_star":{
+				"name":"Tri star",
+				"description":"Tri star pattern",
+				"syntax":"Tri star(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"tri_star",
+				"classtype":"tri_star",
+				"tooltip":"Tri star pattern",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"advance_block":{
+				"name":"Advance block",
+				"description":"Advance block pattern",
+				"syntax":"Advance block(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"advance_block",
+				"classtype":"advance_block",
+				"tooltip":"Advance block",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"side_3_gaps":{
+				"name":"Side 3 gaps",
+				"description":"Side 3 gaps pattern",
+				"syntax":"Side 3 gaps(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"side_3_gaps",
+				"classtype":"side_3_gaps",
+				"tooltip":"Side 3 gaps",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"conceal_baby_swallow":{
+				"name":"Conceal baby",
+				"description":"Conceal baby pattern",
+				"syntax":"Conceal baby(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"conceal_baby_swallow",
+				"classtype":"conceal_baby_swallow",
+				"tooltip":"Conceal baby swallow",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			},
+			"stick_sandwich":{
+				"name":"Stick Sandwich",
+				"description":"Stick sandwich pattern",
+				"syntax":"Stick sandwich(<trend>,<offset>) is formed",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend","Bullish",true,"dropdown",["Bullish","Bearish"]],["offset",0,true,"offset"]],
+				"class":"stick_sandwich",
+				"classtype":"stick_sandwich",
+				"tooltip":"Stick sandwich",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Candle Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			}
+		},
+		"comparator":{
+			"higher_than":{
+				"name":"higher than",
+				"description":"higher than",
+				"syntax":"higher than",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"lower_than":{
+				"name":"lower than",
+				"description":"lower than",
+				"syntax":"lower than",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"higher_than_equal_to":{
+				"name":"higher than equal",
+				"description":"higer than or equal to",
+				"syntax":"greater than equal to",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"lower_than_equal_to":{
+				"name":"lower than equal",
+				"description":"lower than or equal to",
+				"syntax":"less than equal to",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"crosses_above":{
+				"name":"crosses above",
+				"description":"crosses above",
+				"syntax":"crosses above",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"crosses_below":{
+				"name":"crosses below",
+				"description":"crosses below",
+				"syntax":"crosses below",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"equal_to":{
+				"name":"equal to",
+				"description":"equal to",
+				"syntax":"is equal to",
+				"examples":[],
+				"params":[],
+				"html_tags":"comparator_tags",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"up_by":{
+				"name":"up by",
+				"description":"up by",
+				"syntax":"up <value><type> from",
+				"examples":[],
+				"params":[["value",14,true],["type","%",true,"dropdown",["%","absolute"]]],
+				"html_tags":"higher_by",
+				"classtype":"higher_by",
+				"class":"higher_by",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			},
+			"down_by":{
+				"name":"down by",
+				"description":"down by",
+				"syntax":"down <value><type> from",
+				"examples":[],
+				"params":[["value",14,true],["type","%",true,"dropdown",["%","absolute"]]],
+				"html_tags":"higher_by",
+				"classtype":"higher_by",
+				"class":"higher_by",
+				"tag":"comparator",
+				"function_group":"",
+				"suffix":["indicator"],
+				"allowed_comparision":""
+			}
+		},
+		"fundamentals":{
+
+		},
+		"pattern":{
+			"engulfing":{
+				"name":"ENGULFING",
+				"description":"Engulfing",
+				"syntax":"<trend> SMA -<offset>",
+				"examples":[
+					"2 min ago 20 min sma",
+					"20 min sma"
+				],
+				"params":[["trend",20,true,"select",["Bullish","Bearish"]]],
+				"class":"engulfing",
+				"classtype":"engulfing",
+				"tooltip":"Engulfing",
+				"html_tags":"ti_tags",
+				"tag":"chart_pattern",
+				"function_group":"Chart Pattern",
+				"suffix":[],
+				"allowed_comparision":[]
+			}
+		}
+	}
+}

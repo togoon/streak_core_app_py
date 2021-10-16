@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+
+{% block page_title %} | Algo trade without coding {% endblock %}
+{% block page_css1 %} <link href="/static/css/home.css?v=1.5" rel="stylesheet"> {% endblock %}
+{% block page_js1 %} <script src="/static/js/home.js?v=1.5"></script> {% endblock %}
+
+{% block body %}
+<div class="home_body">
+	<div class="hero_section">
+		<!-- <h1>Backtesting, Risk Management and Trading System</h1> -->
+		<h1>Now, Everyone Can Algo</h1>
+		<h2>Create, Backtest, and Deploy in a minute.</h2>
+		<button class="log_in_kite" onclick="log_in_kite();"><span><img src="/static/imgs/home-kite-logo.png"></span><span>Log in with Kite</span></button>
+	</div>
+	<div class="for_traders_section" style="display: none;">
+		<div class="home-section-icons"><img class="home-icon-one" src="/static/imgs/home-icon-one.png"></div>
+		<h1>Empowering traders and investors</h1>
+		<h2>
+			Streak is a platform that enables you to create your own trading and investment strategies.<br>
+			The strategies you create can be backtested over a period of time; based on backtesting results<br>you can trade live with your strategies by just clicking the automate button.
+		</h2>
+		<div class="entry_exit">
+			<div class="entry_left">
+				<div class="entry_card">
+					<p class="entry_title">Entry</p>
+					<p class="strategy">Buy 50 stocks of SBI if 20Day SMA is greater than 40Day SMA and RSI is greater than 75.</p>
+				</div>
+			</div>
+			<div class="exit_right">
+				<div class="exit_card">
+					<p class="exit_title">Exit</p>
+					<p class="strategy">Sell 50 stocks of SBI at a Stop loss of 5% or Target profit of 10%.</p>
+				</div>
+			</div>
+		</div>
+		<button class="cta" onclick="log_in_kite();">Create a new algorithm</button>
+	</div>
+	<div class="video_section" id="video_section"> <!-- style="display: none;" -->
+		<div class="home-section-icons" style="display: none;"><a href="#video_section"><img onclick="#video_section" class="home-icon-four" src="/static/imgs/home-icon-four.png"></a></div>
+		<h1>Why Streak</h1>
+		<!-- <h1>Demo</h1> -->
+		<!-- <h2>Watch this 90 second video to s</h2> -->
+		<!-- https://youtu.be/ZKx666bCsjQ -->
+		<div class="video_section_body"><!-- https://youtu.be/gTsM5tC7qd0 -->
+			<div class="video">
+				<iframe width="100%" height="100%" frameborder="0" src="https://www.youtube.com/embed/ZKx666bCsjQ?rel=0" allowfullscreen><!-- &controls=0&loop=1&autoplay=1 -->
+				</iframe>
+				<!-- <video class="card" width="400" controls>https://youtu.be/z9E0J64-i_A
+  					<source src="imgs/videos/etnow.mp4" type="video/mp4">
+  					Your browser does not support HTML5 video.
+				</video> -->
+				<!-- <video class="card" width="400" controls>
+  					<source src="imgs/videos/bloomberg.mp4" type="video/mp4">
+  					Your browser does not support HTML5 video.
+				</video> -->
+			</div>
+		</div>
+		<button class="cta" onclick="log_in_kite();">Get Started</button>
+	</div>
+	<div class="video_section" style="display: none;">
+		<div class="home-section-icons"><img class="home-icon-four" src="/static/imgs/home-icon-four.png"></div>
+		<h1>Why Streak</h1>
+		<!-- <h1>Demo</h1> -->
+		<!-- <h2>Watch this 90 second video to s</h2> -->
+		<div class="video_section_body">
+			<div class="video">
+				<!-- <iframe width="100%" height="100%" frameborder="0" src="https://www.youtube.com/embed/O_FFUw1tSfI?rel=0&controls=0&loop=1&autoplay=1">
+				</iframe> -->
+				<video class="card" width="" height="100%" controls>
+  					<source src="/static/videos/demo.mp4" type="video/mp4">
+  					Your browser does not support HTML5 video.
+				</video>
+				<!-- <video class="card" width="400" controls>
+  					<source src="imgs/videos/bloomberg.mp4" type="video/mp4">
+  					Your browser does not support HTML5 video.
+				</video> -->
+			</div>
+		</div>
+		<button class="cta" onclick="log_in_kite();">Get Started</button>
+	</div>
+	<!-- <div class="popular_strategies_section">
+		<div class="home-section-icons"><img class="home-icon-three" src="/static/imgs/home-icon-three.png"></div>
+		<h1>Popular strategies</h1>
+		<h2>Create strategies using technicals and backtest on historical data.<br>Find your winning strategies and discard the losers.</h2>
+		<div class="popular_strategies_section_body">
+			<div class="ps_results">
+				<img src="/static/imgs/home-strategy-full.png">
+			</div>
+		</div>
+		<button class="cta" onclick="log_in_kite();">Try this strategy now</button>
+	</div> -->
+	<div class="video_section" style="display: none;">
+		<div class="home-section-icons"><img class="home-icon-four" src="/static/imgs/home-icon-four.png"></div>
+		<h1>Demo</h1>
+		<h2>This 1 minute video explains how quickly you can create, backtest and deploy your trading algorithm.</h2>
+		<div class="video_section_body">
+			<div class="video">
+				
+			</div>
+		</div>
+		<button class="cta" onclick="log_in_kite();">Get Started</button>
+	</div>
+	<div class="features_section" id="features">
+		<div class="home-section-icons"><img class="home-icon-five" src="/static/imgs/home-icon-five.png"></div>
+		<!-- <h1>All the features you need</h1> -->
+		<!-- <h1>How to Algo</h1> -->
+		<h1>How to Algo</h1>
+		<h2 class="menu_mobile_hide">|&nbsp;&nbsp;&nbsp;CREATE&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;BACKTEST&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;DEPLOY&nbsp;&nbsp;&nbsp;|</h2>
+		<!-- <h2>A trading system complete with algorithm creation tool, backtesting tool, risk management tool,<br>automation system, market monitoring system and alert system.</h2> -->
+		<div class="features_section_body">
+			<div class="feature_row">
+				<div class="feature_description">
+					<!-- <p class="feature_title">Create Algorithm</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Easy to use Click to add indicator feature.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Customizable period for technical indicators such as SMA, EMA & RSI.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Add multiple conditions in a single algorithm.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Include stop loss and target profit percentage as part of your algorithm.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Combine technicals and fundamentals in a single algorithm.</p> -->
+					<p class="feature_title">Create</p>
+					<h2>Algo trade without coding:</h2>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Use customisable technical indicators or simple price based signals.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Key in your entry and exit signals in English.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Create algo for multiple stocks in a minute.</p>
+					<!-- <p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Create algo in plain English within seconds.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Click to add technical indicators.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Write SMA crossovers, RSI momentum indicators and much more.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Define Entry and Exit conditions before entering a trade.</p> -->
+					<!-- <p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Create up to 100 algorithms per day.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Use various technical indicators to create your algorithm.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Adjust time period on technical indicators to optimize your algorithm.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Add multiple conditions in a single algorithm.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Enforce discipline by adding stop loss and target profit percentage.</p> -->
+				</div>
+				<div class="feature_screenshot"><img class="home-features-one" src="/static/imgs/home-features-one.png"></div>
+			</div>
+			<div class="feature_row">
+				<div class="feature_screenshot menu_mobile_hide"><img class="home-features-two" src="/static/imgs/home-features-two.png"></div>
+				<div class="feature_description">
+					<!-- <p class="feature_title">Step 2: Backtest Algorithm</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Backtested result charts with P&L.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Customizable lookback period upto 10 years.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Customizable data Interval including 1 min, 1 hour and 1 day.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Customizable Stop Loss & Target Profit percentage.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Backtest on multiple stocks and compare returns</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Backtest results include Alpha, Beta, Sharpe Ratio, Sortino Ratio, Volatility & Max Drawdown.</p> -->
+					<p class="feature_title">Backtest</p>
+					<h2>Measure your algo performance:</h2>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Generate metrics like P&L , winning streak, max gains, and max drawdown with one click.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Customise your algos by modifying target profit, stop loss percentage and candle interval.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Compare algo performance across multiple stocks at a time.</p>
+					<!-- <p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Find profitable algo in seconds.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Adjust stop loss and take profit to find maximum returns.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Minimize risk by reducing max drawdown.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Identify long term and short term winning algos.</p> -->
+					<!-- <p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Upto 500 Backtested results everyday.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Backtest results include winning streak, maximum drawdown and much more.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Customizable time period, stop loss & target profit.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Run same algorithm on multiple stocks and compare results in a single backtest.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Look back period upto 10 years.</p> -->
+				</div>
+				<div class="feature_screenshot menu_mobile_show"><img class="home-features-two" src="/static/imgs/home-features-two.png"></div>
+			</div>
+			<div class="feature_row">
+				<div class="feature_description">
+					<!-- <p class="feature_title">Step 3: Deploy Algorithm</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Deploy multiple strategies on multiple stocks.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Streak bots monitor stock movements for both entry and exit events for deployed strategies.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Get alerts when trigger event (entry or exit) occurs to take buy or sell action.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Access Order Log of all trades.</p> -->
+					<p class="feature_title">Deploy</p>
+					<h2>Monitor live markets:</h2>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Deploy algos intraday or overnight without margin</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Streak bots monitor multiple stock movements for you.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Get actionable alerts for entry and exit signals.</p>
+<!-- 					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Deploy multiple algos for multiple equities at a time.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Get mobile alerts on entry and exit signals and take action.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Take action on every trade signal.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Access live algo status, algo P&L and algo performance metrics.</p> -->
+					<!-- <p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Deploy up to 50 algorithms at a time.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Streak bots monitor stock movements for both entry and exit signals.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Get alerts when trigger event (entry or exit) occurs to take buy or sell action.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Access open, complete and overnight positions of all deployed algorithms.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Force Stop the algorithm when you want to manually intervene.</p>
+					<p class="sub_feature"><span><img src="/static/imgs/home-tick-blue.png"></span>Take overnight position.</p> -->
+				</div>
+				<div class="feature_screenshot"><img class="home-features-three" src="/static/imgs/home-features-three.png"></div>
+			</div>
+		</div>
+	</div>
+	<div class="testimonials_section" style="display: none;">
+		<div class="home-section-icons"><img class="home-icon-two" src="/static/imgs/home-icon-two.png"></div>
+		<h1>Experts say</h1>
+		<h2>Only platform in India that lets you create, backtest and deploy algorithms<br>without having the need to code.</h2>
+		<div class="testimonials_body">
+			<div>
+				<div class="testimonials_box">
+					<div class="testimonials_top">
+						<p><!-- “Streak is the much required platform for traders that solves all their problems in one place. Streak has all the tools to enforce discipline in trading and to protect a trader from adverse market action. It has an in-built backtesting tool, strategy creation tool and real-time market monitor that alerts you based on your trading signals.” --></p>
+					</div>
+					<div class="testimonials_bottom">
+						<div class="testimonials_photo"><img src="/static/imgs/home-nithin.png"></div>
+						<div class="testimonials_desc">
+							<p class="testimonials_name">Nithin Kamath</p>
+							<p class="testimonials_designation">Founder & CEO, Zerodha</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="testimonials_box">
+					<div class="testimonials_top">
+						<p><!-- “For the first time ever traders will have in their hands a platform that will change the way they have been trading. They can do things they couldn’t do before: backtesting, creating trading streatgies without coding and automating strategies for entry and exit alert signals. A must-have for traders both full-time and part-time.” --></p>
+					</div>
+					<div class="testimonials_bottom">
+						<div class="testimonials_photo"><img src="/static/imgs/home-nikhil.png"></div>
+						<div class="testimonials_desc">
+							<p class="testimonials_name">Nikhil Kamath</p>
+							<p class="testimonials_designation">Founder & Director, Zerodha</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="testimonials_box">
+					<div class="testimonials_top">
+						<p><!-- “For any trader having a trading system becomes crucial in today's market. It is almost impossible to trade without it. Streak is the only platform that provides an easy to use platform to make your own automated trading system involving trading signals such as entry using technicals and exit at a stop loss or target profit.” --></p>
+					</div>
+					<div class="testimonials_bottom">
+						<div class="testimonials_photo"><img src="/static/imgs/home-karthik.png"></div>
+						<div class="testimonials_desc">
+							<p class="testimonials_name">Karthik Rangappa</p>
+							<p class="testimonials_designation">Author, Varsity by Zerodha</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="zerodha_section_top"></div>
+	<div class="zerodha_section">
+		<!-- <p class="zerodha_title">Partnered with Zerodha</p> -->
+		<!-- <p class="zerodha_description">Zerodha is our trusted brokerage partner.<br>All the orders placed in Streak will be executed by Zerodha.</p> -->
+		<div class="zerodha_logo"><img src="/static/imgs/home-zerodha-icon.png"></div>
+		<!-- <p class="zerodha_description">All orders placed in Streak will be executed by Zerodha.</p> -->
+		<p class="zerodha_description">Streak is an extension to Kite - Zerodha's exchange approved trading platform.</p>
+		<div class="zerodha_values">
+			<div><p><span><img src="/static/imgs/home-tick-green.png"></span>Reliable stock data.</p></div>
+			<div><p><span><img src="/static/imgs/home-tick-green.png"></span>Orders executed at ease.</p></div>
+			<div><p><span><img src="/static/imgs/home-tick-green.png"></span>One dashboard for all strategies.</p></div>
+		</div>
+	</div>
+	<div class="zerodha_section_bottom"></div>
+	<div class="press_media">
+		<h1>Press & Media</h1>
+		<div>
+			<!-- <a href="https://tech.economictimes.indiatimes.com/news/startups/zerodha-invests-rs-2-25-cr-in-streak/62503863" target="_blank"><img src="/static/imgs/media-economic-times.png"></a> -->
+			<a href="https://timesofindia.indiatimes.com/business/india-business/algo-trading-platform-streak-bags-rs-2-25-crore/articleshow/62561318.cms" target="_blank"><img src="/static/imgs/media-toi.png"></a>
+			<!-- <a href="http://www.deccanherald.com/content/653895/rainmatter-invests-rs-225-crore.html" target="_blank"><img src="/static/imgs/media-deccan-herald.png"></a> -->
+			<a href="http://www.deccanherald.com/content/653895/rainmatter-invests-rs-225-crore.html" target="_blank" id="deccan"><img src="/static/imgs/media-dh.png"></a>
+			<!-- <a href="https://timesofindia.indiatimes.com/business/india-business/algo-trading-platform-streak-bags-rs-2-25-crore/articleshow/62561318.cms" target="_blank"><img src="/static/imgs/media-the-times-of-india.png"></a> -->
+			<a href="https://tech.economictimes.indiatimes.com/news/startups/zerodha-invests-rs-2-25-cr-in-streak/62503863" target="_blank"><img src="/static/imgs/media-et.png"></a>
+			<a href="https://www.vccircle.com/algorithmic-trading-platform-streak-raises-seed-money/" target="_blank"><img src="/static/imgs/media-vcc.jpg"></a>
+		</div>
+	</div>
+	<div class="pricing" id="pricing"><!-- style="display: none;" -->
+		<div class="home-section-icons"><img class="home-icon-six" src="/static/imgs/home-icon-six.png"></div>
+		<!-- <h1>Start your FREE trial</h1> -->
+		<h1>Experience Live Algo Trading</h1>
+		<h2>No coding required<!-- <br>No commitments, Cancel anytime. --></h2>
+		<div class="pricing_body">
+			<div class="pricing_details">
+				<div class="free_trial">
+					<p class="pricing_title">Free Trial - &#8377; 0/-</p>
+					<!-- <p class="pricing_description">7 day LIMITED access to the platform.</p> -->
+					<p class="pricing_description" style="color: #FFFFFF;font-weight: 700;letter-spacing: 0.2px;text-decoration: underline;opacity: 1;">Till <span>30th June</span> 2018</p>
+					<p class="pricing_package">100 Backtests a day</p>
+					<p class="pricing_package">5 Live algos at a time</p>
+					<button class="white_cta" onclick="log_in_kite();">Start your FREE trial</button>
+				</div>
+			</div>
+			<div class="pricing_details">
+				<div class="subscription">
+					<p class="pricing_title">Monthly subscription - &#8377; 500/-</p>
+					<p class="pricing_description">Get COMPLETE ACCESS to the platform.</p>
+					<p class="pricing_package">200 Backtests a day</p>
+					<p class="pricing_package">50 Live algos at a time</p>
+					<button class="white_cta" onclick="start_subscription_popup();">Start your subscription</button>
+				</div>
+				<div class="free_badge">
+					<img src="/static/imgs/free_badge.png">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="footer_home">
+		<div class="footer_container">
+			<div class="footer_left">
+				<div class="about_streak">
+					<p class="streak_title">Streak</p>
+					<p class="streak_description">Algo trade without coding</p>
+				</div>
+				<div class="contact_streak">
+					<p><span><img src="/static/imgs/footer-phone.png"></span>&nbsp;+91 123 456 7891</p>
+					<p><span><img src="/static/imgs/footer-mail.png"></span>&nbsp;support@streak.tech</p>
+				</div>
+				<div class="social_streak">
+					<span><a href="https://twitter.com/StreakTech" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Twitter', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-twitter.png"></a></span>
+					<span><a href="https://www.facebook.com/Streak-1965580753720549/" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Facebook', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-facebook.png"></a></span>
+					<span><a href="https://www.facebook.com/Streak-1965580753720549/" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Linkedin', eventLabel: 'Home Footer'});"><img src="/static/imgs/footer-linkedin.png"></a></span>
+				</div>
+			</div>
+			<div class="footer_right">
+				<div class="footer_terms">
+					<p>
+    					<span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Terms of use', eventLabel: 'Home Footer'});">Terms of Use</a></span>
+    					<span><a href="/privacy" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Privacy policy', eventLabel: 'Home Footer'});">Privacy Policy</a></span>
+    					<span><a href="/disclosure" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Risk Disclosure', eventLabel: 'Home Footer'});">Risk Disclosure</a></span>
+  					</p>
+				</div>
+				<div class="nse_member">
+					<p>Zerodha: Member of NSE​ &​ BSE – SEBI Registration no.: INZ000031633 CDSL: Depository services through Zerodha Securities Pvt. Ltd. – SEBI Registration no.: IN-DP-100-2015 Commodity Trading through Zerodha Commodities Pvt. Ltd. MCX: 46025 | NCDEX: 1138 – SEBI Registration no.: INZ000038238</p>
+				</div>
+				<div class="footer_copyright">
+					<span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Copyright', eventLabel: 'Home Footer'});">© 2017 Streak. All rights reserved.</a></span>
+				</div>
+			</div>
+		</div>
+	</div> -->
+<!--   <p>
+    <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Copyright', eventLabel: 'Home Footer'});">© 2017 Streak</a></span>
+    <span><a href="/terms" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Terms of use', eventLabel: 'Home Footer'});">Terms of Use</a></span>
+    <span><a href="/privacy" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Privacy policy', eventLabel: 'Home Footer'});">Privacy Policy</a></span>
+    <span><a href="/disclosure" onclick="ga('send', {hitType: 'event', eventCategory: 'Footer', eventAction: 'Risk Disclosure', eventLabel: 'Home Footer'});">Risk Disclosure</a></span>
+  </p> -->
+</div>
+{% csrf_token %}
+
+
+
+
+{% endblock %}
