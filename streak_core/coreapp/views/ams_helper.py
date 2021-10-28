@@ -38,7 +38,7 @@ def get_deployment_keys(query):
 	depl_algo_cur = models.DeployedAlgorithm._get_collection().find(query) 
 	# depl_algo_id_dict = {} 
 	for d in depl_algo_cur: 
-		x = "deployed:" + d['user_uuid'] + ":" + d['algo_uuid'] + ":" + d["segment"] + "_" + d["symbol"] + ":" + d["algo_obj"]["time_frame"] + ":" + d["deployment_uuid"] 
+		x = "deployed:" + d['user_uuid'] + ":" + d['algo_uuid'] + ":" + d["segment_symbol"] + ":" + d["algo_obj"]["time_frame"] + ":" + d["deployment_uuid"] 
 		depl_algo_list.append(x) 
 		# depl_algo_dict[d["algo_uuid"]+d["segment_symbol"]]=d["status"] 
 		# depl_algo_id_dict[d["algo_uuid"]]=depl_algo_id_dict.get(d["algo_uuid"],0)+1 
@@ -49,7 +49,7 @@ def override_with_ams(func):
 		BROKER = request.session.get("broker","zerodha")
 		# print "broker",BROKER
 		print("*******Using AMS override*******",BROKER)
-		if BROKER in ["ab","5paisa"]:
+		if BROKER in ["ab","5paisa","upstox"]:
 			print("*******Using AMS Function*******",BROKER)
 			# return func(request)
 			func_name = func.__name__
@@ -128,7 +128,7 @@ def validate_session(auth_token,service):
 	if auth_token=="":
 		return  None,"Invalid token received"
 	if service =="5paisa":
-		credentials = {"params_map":{"cookie":auth_token}}
+		credentials = {"params_map":{"auth_code":auth_token}}
 		payload = ujson.dumps({"user_uuid":"" ,"service":service,"async_validate":False,"credentials": credentials})
 		headers = base_header
 		response = requests.request("POST", url, data=payload, headers=headers,timeout=2)
@@ -148,6 +148,27 @@ def validate_session(auth_token,service):
 			profile["broker_id"] = username
 		elif status_code == 403:
 			return  None,"Invalid credentials, 3 wrong retires will block you account, so check your credentials properly"
+	elif service =="upstox":
+		credentials = {"params_map":{"auth_code":auth_token}}
+		payload = ujson.dumps({"user_uuid":"" ,"service":service,"async_validate":False,"credentials": credentials})
+		headers = base_header
+		response = requests.request("POST", url, data=payload, headers=headers,timeout=2)
+		success,resp_json,status_code = reponse_handler(response)
+		print(payload,resp_json)
+		if success:
+			profile = resp_json.get("data",{})#.get("body",{}).get("EquityProfile",[])
+			if resp_json.get("message","")=="Unauthorized":
+				return  None,"Invalid session credentials, please try again"
+			# else:
+			# 	profile = profile
+			username = profile.get("user_id","")
+			profile["broker_id"] = username.upper()
+			# if "@" not in username:
+			# 	user_broker_id = username
+			# else:
+			# 	user_broker_id = ""
+		elif status_code == 403:
+			return  None,"Invalid credentials, 3 wrong retires will block you account, so check your credentials properly"
 	return profile,error_msg
 
 def register_user_with_ams(user_uuid,service,user_broker_id,auth_token):
@@ -159,8 +180,9 @@ def register_user_with_ams(user_uuid,service,user_broker_id,auth_token):
 	if service =="5paisa":
 		headers = base_header
 		credentials = {"username":user_broker_id,"params_map":{"token":user_broker_id}}
+		# credentials = {"username":user_broker_id,"auth_token":auth_token,"params_map":{"token":user_broker_id}}
 		payload = ujson.dumps({"user_uuid":user_uuid ,"service":service,"async_validate":False,"credentials": credentials})
-		response = requests.request("POST", url, data=payload, headers=headers,timeout=11)
+		response = requests.request("POST", url, data=payload, headers=headers,timeout=5)
 		success,resp_json,status_code = reponse_handler(response)
 		print "RESGISTERING NEW USER WITH AMS->",payload,resp_json
 		if success:
@@ -176,6 +198,29 @@ def register_user_with_ams(user_uuid,service,user_broker_id,auth_token):
 			else:
 				return  None,"Invalid session credentials, please try again"
 			profile["broker_id"] = username
+		elif status_code == 403:
+			return  None,"Invalid credentials, 3 wrong retires will block you account, so check your credentials properly"
+	elif service =="upstox":
+		headers = base_header
+		credentials = {"username":user_broker_id,"auth_token":auth_token,"params_map":{"token":user_broker_id}}
+		payload = ujson.dumps({"user_uuid":user_uuid ,"service":service,"async_validate":False,"credentials": credentials})
+		response = requests.request("POST", url, data=payload, headers=headers,timeout=5)
+		success,resp_json,status_code = reponse_handler(response)
+		print "RESGISTERING NEW USER WITH AMS->",payload,resp_json
+		if success:
+			pass
+			# username = resp_json.get("client_code","")
+
+			# if "@" not in username:
+			# 	user_broker_id = username
+			# else:
+			# 	user_broker_id = ""
+			# profile = resp_json.get("data",{}).get("body",{}).get("EquityProfile",[])
+			# if len(profile)>0:
+			# 	profile = profile[0]
+			# else:
+			# 	return  None,"Invalid session credentials, please try again"
+			# profile["broker_id"] = username
 		elif status_code == 403:
 			return  None,"Invalid credentials, 3 wrong retires will block you account, so check your credentials properly"
 	return profile,error_msg
@@ -203,6 +248,7 @@ def ams_login(request):
 
 		user = None
 		user_status = 100
+		reset_session = True
 		try: 
 			user = models.UserProfile.objects.get(user_broker_id=username)
 
@@ -211,14 +257,14 @@ def ams_login(request):
 				return JsonResponse({"status":"error","error_msg":"Broker account already exists, please log in directly"})
 
 			user_uuid = user.user_uuid
-			if user.email == username+"@"+service and user.additional_details.get("secondary_email","")=="":
+			if (user.email == username+"@"+service or user.email == username+"@"+"com."+service) and user.additional_details.get("secondary_email","")=="":
 				user_status = 100
 			user_subscription = models.UserSubscription.objects.get(user_uuid=user_uuid)
 			userflow.add_session_log(request)
 			userflow.update_activity(request,"login")
-			if user_subscription.subscription_instance == 'dual':
+			if user_subscription.subscription_instance == 'dual' or (user_subscription.subscription_validity<datetime.datetime(2021, 7, 31, 23, 59, 59) and user_subscription.subscription_validity < datetime.datetime.today() and datetime.datetime.today()<datetime.datetime(2021, 7, 31, 23, 59, 59)):
 				user_subscription.subscription_instance = 'dual_trial'
-				user_subscription.subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59))
+				user_subscription.subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 7, 31, 23, 59, 59))
 				user_subscription.subscription_type = 0
 				user_subscription.subscription_product = 'free'
 				user_subscription.subscription_plan = 'free'
@@ -243,11 +289,14 @@ def ams_login(request):
 				con.publish('partner_ref',ujson.dumps(map_user))
 		except DoesNotExist:
 			user_uuid = str(uuid.uuid4())
-		
+			user_uuid_original = request.POST.get('user_uuid','')
+			adding_broker = request.POST.get('adding_broker','')
+			if user_uuid_original!="" and (adding_broker=="true" or adding_broker==True):
+				user_uuid = user_uuid_original
 		payload = ujson.dumps({"user_uuid":user_uuid ,"service":service,"async_validate":False,"credentials": credentials})
 
 		headers = base_header
-		response = requests.request("POST", url, data=payload, headers=headers,timeout=11)
+		response = requests.request("POST", url, data=payload, headers=headers,timeout=15)
 		success,resp_json,status_code = reponse_handler(response)
 		print resp_json
 		if success:
@@ -258,6 +307,8 @@ def ams_login(request):
 				user = models.UserProfile.objects.get(user_uuid=user_uuid_original)
 				user.user_broker_id = user_broker_id
 				# user.first_name = session_data['data']['user_name']
+				if user.first_broker == "-":
+					reset_session = False
 				user.first_broker = service
 				# if user.email!=session_data['data']['email'].lower():
 					# user_profile.additional_details["secondary_email"] = session_data['data']['email'].lower()
@@ -271,6 +322,8 @@ def ams_login(request):
 				user_details = fetch_user_details(user_uuid,service)
 				if user_details:
 					user.first_name = user_details.get("user_name",username).title()
+					if len(user_details.get("user_name",username))<=3:
+						user.first_name = username
 					if user_details.get("user_email_id",None) is not None:
 						if user_details.get("user_email_id","").lower()!= user.email:
 							user.additional_details["secondary_email"] = user_details.get("user_email_id","").lower()
@@ -301,14 +354,14 @@ def ams_login(request):
 				request.session['first_time_orderbook'] = True
 				request.session['first_time_portfolio'] = True
 				request.session['session_secret'] = utils.generate_random_hash()
-				return JsonResponse({"status":"success",'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref})
+				return JsonResponse({"status":"success",'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref,"reset_session":reset_session})
 			request.session["broker"]=service
 			request.session["full_broker_name"]=broker
 			request.session["broker_full_name"]=service
 			request.session["user_broker_id"]=username
 			if user is None:
 				user = models.UserProfile(user_uuid=user_uuid,
-										email = username+"@"+service,
+										email = username+"@"+"com."+service,
 										user_broker_id = username,
 										first_name = '',
 										last_name = '',
@@ -316,23 +369,27 @@ def ams_login(request):
 										password =  '',
 										status = 1)
 				user.user_broker_id = username
+				if user.first_broker == "-":
+					reset_session = False
 				user.first_broker = service
 
 				user_details = fetch_user_details(user_uuid,service)
 				if user_details:
 					user.first_name = user_details.get("user_name",username).title()
+					if len(user_details.get("user_name",username))<=3:
+						user.first_name = username
 					if user_details.get("user_email_id",None) is not None:
-						user.email = user_details.get("user_email_id",username+"@"+service).lower()
-						utils.send_initial_emails(user_uuid=user_uuid,email=user_details.get("user_email_id",username+"@"+service).lower(),name=user.first_name)
+						user.email = user_details.get("user_email_id",username+"@"+"com."+service).lower()
+						utils.send_initial_emails(user_uuid=user_uuid,email=user_details.get("user_email_id",username+"@"+"com."+service).lower(),name=user.first_name)
 				try:
 					user.save()
 				except NotUniqueError:
-					user.email = username+"@"+service
+					user.email = username+"@"+"com."+service
 					user.additional_details["secondary_email"] = user_details.get("user_email_id","").lower()
 					user.save()
 				user_status = 100
 
-				subscription_validity = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 4, 30, 23, 59, 59))
+				subscription_validity = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 7, 31, 23, 59, 59))
 				if service=="5paisa":
 					subscription_validity = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 6, 30, 23, 59, 59))
 				subscription_uuid=str(uuid.uuid4())
@@ -430,7 +487,11 @@ def ams_login(request):
 								v_pref = 3
 				except:
 					pass
-				return JsonResponse({'status':'success','user_status':user_status,'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref})	
+				try:
+					r = ref_user_register_utility(request,user_uuid,status=1)
+				except:
+					pass
+				return JsonResponse({'status':'success','user_status':user_status,'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref,"reset_session":reset_session})	
 		elif status_code == 403:
 				return  JsonResponse({'status':'error','error_msg':'Invalid credentials, 3 wrong retires will block you account, so check your credentials properly'})
 		else:
@@ -480,7 +541,7 @@ def ams_generic_sso(request):
 		error_msg = None
 		user_broker_id = ""
 		if service =="5paisa":
-			credentials = {"params_map":{"cookie":auth_token}}
+			credentials = {"params_map":{"auth_code":auth_token}}
 			profile,error_msg = validate_session(auth_token,service)
 			if error_msg is None:
 				user_broker_id = profile.get("broker_id","")
@@ -489,12 +550,27 @@ def ams_generic_sso(request):
 			else:
 				return  JsonResponse({'status':'error','error_msg':error_msg})
 			print(profile,error_msg,user_broker_id)
+		elif service =="upstox":
+			credentials = {"params_map":{"auth_code":auth_token}}
+			profile,error_msg = validate_session(auth_token,service)
+			if error_msg is None:
+				user_broker_id = profile.get("broker_id","")
+				if username=="":
+					username = profile.get("broker_id","").upper()
+			else:
+				return  JsonResponse({'status':'error','error_msg':error_msg})
+			print(profile,error_msg,user_broker_id)
 
 		user = None
 		new_user = True
 		user_status = 100
-		try: 
-			user = models.UserProfile.objects.get(user_broker_id=username)
+		reset_session = True
+		auth_token_ams = profile.get("access_token",auth_token)
+		try:
+			if service=="upstox": 
+				user = models.UserProfile.objects.get(user_broker_id=username,first_broker=service)
+			else:
+				user = models.UserProfile.objects.get(user_broker_id=username)
 
 			adding_broker = request.POST.get('adding_broker','')
 			if (adding_broker=="true" or adding_broker==True):
@@ -502,14 +578,16 @@ def ams_generic_sso(request):
 				
 			new_user = False
 			user_uuid = user.user_uuid
-			if user.email == username+"@"+service and user.additional_details.get("secondary_email","")=="":
+			if service=="upstox":
+				register_user_with_ams(user_uuid,service,user_broker_id,auth_token_ams)
+			if (user.email == username+"@"+service or user.email == username+"@"+"com."+service) and user.additional_details.get("secondary_email","")=="":
 				user_status = 100
 			user_subscription = models.UserSubscription.objects.get(user_uuid=user_uuid)
 			userflow.add_session_log(request)
 			userflow.update_activity(request,"login")
 			if user_subscription.subscription_instance == 'dual':
 				user_subscription.subscription_instance = service+'_first_month_free'
-				user_subscription.subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59))
+				user_subscription.subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 7, 31, 23, 59, 59))
 				user_subscription.subscription_type = 0
 				user_subscription.subscription_product = 'free'
 				user_subscription.subscription_plan = 'free'
@@ -535,7 +613,15 @@ def ams_generic_sso(request):
 		except DoesNotExist:
 			print("User desnot exit ",traceback.format_exc())
 			user_uuid = str(uuid.uuid4())
-			register_user_with_ams(user_uuid,service,user_broker_id,auth_token)
+			user_uuid_original = request.POST.get('user_uuid','')
+			adding_broker = request.POST.get('adding_broker','')
+			if user_uuid_original!="" and (adding_broker=="true" or adding_broker==True):
+				user_uuid = user_uuid_original
+			register_user_with_ams(user_uuid,service,user_broker_id,auth_token_ams)
+			if user.short_link == "":
+				user.ref_id = ''.join(random.choice(string.ascii_letters) for _ in range(10))
+				user.short_link = generate_ref_deeplink(ref_id=user.ref_id)
+			user_profile.save()
 		if profile:
 			request.session["broker"]=service
 			request.session["full_broker_name"]=service
@@ -553,7 +639,7 @@ def ams_generic_sso(request):
 				phone_number = profile.get("MobileNo").lower()
 				additional_details = {}
 				if email=="":
-					email = username+"@"+service
+					email = username+"@"+"com."+service
 				try:
 					address = profile.get("Address").lower().split("|")
 					pincode = profile.get("PIN_Code","")
@@ -573,7 +659,7 @@ def ams_generic_sso(request):
 							if user.email!=email:
 								additional_details["secondary_email"]=email
 							user.additional_details = additional_details
-
+							new_user = False
 						except DoesNotExist:
 							JsonResponse({'status':'error','error_msg':"User not found"})
 					else:
@@ -587,6 +673,8 @@ def ams_generic_sso(request):
 											status = 1,
 											additional_details=additional_details)
 					user.user_broker_id = username
+					if user.first_broker=="-":
+						reset_session = False
 					user.first_broker = service
 
 					# user_details = fetch_user_details(user_uuid,service)
@@ -595,19 +683,77 @@ def ams_generic_sso(request):
 					try:
 						user.save()
 					except:
-						user.email = username+"@"+service
+						user.email = username+"@"+"com."+service
 						additional_details["secondary_email"]=email
 						user.additional_details = additional_details
 						user.save()
 
 					user_status = 100
+			elif service == "upstox":
+				# profile = resp_json.get("data",{}).get("body",{}).get("EquityProfile",[])
+				# print(profile)
+				# if len(profile)>0:
+				# 	profile = profile[0]
+				# else:
+				# 	return  JsonResponse({'status':'error','error_msg':'Invalid session credentials, please try again'})
+				email = profile.get("email","").lower()
+				first_name = profile.get("user_name").lower()
+				phone_number = profile.get("phone_number").lower()
+				additional_details = {}
+				if email=="":
+					email = username+"@"+"com."+service
 
+				if user is None and new_user:
+					user_uuid_original = request.POST.get('user_uuid','')
+					adding_broker = request.POST.get('adding_broker','')
+					if user_uuid_original!="" and (adding_broker=="true" or adding_broker==True):
+						user_uuid = user_uuid_original
+						try:
+							user = models.UserProfile.objects.get(user_uuid=user_uuid_original)
+							user.phone_number = phone_number
+							if user.email!=email:
+								additional_details["secondary_email"]=email
+							user.additional_details = additional_details
+							new_user = False
+						except DoesNotExist:
+							JsonResponse({'status':'error','error_msg':"User not found"})
+					else:
+						user = models.UserProfile(user_uuid=user_uuid,
+											email = email,
+											user_broker_id = username,
+											first_name = first_name,
+											last_name = '',
+											phone_number = phone_number,
+											password =  '',
+											status = 1,
+											additional_details=additional_details)
+					user.user_broker_id = username
+					if user.first_broker=="-":
+						reset_session = False
+					user.first_broker = service
+
+					# user_details = fetch_user_details(user_uuid,service)
+					# if user_details:
+					# 	user.first_name = user_details.get("user_name",username)
+					if user.short_link == "":
+						user.ref_id = ''.join(random.choice(string.ascii_letters) for _ in range(10))
+						user.short_link = generate_ref_deeplink(ref_id=user.ref_id)
+					user.save()
+					try:
+						user.save()
+					except:
+						user.email = username+"@"+"com."+service
+						additional_details["secondary_email"]=email
+						user.additional_details = additional_details
+						user.save()
+
+					user_status = 100
 			if user is not None and new_user:
 				subscription_uuid=str(uuid.uuid4())
 				subscription_log_uuid = str(uuid.uuid4())
 				user_subscription = models.UserSubscription(user_uuid=user_uuid,
 					subscription_uuid=subscription_uuid,
-					subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59)),
+					subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 11, 30, 23, 59, 59)),
 					latest_subscription_id = subscription_log_uuid,
 					user_broker_id = user.user_broker_id,
 					subscription_instance = 'trial'
@@ -618,7 +764,7 @@ def ams_generic_sso(request):
 					subscription_log_uuid = subscription_log_uuid,
 					subscription_uuid = subscription_uuid,
 					subscription_start = datetime.datetime.today(),
-					subscription_stop = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59)),
+					subscription_stop = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 11, 30, 23, 59, 59)),
 					user_broker_id = user.user_broker_id,
 					subscription_instance = 'trial'
 					)
@@ -697,7 +843,11 @@ def ams_generic_sso(request):
 							v_pref = 3
 			except:
 				pass
-			return JsonResponse({'status':'success','user_status':user_status,'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref})	
+			try:
+				r = ref_user_register_utility(request,user_uuid,status=1)
+			except:
+				pass
+			return JsonResponse({'status':'success','user_status':user_status,'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref,"reset_session":reset_session})	
 		elif error_msg is None:
 			return  JsonResponse({'status':'error','error_msg':error_msg})
 		else:
@@ -737,17 +887,18 @@ def ams_sso_login(request):
 
 		user = None
 		user_status = 100
+		reset_session = True
 		try: 
 			user = models.UserProfile.objects.get(user_broker_id=username)
 			user_uuid = user.user_uuid
-			if user.email == username+"@"+service and user.additional_details.get("secondary_email","")=="":
+			if (user.email == username+"@"+service or user.email == username+"@"+"com."+service) and user.additional_details.get("secondary_email","")=="":
 				user_status = 100
 			user_subscription = models.UserSubscription.objects.get(user_uuid=user_uuid)
 			userflow.add_session_log(request)
 			userflow.update_activity(request,"login")
-			if user_subscription.subscription_instance == 'dual':
+			if user_subscription.subscription_instance == 'dual' or (user_subscription.subscription_validity<datetime.datetime(2021, 7, 31, 23, 59, 59) and user_subscription.subscription_validity < datetime.datetime.today() and datetime.datetime.today()<datetime.datetime(2021, 7, 31, 23, 59, 59)):
 				user_subscription.subscription_instance = service+'_first_month_free'
-				user_subscription.subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59))
+				user_subscription.subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 7, 31, 23, 59, 59))
 				user_subscription.subscription_type = 0
 				user_subscription.subscription_product = 'free'
 				user_subscription.subscription_plan = 'free'
@@ -772,6 +923,10 @@ def ams_sso_login(request):
 				con.publish('partner_ref',ujson.dumps(map_user))
 		except DoesNotExist:
 			user_uuid = str(uuid.uuid4())
+			user_uuid_original = request.POST.get('user_uuid','')
+			adding_broker = request.POST.get('adding_broker','')
+			if user_uuid_original!="" and (adding_broker=="true" or adding_broker==True):
+				user_uuid = user_uuid_original
 		
 		payload = ujson.dumps({"user_uuid":user_uuid ,"service":service,"async_validate":False,"credentials": credentials})
 
@@ -785,7 +940,7 @@ def ams_sso_login(request):
 			request.session["user_broker_id"]=username
 			if user is None:
 				user = models.UserProfile(user_uuid=user_uuid,
-										email = username+"@"+service,
+										email = username+"@"+"com."+service,
 										user_broker_id = username,
 										first_name = '',
 										last_name = '',
@@ -793,11 +948,15 @@ def ams_sso_login(request):
 										password =  '',
 										status = 1)
 				user.user_broker_id = username
+				if user.first_broker == "-":
+					reset_session = False
 				user.first_broker = service
 
 				user_details = fetch_user_details(user_uuid,service)
 				if user_details:
 					user.first_name = user_details.get("user_name",username)
+					if len(user_details.get("user_name",username))<=3:
+						user.first_name = username
 				user.save()
 				user_status = 100
 
@@ -805,7 +964,7 @@ def ams_sso_login(request):
 				subscription_log_uuid = str(uuid.uuid4())
 				user_subscription = models.UserSubscription(user_uuid=user_uuid,
 					subscription_uuid=subscription_uuid,
-					subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59)),
+					subscription_validity= max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 7, 31, 23, 59, 59)),
 					latest_subscription_id = subscription_log_uuid,
 					user_broker_id = user.user_broker_id,
 					subscription_instance = 'trial'
@@ -816,7 +975,7 @@ def ams_sso_login(request):
 					subscription_log_uuid = subscription_log_uuid,
 					subscription_uuid = subscription_uuid,
 					subscription_start = datetime.datetime.today(),
-					subscription_stop = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 1, 31, 23, 59, 59)),
+					subscription_stop = max(datetime.datetime.today() + datetime.timedelta(days=int(7)),datetime.datetime(2021, 7, 31, 23, 59, 59)),
 					user_broker_id = user.user_broker_id,
 					subscription_instance = 'trial'
 					)
@@ -896,7 +1055,7 @@ def ams_sso_login(request):
 								v_pref = 3
 				except:
 					pass
-				return JsonResponse({'status':'success','user_status':user_status,'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref})	
+				return JsonResponse({'status':'success','user_status':user_status,'csrf':csrf.get_token(request),'sessionid':request.session.session_key,"version":v_pref,"reset_session":reset_session})	
 		elif status_code == 403:
 				return  JsonResponse({'status':'error','error_msg':'Invalid credentials, 3 wrong retires will block you account, so check your credentials properly'})
 		else:
@@ -1157,8 +1316,9 @@ def ams_fetch_order_book(request):
 						br_orders_list = [b.order_id for b in br_o]
 						pass
 					for o in orders:
-						o['order_timestamp']=datetime.datetime.strptime(o['order_timestamp'],"%d-%b-%Y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")
-						print(o['order_id'],user_uuid,br_orders_list)
+						print(o['order_id'],user_uuid,br_orders_list,o['order_timestamp'])
+						if o['order_timestamp']!="":	
+							o['order_timestamp']=datetime.datetime.strptime(o['order_timestamp'],"%d-%b-%Y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")
 						o['status'] = o.get('status','').upper()
 						if (o['order_id'] in br_orders_list):
 							if "DIRECT_" in br_order_depid.get(o['order_id'],""):
@@ -1206,7 +1366,9 @@ def ams_fetch_order_book(request):
 							pass
 
 						for o in orders:
-							o['order_timestamp']=datetime.datetime.strptime(o['order_timestamp'],"%d-%b-%Y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")
+							print(o['order_id'],user_uuid,br_orders_list,o['order_timestamp'])
+							if o['order_timestamp']!="":
+								o['order_timestamp']=datetime.datetime.strptime(o['order_timestamp'],"%d-%b-%Y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")
 							o['status'] = o.get('status','').upper()
 							if (o['order_id'] in br_orders_list):
 								if "DIRECT_" in br_order_depid.get(o['order_id']):
@@ -1292,14 +1454,15 @@ def ams_place_order_direct(request):
 				segment = 'NFO-OPT'
 			else:
 				segment = 'NFO-FUT'
-		elif segment == '':
-			segment = 'NSE'
 		elif exchange=='NFO-FUT':
 			segment = 'NFO-FUT'
 			exchange = 'NFO'
 		elif exchange=='NFO-OPT': 
 			segment = 'NFO-OPT' 
 			exchange="NFO"
+		elif segment == '':
+			segment = 'NSE'
+		
 			
 		payload = {
 		  # "api_key":settings.KITE_API_KEY,
@@ -1448,7 +1611,7 @@ def ams_place_order_direct(request):
 				broker_order = models.BrokerOrder(user_uuid=user_uuid,
 				algo_uuid=algo_uuid,
 				algo_name=algo_name,
-				deployment_uuid='DIRECT_'+exchange.lower()+'_'+symbol.lower(),
+				deployment_uuid='DIRECT_'+segment.lower()+'_'+symbol.lower(),
 				order_id=response_json['data'].get('order_id',''),
 				order_payload = payload
 				)
@@ -1636,9 +1799,10 @@ def ams_place_order_discipline(request):
 							if(int(ttl) > -1):
 								pipeline.expire(redis_key,ttl)
 						except:
-							print traceback.format_exc()
+							print redis_key,traceback.format_exc()
 							# r = {}
-							return False
+							# return False
+							return JsonResponse({'status':'error'})
 
 					curr_time = datetime.datetime.now()
 					
@@ -2339,7 +2503,17 @@ def ams_fetch_dashboard_funds(request):
 					response_json['data']['account_value']=response_json['data'].get('ALB',0)
 					response_json['data']['available_balance']=response_json['data'].get('AvailableMargin',0)
 					response_json['data']['margins_used']=response_json['data'].get('Mgn4Position',0)
+				if request.session.get("broker","")=="upstox" and response_json.get('data',None) is not None:
+					equity_data = response_json['data']['equity']
+					available_balance = equity_data['available_margin']
+					margins_used = equity_data['used_margin']
+					account_value = equity_data['notional_cash']
 
+					commodity_data = response_json['data']['commodity']
+					commodity_available_balance = commodity_data['available_margin']
+					commodity_margins_used = commodity_data['used_margin']
+					commodity_account_value = commodity_data['notional_cash']
+					return JsonResponse({"status":"success",'funds':{'available_balance':available_balance,'margins_used':margins_used,'account_value':account_value},'commodity_funds':{'available_balance':commodity_available_balance,'margins_used':commodity_margins_used,'account_value':commodity_account_value}})
 				return JsonResponse({"status":"success",'funds':response_json.get('data')})
 		elif status_code==403:
 			return JsonResponse({'status':'error','response_code':status_code,'error-type':'Session expired, re-login required','error_msg':'Session expired, re-login required'})
